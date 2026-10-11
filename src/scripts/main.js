@@ -162,6 +162,7 @@ function handleNavScroll() {
 // ==========================================
 
 function initScrollAnimations() {
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -171,7 +172,10 @@ function initScrollAnimations() {
         });
     }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-up').forEach(el => {
+        observer.observe(el);
+        el.classList.add('reveal-pending');
+    });
 }
 
 // ==========================================

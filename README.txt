@@ -12,6 +12,11 @@ Production hosting
   Build command: npm run build
   Publish/output directory: dist
 
+GitHub Pages publishes dist through .github/workflows/pages.yml on each push
+to main. In Settings > Pages, the source must be GitHub Actions. Serving the
+repository source directly skips Vite's build and breaks the browser scripts.
+The custom domain daops.net is configured in the repository's Pages settings.
+
 Serve the generated files with HTTPS. No application server, database, or
 deployment wallet is needed to build or host the website. The contact form uses
 its existing Formspree endpoint. Analytics uses the existing public Arweave

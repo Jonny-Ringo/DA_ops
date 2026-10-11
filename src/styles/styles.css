@@ -1494,9 +1494,13 @@ section {
    ========================================== */
 
 .fade-up {
+    transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+/* Hide content for animation only after its observer has been initialized. */
+.fade-up.reveal-pending {
     opacity: 0;
     transform: translateY(18px);
-    transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
 .fade-up.visible {

@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/analytics.test.js",
+    "test:seo": "node --test tests/seo.test.js",
+    "social:image": "node scripts/generate-social-image.mjs",
     "test:browser": "playwright test",
     "dev": "vite",
     "build": "vite build",

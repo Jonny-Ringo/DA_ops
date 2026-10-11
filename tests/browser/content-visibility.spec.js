@@ -26,4 +26,6 @@ test('built homepage initializes and reveals every content block', async ({ page
     await expect(block).toHaveCSS('opacity', '1')
   }
   expect(errors).toEqual([])
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://daops.net/')
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'https://daops.net/')
 })

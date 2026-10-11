@@ -25,8 +25,24 @@ upload and query services; see ANALYTICS.txt for behavior and privacy details.
 Checks
   npm test
   npm run build
+  npm run test:seo
   npx playwright install chromium
   npm run test:browser
+
+Search and social metadata
+scripts/seo.mjs supplies unique titles, descriptions, absolute canonical URLs,
+Open Graph and X cards, and Organization/WebSite/WebPage/breadcrumb JSON-LD
+in the HTML at build time. It also generates robots.txt and sitemap.xml.
+The preferred search address is https://daops.net/. Analytics stays noindex.
+The official X profile is https://x.com/DA_Ops1.
+
+The preview image is checked in at public/brand/social-preview.png. Regenerate
+it with npm run social:image after installing Playwright Chromium. This is a
+local design step, not required for hosting builds. npm run test:seo validates
+the built metadata and image and runs before every GitHub Pages deployment.
+
+Submit https://daops.net/sitemap.xml in Google Search Console and Bing
+Webmaster Tools after verifying domain ownership in those services.
 
 Arweave publication (optional)
   npm run deploy

@@ -1,11 +1,13 @@
 import { resolve } from 'path'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
+import { seoPlugin } from './scripts/seo.mjs'
 
 const deployment = JSON.parse(readFileSync(new URL('./.deployments/latest.json', import.meta.url), 'utf8'))
 
 export default defineConfig({
   base: './',
+  plugins: [seoPlugin()],
   define: { __ARWEAVE_MANIFEST__: JSON.stringify(deployment.manifestId) },
   build: {
     rollupOptions: {

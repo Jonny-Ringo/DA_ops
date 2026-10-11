@@ -1,7 +1,6 @@
 import { chatBubbles } from '../data/chat-bubbles.js'
 import { initAnalytics } from './analytics.js'
 import { initContactForm } from './contact-form.js'
-import { updateSiteMetadata } from './site-url.js'
 import { initProjectStrip } from './project-strip.js'
 
 // ==========================================
@@ -215,7 +214,6 @@ function handleExternalLinks() {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    updateSiteMetadata();
     initAnalytics();
     initContactForm();
     initProjectStrip();

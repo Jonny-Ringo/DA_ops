@@ -1,5 +1,5 @@
-// Vite injects the last published manifest for local previews only. Published
-// pages always use their own manifest, including on Arweave sandbox subdomains.
+// Shared promotion links use Arweave: the current manifest on Arweave itself,
+// or the last published manifest on other hosts. SEO metadata is built separately.
 export function arweaveBase(href, fallback = typeof __ARWEAVE_MANIFEST__ === 'string' ? __ARWEAVE_MANIFEST__ : '') {
   const current = new URL(href)
   const isArweave = current.hostname === 'arweave.net' || current.hostname.endsWith('.arweave.net')
@@ -12,14 +12,4 @@ export function siteUrl(page, href = window.location.href) {
   const route = page.replace(/^\//, '')
   if (!['', 'index.html', 'about.html', 'how-we-work.html', 'contact.html', 'analytics.html', 'privacy.html'].includes(route)) throw new Error('Unknown site page')
   return new URL(route === 'index.html' ? '' : route, arweaveBase(href))
-}
-
-export function updateSiteMetadata() {
-  const canonical = document.querySelector('link[rel="canonical"]')
-  if (!canonical) return
-  const page = canonical.getAttribute('href').replace(/^\.\//, '')
-  const url = siteUrl(page).href
-  canonical.href = url
-  const social = document.querySelector('meta[property="og:url"]')
-  if (social) social.content = url
 }

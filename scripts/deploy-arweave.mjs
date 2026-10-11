@@ -13,15 +13,15 @@ const { ArweaveSigner, createData } = require('arbundles');
 const publish = process.argv.includes('--publish');
 const service = 'https://up.arweave.net';
 const pages = ['index.html', 'about.html', 'how-we-work.html', 'contact.html', 'analytics.html', 'privacy.html'];
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8' };
 const files = new Map();
 
 async function collect(directory, prefix = '') {
   for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
     const relative = prefix + entry.name;
-    if (entry.isDirectory() && relative === 'assets') {
-      await collect(path.join(directory, entry.name), 'assets/');
-    } else if (entry.isFile() && (pages.includes(relative) || /^assets\/[\w.-]+\.(css|js|png)$/.test(relative))) {
+    if (entry.isDirectory() && ['assets', 'brand'].includes(relative)) {
+      await collect(path.join(directory, entry.name), relative + '/');
+    } else if (entry.isFile() && (pages.includes(relative) || ['robots.txt', 'sitemap.xml', 'brand/logo.png', 'brand/social-preview.png'].includes(relative) || /^assets\/[\w.-]+\.(css|js|png)$/.test(relative))) {
       let data = await fs.readFile(path.join(directory, entry.name));
       if (relative.endsWith('.html')) {
         // Keep navigation and assets inside the manifest when opened by transaction ID.

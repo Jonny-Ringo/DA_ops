@@ -113,4 +113,6 @@ URL printed at the end. Each publication has its own permanent address.
 Shared links always use https://arweave.net/<current-manifest>/, including when
 Arweave redirects the page to a sandbox subdomain. Local previews use the most
 recent deployment recorded in .deployments/latest.json at build/server startup.
-Page metadata follows the same deployment, without carrying tracking parameters.
+Search and social metadata uses https://daops.net/ as the preferred canonical
+site, without tracking parameters, and is emitted in the HTML at build time.
+The share-link builder still uses arweave.net as configured.

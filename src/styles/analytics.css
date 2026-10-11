@@ -1,0 +1,61 @@
+.analytics-shell { max-width: 1240px; margin: auto; padding: 40px 28px; }
+.analytics-header { display: flex; justify-content: space-between; gap: 24px; align-items: center; margin-bottom: 32px; }
+.analytics-brand, .analytics-shell a { color: var(--color-primary); }
+.analytics-header h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.04em; margin: 8px 0; }
+.analytics-header p, .analytics-panel > p, .analytics-note { color: #a6b0bd; }
+.analytics-toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+.analytics-shell label { display: flex; flex-direction: column; gap: 7px; font-size: .85rem; }
+.analytics-shell select, .analytics-shell input { background: #161b22; color: #e6edf3; border: 1px solid #465366; border-radius: 6px; padding: 12px; min-width: 0; font: inherit; }
+.analytics-shell .analytics-check { flex-direction: row; align-items: center; align-self: center; margin-left: auto; }
+.analytics-shell input[type=checkbox] { width: 18px; height: 18px; accent-color: #4dd0e1; }
+.analytics-shell button { cursor: pointer; font: inherit; }
+.analytics-shell button:disabled { opacity: .5; cursor: default; }
+.analytics-shell :focus-visible { outline: 2px solid #4dd0e1; outline-offset: 4px; }
+#status { margin: 24px 0 8px; color: #4dd0e1; }
+#status.error { color: #ffbc94; }
+.analytics-note { font-size: .85rem; margin-bottom: 24px; }
+.analytics-note a { text-decoration: underline; }
+.analytics-metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin: 28px 0; }
+.analytics-metric { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px 16px; }
+.analytics-metric span { color: #a6b0bd; font-size: .8rem; }
+.analytics-metric strong { display: block; font-size: 2rem; font-weight: 600; }
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.analytics-panel { padding: 24px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; min-width: 0; }
+.analytics-panel.wide { grid-column: 1 / -1; }
+.analytics-panel h2 { font-size: 1.1rem; margin-bottom: 8px; }
+.analytics-panel > p { font-size: .85rem; margin-bottom: 18px; }
+.analytics-row { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px solid #30363d; padding: 10px 0; font-size: .9rem; }
+.analytics-row span { overflow-wrap: anywhere; }
+.analytics-row strong { flex-shrink: 0; }
+.analytics-empty { color: #a6b0bd; padding: 24px 0; }
+.analytics-timeline { display: flex; height: 190px; align-items: end; gap: 5px; overflow-x: auto; padding-top: 24px; }
+.analytics-day { min-width: 24px; flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: end; gap: 6px; font-size: .65rem; color: #a6b0bd; }
+.analytics-bar { width: 100%; min-height: 2px; background: #4dd0e1; border-radius: 4px 4px 0 0; }
+.analytics-table-wrap { overflow-x: auto; }
+.analytics-shell table { width: 100%; border-collapse: collapse; font-size: .82rem; text-align: left; }
+.analytics-shell th, .analytics-shell td { padding: 12px 14px 12px 0; border-bottom: 1px solid #30363d; max-width: 260px; overflow-wrap: anywhere; }
+.analytics-shell th { color: #a6b0bd; font-weight: 500; white-space: nowrap; }
+.analytics-shell td { vertical-align: top; }
+.campaign-builder { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; }
+.campaign-builder > label { min-width: 0; }
+.campaign-steps { padding-left: 22px; margin: 0 0 24px; color: #a6b0bd; font-size: .9rem; }
+.campaign-steps li + li { margin-top: 6px; }
+.campaign-help, .campaign-options { grid-column: 1 / -1; }
+.campaign-help, .campaign-option-fields span, #campaign-summary { color: #a6b0bd; font-size: .85rem; }
+.campaign-options summary { cursor: pointer; color: var(--color-primary); padding: 8px 0; }
+.campaign-option-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 12px; }
+.campaign-option-fields label { min-width: 0; }
+.campaign-result { margin-top: 24px; display: grid; gap: 10px; }
+.campaign-result input { width: 100%; }
+.analytics-shell footer { margin-top: 28px; }
+.analytics-shell [hidden] { display: none !important; }
+#more { margin-top: 20px; }
+@media (max-width: 900px) { .analytics-metrics { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) {
+  .analytics-shell { padding: 24px 16px; }
+  .analytics-header { align-items: start; flex-direction: column; }
+  .analytics-metrics { grid-template-columns: repeat(2, 1fr); }
+  .analytics-grid, .campaign-builder, .campaign-option-fields { grid-template-columns: 1fr; }
+  .analytics-panel { padding: 18px; }
+  .analytics-shell .analytics-check { margin-left: 0; }
+}

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0d1117">
+  <title>Analytics | DA Operations</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/src/styles/styles.css">
+  <link rel="stylesheet" href="/src/styles/analytics.css">
+</head>
+<body>
+  <main class="analytics-shell">
+    <header class="analytics-header">
+      <div><a class="analytics-brand" href="./">DA Operations</a><h1>Site activity</h1><p>See how people find DA and what they do next.</p></div>
+      <a href="./">Back to website ↗</a>
+    </header>
+    <div class="analytics-toolbar">
+      <label>Period (UTC)<select id="period"><option value="1">Today</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
+      <button id="refresh" class="btn btn-primary">Refresh data</button>
+      <button id="export" class="btn btn-secondary" disabled>Export CSV</button>
+      <label class="analytics-check"><input id="exclude" type="checkbox"> Exclude this browser from tracking</label>
+    </div>
+    <p id="status" role="status" aria-live="polite">Loading indexed activity…</p>
+    <p class="analytics-note">Events appear after network indexing, so this is not a live visitor counter. Sessions are anonymous browser-tab visits with a 30-minute inactivity limit, not unique people. Browser privacy signals and blockers can reduce counts.</p>
+    <div id="metrics" class="analytics-metrics" aria-label="Traffic summary"></div>
+    <div class="analytics-grid">
+      <section class="analytics-panel wide"><h2>Daily traffic</h2><p>Page views by day · UTC</p><div id="timeline" class="analytics-timeline"></div></section>
+      <section class="analytics-panel"><h2>Top pages</h2><div id="pages"></div></section>
+      <section class="analytics-panel"><h2>Traffic sources</h2><p>Sessions by source, including promotion links.</p><div id="sources"></div></section>
+      <section class="analytics-panel wide"><h2>Shared link results</h2><p>Visits and inquiries for links with a group name. Links without a group appear under Traffic sources.</p><div id="campaigns" class="analytics-table-wrap"></div></section>
+      <section class="analytics-panel"><h2>Contact funnel</h2><p>Sessions reaching each step; visitors can enter directly on the contact page.</p><div id="funnel"></div></section>
+      <section class="analytics-panel"><h2>Devices</h2><p>Page views by screen size.</p><div id="devices"></div></section>
+      <section class="analytics-panel"><h2>Interactions</h2><div id="interactions"></div></section>
+      <section class="analytics-panel"><h2>Scroll depth</h2><p>Times each milestone was reached across page visits.</p><div id="scroll"></div></section>
+      <section class="analytics-panel wide"><h2>Recent activity</h2><p>Latest 100 events. CSV includes every loaded event in the selected period.</p><div id="activity" class="analytics-table-wrap"></div><button id="more" class="btn btn-secondary" hidden>Load next 10,000 records</button></section>
+      <section class="analytics-panel wide" id="share-link-panel"><h2>Create a link to share</h2><p>Optional: see which posts bring people to DA. Your regular website link already tracks visits. This tool adds labels to a link; it does not post anything or run an ad.</p>
+        <ol class="campaign-steps"><li>Choose a page and where you will share it.</li><li>Create and copy the link, then paste it into your post or message.</li><li>Return here after people visit. Check <strong>Traffic sources</strong>, or <strong>Shared link results</strong> if you added a group name. Allow time for new visits to appear.</li></ol>
+        <form id="campaign-builder" class="campaign-builder">
+          <label>Page to open<select id="landing"><option value="/">Home</option><option value="/how-we-work.html">How We Work</option><option value="/about.html">About</option><option value="/contact.html">Contact</option></select></label>
+          <label>Where will you share it?<input id="source" placeholder="e.g. X, Facebook, Discord" list="share-sources" required maxlength="64" aria-describedby="campaign-help"></label>
+          <datalist id="share-sources"><option value="X"></option><option value="Facebook"></option><option value="LinkedIn"></option><option value="Discord"></option><option value="Email"></option></datalist>
+          <label>Group name (optional)<input id="campaign" placeholder="e.g. October Spooky Vibes" maxlength="64" aria-describedby="campaign-help"></label>
+          <p id="campaign-help" class="campaign-help">A group name connects related posts in your results. Spaces are fine: <strong>October Spooky Vibes</strong> becomes <strong>october_spooky_vibes</strong> in the link. Use public labels, not personal information.</p>
+          <details class="campaign-options"><summary>More options (optional)</summary><div class="campaign-option-fields">
+            <label>Type of share<select id="medium"><option value="">Automatic</option><option value="social">Social post</option><option value="email">Email</option><option value="paid">Paid ad</option><option value="referral">Another website</option></select></label>
+            <label>Post label (optional)<input id="content" placeholder="e.g. Community support post" maxlength="64"><span>A short name to compare posts in the same group.</span></label>
+          </div></details>
+          <button class="btn btn-primary" type="submit">Create link</button>
+        </form>
+        <div class="campaign-result" hidden><label for="campaign-url">Your link to share</label><input id="campaign-url" readonly aria-describedby="campaign-summary"><p id="campaign-summary" role="status"></p><button id="copy" class="btn btn-secondary" type="button">Copy link</button></div>
+      </section>
+    </div>
+    <footer class="analytics-note">This dashboard and its underlying Arweave events are public. Counts are directional: client-generated events can be blocked or spoofed. No form contents, email addresses, full URLs, or IP addresses are written by this tracker. <a href="./privacy.html">Analytics privacy and preferences</a>.</footer>
+  </main>
+  <script type="module" src="/src/scripts/analytics-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-10-10T03:36:56.316Z",
+  "service": "https://up.arweave.net",
+  "files": {
+    "assets/analytics-DBf09ukj.css": {
+      "id": "vkBk0_WBs6YVrhxZtNgGu7AhsVSncoKITZf4HunUCDs",
+      "bytes": 4088,
+      "sha256": "b86d3dcb86a94c383ad8ace0d524bb830f567307e3f91258e88a17bb5c6581b1"
+    },
+    "assets/analytics-DxXQrNzO.js": {
+      "id": "2TxjIQObmHdP05xTic6dI4mQSZ_Vba13hKF7Dcjkgek",
+      "bytes": 8972,
+      "sha256": "b7f0635f627c2f024f814d89585a8d8705408abb8f75626003ee8ccae8b5b3e3"
+    },
+    "assets/ao-QfBiN0lT.png": {
+      "id": "oR4g8NQiPI2ge1LqKTbSkNklEqcppbBw9vrkiI8IraU",
+      "bytes": 27244,
+      "sha256": "d58057dd0d8be74da33a060aeb81eaa6edc5f3d513fa0ad4836460edef514a64"
+    },
+    "assets/Arweave-logo-cDAD-ZDu.png": {
+      "id": "lulUpG5yIFVaUG6ujhKeu13sFQDc-zbEq6LOUSC0l5Y",
+      "bytes": 14206,
+      "sha256": "1236e3f0cef97923dcce4dfa64c1eaf1d5d18f28529cbb6a390b42838fc47ffb"
+    },
+    "assets/decent-BKd6h2Y9.png": {
+      "id": "5M41_HUpUbpdipsHXzeR13XCJOPQGlf7QeWfqy_8SE0",
+      "bytes": 52917,
+      "sha256": "586c3e3c6e7cd79944cdd0394f37a957956726c4838ea028066ddbe742ac6fbc"
+    },
+    "assets/forward-DxAs_vcN.png": {
+      "id": "YPUeA905FDpqb30YSe5U9HiE_DbVc9wbBkC07rr_tEg",
+      "bytes": 37787,
+      "sha256": "c1fe2bdafe469d08323cf6ac4b93cbf0f9859ef364094f8369d4cf9b41527725"
+    },
+    "assets/logo-CIIjq_JK.png": {
+      "id": "zphnsZJ2TAkNUKLoXJcSell9TxT82ARaqHxfeldBmzc",
+      "bytes": 19884,
+      "sha256": "bc94a5cc522433bc44af786446bcccfed497020bd3a0204e99608311688abd7c"
+    },
+    "assets/main-1ImDOs9g.js": {
+      "id": "OcAOAxrdgxr7g4gZD3enntV0fI_B9KxciUY5KPSRrrI",
+      "bytes": 7893,
+      "sha256": "038aced129de0b28dd68198d2939079975e1b013d2746d8577fff2188986084d"
+    },
+    "assets/polkadot-DBfw_yR0.png": {
+      "id": "4rOHz9VkRiPSrt7BQfrFxi0bIoHDjs7jWY-IItm7i5A",
+      "bytes": 18551,
+      "sha256": "6e2f6b06d1feb4c2f591074c51b9e229afa7449bce31efefedab06c04f1a0fdd"
+    },
+    "assets/sarcophagus-5DpHcaQG.png": {
+      "id": "lbtqGTYFd5HzrFk7VBLmc4dE8uBClRkAYEXSSA4xpZ0",
+      "bytes": 24917,
+      "sha256": "56a1eb21f274b5539456638d23d679c72b07ac1e5a29d467b4ecee289f00eaf7"
+    },
+    "assets/site-url-B1zsmWy6.js": {
+      "id": "xNK09k1FpN4KwN2algY97CI41oD2DDNHARJu1jU2b_I",
+      "bytes": 10540,
+      "sha256": "3755e0432ad05aa001fc9981f906b7ddb422bf24b7fdb3b0ad36c68d1ac74221"
+    },
+    "assets/site-url-BQqRKeDm.css": {
+      "id": "uzY_X76cMt-cjrIVpXw7v26oCZOphlLZ3vgkh1OaCMc",
+      "bytes": 21381,
+      "sha256": "a0bb366a2f0786319c2b48196db3ea5736199da91c35668818a10d1f96082be6"
+    },
+    "about.html": {
+      "id": "t8ucZgZVh2qTw5UPaf6kUmhJSbm5GrjhXPGqYG7OjRU",
+      "bytes": 7838,
+      "sha256": "5c1d864b0d3ecf4ca4b47d03db85753d72b5082081ebc03b3985ecd35225cc3a"
+    },
+    "analytics.html": {
+      "id": "MKmI_xcohp4uiRfKbRRGTlJ6s5EsiJh6V6W214-U1ZI",
+      "bytes": 6586,
+      "sha256": "b284020822f31fd20ca1ba4597d2fa3c75b218a6e24da579b9de0ee3272217e3"
+    },
+    "contact.html": {
+      "id": "vhv7qf_25aq_W9wmlrC_JK5AOwd33AbtncfITkKr_Yo",
+      "bytes": 10592,
+      "sha256": "bf2b2a03da35ae30a37f25c00456f5add55b1536ba04363f2c89eb1ccc55f699"
+    },
+    "how-we-work.html": {
+      "id": "i3ZxDWqrBk_4bYfQSI0R8nCl4Gs8p1k4OrGvzpgd_eo",
+      "bytes": 11164,
+      "sha256": "f983d8901a8e7e41265d43ecf62c8328fd54c4e240289e3fc37331f00ec91f3b"
+    },
+    "index.html": {
+      "id": "av91Rbdb_azAW2k3aUcv8e4ceyUNEwWYrgboQLPqGLY",
+      "bytes": 17600,
+      "sha256": "67b45a81c58142afdf4d65f27dd9b1630cab50b23681ffbb1b9833b2e8df8460"
+    },
+    "privacy.html": {
+      "id": "Ks3651IdqcdgwDRzwdJJIqoln7hxeqM11wjUxabhoeg",
+      "bytes": 2681,
+      "sha256": "27247998b459d76a0d6d1ddf66315c8a08d16f67f32309d54ab7b1f707b8e670"
+    }
+  },
+  "manifestId": "QFX52yPAIn0n4sUitahel2ZiO8ByokIQkD79KTlAbp4",
+  "url": "https://arweave.net/QFX52yPAIn0n4sUitahel2ZiO8ByokIQkD79KTlAbp4/",
+  "completedAt": "2026-10-10T03:37:11.005Z"
+}

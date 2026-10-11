@@ -1,0 +1,19 @@
+{
+  "name": "da-website",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/analytics.test.js",
+    "test:browser": "playwright test",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && node scripts/deploy-arweave.mjs --publish"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "arbundles": "^0.9.11",
+    "vite": "^7.3.1"
+  }
+}

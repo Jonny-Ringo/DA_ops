@@ -1,0 +1,116 @@
+DA Operations analytics
+
+Open /analytics.html or use the Analytics link beneath the privacy link in the
+site footer to view traffic. The dashboard is public. It has no login and
+does not track its own visits. The privacy page is also excluded.
+
+Before promoting
+1. Deploy the updated build, including analytics.html and privacy.html.
+2. Open the dashboard and check "Exclude this browser from tracking" if you do
+   not want your own browsing counted. This preference applies to that origin.
+3. Use "Create a link to share": choose the page and where you will share it,
+   such as X, Facebook, Discord or Email. A group name is optional.
+   Example: https://arweave.net/<manifest-id>/?utm_source=linkedin&utm_medium=social&utm_campaign=october_launch
+   The builder fills in the current deployment's manifest ID automatically.
+4. Share those links. Return to the dashboard and use Refresh data. Indexing is
+   asynchronous; uploads may take time to appear. The dashboard is not realtime.
+
+The link builder does not publish posts or run ads. Paste the copied link into
+your own post or message. See visits under Traffic sources; if you added a group
+name, see visits and inquiries under Shared link results too.
+
+Spaces and capitalization are handled automatically: October Spooky Vibes
+becomes october_spooky_vibes. More options lets you change the share type
+(automatically social for X and other known social sites, email for Email, and
+referral otherwise), or add a short post label to compare posts in a group.
+Labels containing no usable letters or numbers produce a visible validation
+message. Editing any field clears the old generated link until you create it again.
+
+What is measured
+- Page views and anonymous sessions (30 minutes without tracked activity).
+- CTA and navigation clicks, outbound links, download-link clicks.
+- Scroll milestones and engagement (15 seconds with the page visible).
+- Contact form starts, valid submission attempts, confirmed success, errors.
+- Sources (UTM source or referring hostname), campaign, medium, content label.
+- Screen-size category, not a fingerprint or full user agent.
+
+The contact form still sends to its existing Formspree endpoint. A success event
+is recorded only for a successful response. Failed submissions preserve inputs.
+Form field values and error messages are never included in analytics.
+
+Interpreting the dashboard
+Sessions are approximate visits, not unique people. Inquiries are successful
+submissions, and inquiry rate is the percentage of sessions with a successful
+submission. Engaged sessions reached 15 visible seconds on at least one page.
+The contact funnel counts sessions independently at each step; a direct contact
+visitor can submit without having clicked a CTA on another page.
+
+Dates use UTC. The available periods are today and the last 7, 30, or 90 days.
+CSV includes all loaded events, not only the latest 100 shown in the table.
+Queries paginate at 100 records per request and pause after 10,000 records.
+If more exist, a partial-results message and Load next 10,000 records button
+appear. Repeated uploads with the same Event-ID count once.
+
+Operation and limits
+Every event is an RSA-signed ANS-104 item uploaded to https://up.arweave.net/tx.
+Queries use arweave.net with Goldsky as fallback. The tracker uses a temporary
+unfunded key, never the website deployment wallet or a visitor's wallet extension.
+Small test uploads were accepted without payment. Service availability, limits,
+and indexing delay depend on the providers; unlimited free service is not promised.
+
+Pending events are stored in sessionStorage, capped at 100 and retained up to
+24 hours. Failed uploads retry with backoff and on later page visits/online
+events. Signed bytes are reused for retries. A rapid exit before signing or a
+closed tab can lose pending events. Collection is best effort; blockers, privacy
+signals and network failures cause undercounting. Anyone can submit matching
+public tags, so these figures are not authoritative or bot-proof.
+
+Events and the dashboard are public. Never use personal information in campaign
+labels. The builder converts phrases into labels containing letters, numbers,
+underscores and hyphens (up to 64 characters). Incoming analytics URLs still
+require that format. Other query parameters, arbitrary paths, full referrer URLs, form data,
+IP addresses and full user-agent strings are not written by the tracker. Hosting
+and upload services still see ordinary network connection information.
+
+The footer links to /privacy.html with disclosure and a browser opt-out. Do Not
+Track and Global Privacy Control disable collection. Opting out clears pending
+tab events, but cannot delete already published Arweave records. Disabling or
+clearing browser storage affects session continuity and preference persistence.
+
+Development
+  npm install
+  npm run build
+  npm test
+  npm run test:browser
+  node scripts/deploy-arweave.mjs
+
+Browser tests need Chromium installed for Playwright (npx playwright install
+chromium). They intercept all off-site requests; no contact email is sent and
+no analytics test event is published by these tests. Screenshots with synthetic
+test data are saved as audit/analytics-1440.png and audit/analytics-390.png.
+
+Localhost and Vite development tracking are off by default. To inspect local
+tracking, set sessionStorage.setItem('da.analytics.test', 'true') then reload.
+These events use Environment=test and are excluded from dashboard totals.
+
+Optional live check:
+  node scripts/check-analytics-live.mjs
+Add --upload-test to permanently upload one synthetic event tagged test. Its
+receipt is saved to audit/analytics-live-check.json. Use --verify-index to check
+that saved event in both indexes without uploading another event. Query success
+and upload acceptance do not by themselves prove the event is already indexed.
+
+Configuration is in src/scripts/analytics-core.js. Keep App-Name, Site-ID,
+Schema-Version and tag names stable across deployments. Metadata tags have an
+Analytics- prefix because unprefixed names such as Device can conflict with
+the upload service's protocol. Runtime tracking has no third-party JS or CDN
+dependency; arbundles is used only by tests as an independent signature verifier.
+
+Publishing
+Run npm run deploy to build and upload the site to Arweave. The deployment
+preflight includes the dashboard and privacy page. Share the arweave.net manifest
+URL printed at the end. Each publication has its own permanent address.
+Shared links always use https://arweave.net/<current-manifest>/, including when
+Arweave redirects the page to a sandbox subdomain. Local previews use the most
+recent deployment recorded in .deployments/latest.json at build/server startup.
+Page metadata follows the same deployment, without carrying tracking parameters.

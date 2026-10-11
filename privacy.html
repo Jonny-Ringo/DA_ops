@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <title>Analytics privacy | DA Operations</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/src/styles/styles.css">
+  <link rel="stylesheet" href="/src/styles/analytics.css">
+</head>
+<body>
+  <main class="analytics-shell">
+    <header class="analytics-header"><div><a href="./">DA Operations</a><h1>Analytics privacy</h1><p>How we measure activity on this website.</p></div></header>
+    <section class="analytics-panel">
+      <h2>What we collect</h2>
+      <p>We measure page visits, navigation and contact-button clicks, scroll milestones, visits with at least 15 seconds of visible page time, and whether a contact form was started, submitted, or successfully received. Events include a random session identifier, time, page name, screen-size category, referring website hostname, and promotion labels from tagged links.</p>
+      <p>We do not include names, email addresses, form contents, IP addresses, full browser identifiers, or complete URLs in analytics events. Form submissions are sent separately to Formspree to deliver your message to DA.</p>
+      <h2>Public, permanent storage</h2>
+      <p>Analytics events are sent to an Arweave upload service and stored on the public Arweave network. Published events can be read by anyone and cannot be removed. Upload and query services receive ordinary network requests, including connection information; this site does not control their logs.</p>
+      <h2>Browser storage</h2>
+      <p>Your browser tab holds a random session identifier and a temporary signing key. Sessions expire after 30 minutes without tracked activity. Unsent events are retried for up to 24 hours while the tab remains available. Closing the tab clears this tab storage. An opt-out preference is saved in this browser until you clear it.</p>
+      <h2>Your choice</h2>
+      <p>We honor Do Not Track and Global Privacy Control signals. You can also stop future analytics collection in this browser below. This clears pending events in this tab; it cannot retract events already sent. Preferences are specific to the browser and site address you use.</p>
+      <button class="btn btn-secondary" data-analytics-preference>Turn off analytics in this browser</button>
+    </section>
+  </main>
+  <script type="module" src="/src/scripts/main.js"></script>
+</body>
+</html>

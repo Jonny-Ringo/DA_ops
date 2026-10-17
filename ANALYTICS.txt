@@ -37,6 +37,12 @@ What is measured
 The contact form still sends to its existing Formspree endpoint. A success event
 is recorded only for a successful response. Failed submissions preserve inputs.
 Form field values and error messages are never included in analytics.
+New contact failures distinguish provider_http_<status> (Formspree returned a
+non-success status), delivery_timeout (the browser deadline expired), and
+connection_unconfirmed (the browser could not obtain a response, including
+network or cross-origin failures). Historical delivery_unconfirmed events do
+not contain enough information to recover the cause. A browser failure does
+not prove whether a submission was stored, delivered, or rejected by Formspree.
 
 Interpreting the dashboard
 Sessions are approximate visits, not unique people. Inquiries are successful

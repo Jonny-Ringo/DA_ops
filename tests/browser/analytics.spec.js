@@ -63,11 +63,42 @@ test('invalid forms never submit, and failures are not counted as inquiries', as
   await page.locator('#email').fill('test@example.com')
   await page.locator('#interest').selectOption('talk')
   await page.locator('button[type=submit]').click()
-  await expect(page.getByRole('status')).toContainText('couldn’t confirm')
-  await expect.poll(() => events.some(e => e.type === 'form_error')).toBe(true)
+  await expect(page.getByRole('status')).toContainText('could not accept')
+  await expect.poll(() => events.some(e => e.type === 'form_error' && e.detail === 'provider_http_503')).toBe(true)
   expect(events.some(e => e.type === 'form_success')).toBe(false)
   await expect(page.locator('#name')).toHaveValue('Test')
 })
+
+for (const mode of ['rate_limit', 'network', 'timeout']) {
+  test(`contact ${mode} failures preserve inputs and record a safe diagnostic`, async ({ page }) => {
+    const { events } = await setup(page)
+    const detail = { rate_limit: 'provider_http_429', network: 'connection_unconfirmed', timeout: 'delivery_timeout' }[mode]
+    if (mode === 'timeout') {
+      await page.addInitScript(() => {
+        const originalFetch = window.fetch
+        window.fetch = (input, options) => String(input).startsWith('https://formspree.io/')
+          ? Promise.reject(new DOMException('Private provider error', 'TimeoutError'))
+          : originalFetch(input, options)
+      })
+    } else {
+      await page.route('https://formspree.io/**', route => mode === 'rate_limit'
+        ? route.fulfill({ status: 429, body: 'Private provider error' }) : route.abort('failed'))
+    }
+    await page.goto('/contact.html')
+    await page.locator('#name').fill('Private Person')
+    await page.locator('#company').fill('Private Company')
+    await page.locator('#email').fill('private@example.com')
+    await page.locator('#interest').selectOption('talk')
+    await page.locator('#message').fill('Private message')
+    await page.locator('button[type=submit]').click()
+    await expect.poll(() => events.some(e => e.type === 'form_error' && e.detail === detail)).toBe(true)
+    await expect(page.getByRole('status')).toContainText('entries are still here')
+    await expect(page.locator('#message')).toHaveValue('Private message')
+    await expect(page.locator('button[type=submit]')).toBeEnabled()
+    expect(events.some(e => e.type === 'form_success')).toBe(false)
+    expect(JSON.stringify(events)).not.toMatch(/Private|private@/)
+  })
+}
 
 test('queued signed events retry identically after a failed upload and reload', async ({ page }) => {
   const { events } = await setup(page)

@@ -1164,17 +1164,51 @@ section {
     font-size: 0.95rem;
 }
 
-.contact-email a {
+.contact-email-copy {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 0.5rem;
+}
+
+.copy-email {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    user-select: text;
+    max-width: 100%;
     color: var(--color-primary);
     text-decoration: underline;
     text-underline-offset: 3px;
     overflow-wrap: anywhere;
 }
 
-.contact-email a:focus-visible {
+.copy-email:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 4px;
 }
+
+.copy-email-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    width: max-content;
+    max-width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 0.8125rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.copy-email-tooltip.is-visible { opacity: 1; }
 
 .form-disclaimer {
     margin-top: 1rem;

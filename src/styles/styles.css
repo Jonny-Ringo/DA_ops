@@ -1156,6 +1156,26 @@ section {
     padding: 0.9rem 2rem;
 }
 
+.contact-email {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+.contact-email a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+}
+
+.contact-email a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
 .form-disclaimer {
     margin-top: 1rem;
     font-size: 0.8125rem;

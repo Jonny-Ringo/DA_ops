@@ -13,13 +13,13 @@ test('content stays readable when JavaScript cannot load', async ({ page }) => {
   }
 })
 
-test('built homepage initializes and reveals every content block', async ({ page }) => {
+test('built homepage initializes and every section stays readable', async ({ page }) => {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:4173') ? route.continue() : route.abort())
   await page.goto('/')
   await expect(page.locator('.project-strip-ready')).toHaveCount(1)
-  const blocks = page.locator('.fade-up')
+  const blocks = page.locator('main > section')
   expect(await blocks.count()).toBeGreaterThan(0)
   for (const block of await blocks.all()) {
     await block.scrollIntoViewIfNeeded()

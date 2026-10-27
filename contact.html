@@ -15,6 +15,7 @@
     <!-- SITE_METADATA -->
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
     <nav class="nav" role="navigation" aria-label="Main navigation">
         <div class="container">
@@ -30,7 +31,7 @@
                     <li><a href="/contact.html" class="active">Contact</a></li>
                 </ul>
                 <div class="nav-actions">
-                    <a href="/contact.html" class="nav-cta">Talk to an Expert</a>
+                    <a href="/contact.html" class="nav-cta">Get a Project Quote</a>
                     <button class="mobile-menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
                         <span></span><span></span><span></span>
                     </button>
@@ -39,12 +40,13 @@
         </div>
     </nav>
 
+    <main id="main-content" tabindex="-1">
     <section class="page-hero">
         <div class="container">
             <div class="page-hero-content">
                 <span class="section-label">Get Started</span>
-                <h1 class="section-heading">Let's talk about what you need.</h1>
-                <p>Tell us about your business or community and where you could use a hand. We'll follow up to explore how DA can help.</p>
+                <h1 class="section-heading">Tell us what needs fixing.</h1>
+                <p>One technical problem, a workflow to improve, or ongoing support for your team. A short description is enough to start.</p>
             </div>
         </div>
     </section>
@@ -55,11 +57,11 @@
 
                 <div class="contact-sidebar">
                     <h3>Start with what you need.</h3>
-                    <p>Answering questions, supporting your community, maintaining your website, or handling time-consuming manual work: tell us what's on your plate and what you'd like to make easier.</p>
-                    <p>You don't need a formal brief or an existing support team. A little context about your business is enough to start the conversation.</p>
+                    <p>Fixed-scope projects starting at $300. Your quote depends on the work, and we agree on scope, deliverables, and price before starting. Standalone projects require no long-term commitment.</p>
+                    <p>Need an ongoing partner? We also provide managed customer support, technical and community operations, and reporting. Tell us what you need; no formal brief is required.</p>
 
                     <h3 style="margin-top: 2rem;">What happens next?</h3>
-                    <p>We'll review your message and reach out to understand your priorities. Together, we'll identify a useful starting point and discuss the scope before any work begins.</p>
+                    <p>We'll review your message and reach out to understand your priorities. Together, we'll agree on a useful starting point and a project quote, or arrange a discovery call for a custom monthly proposal.</p>
 
                     <div class="notice" style="margin-top: 2rem;">
                         <strong>Protecting personal information:</strong> A general description is enough for this first conversation. Please leave other people's names, email addresses, account numbers, and identifying details out of your message. If we need conversation samples later, we'll arrange a secure sharing process with you first.
@@ -71,67 +73,34 @@
                         action="https://formspree.io/f/xbgldgal"
                         method="POST"
                     >
+                        <p class="form-intro">Fields marked * are required.</p>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Name <span aria-hidden="true">*</span></label>
                                 <input type="text" id="name" name="name" autocomplete="name" required placeholder="Your name">
                             </div>
                             <div class="form-group">
-                                <label for="company">Company or organization <span aria-hidden="true">*</span></label>
-                                <input type="text" id="company" name="company" autocomplete="organization" required placeholder="Business or community name">
+                                <label for="email">Email <span aria-hidden="true">*</span></label>
+                                <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com">
                             </div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">Work email <span aria-hidden="true">*</span></label>
-                                <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="website">Website</label>
-                                <input type="url" id="website" name="website" autocomplete="url" placeholder="https://yourcompany.com">
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <label for="volume">Monthly support volume (optional, if relevant)</label>
-                            <select id="volume" name="volume">
-                                <option value="" disabled selected>Select range</option>
-                                <option value="under-500">Under 500 conversations / month</option>
-                                <option value="500-2000">500 – 2,000 / month</option>
-                                <option value="2000-10000">2,000 – 10,000 / month</option>
-                                <option value="10000-plus">10,000+ / month</option>
-                                <option value="unknown">Not sure</option>
-                            </select>
+                            <label for="company">Company or project (optional)</label>
+                            <input type="text" id="company" name="company" autocomplete="organization" placeholder="Business, community, or project name">
                         </div>
-
                         <div class="form-group">
-                            <label for="channels">Current tools or channels (optional)</label>
-                            <input type="text" id="channels" name="channels" placeholder="e.g. Email, Discord, WordPress, or a help desk">
+                            <label for="message">What do you need help with? <span aria-hidden="true">*</span></label>
+                            <textarea id="message" name="message" required rows="5" placeholder="Describe the problem or the work you need done."></textarea>
                         </div>
-
-                        <div class="form-group">
-                            <label for="interest">What are you looking for? <span aria-hidden="true">*</span></label>
-                            <select id="interest" name="interest" required>
-                                <option value="" disabled selected>Select one</option>
-                                <option value="talk">Let's talk / not sure yet</option>
-                                <option value="support">Managed support</option>
-                                <option value="community">Community operations</option>
-                                <option value="website">Website upkeep</option>
-                                <option value="automation">Workflows and automation</option>
-                                <option value="audit">Operational review and improvements</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Anything else we should know</label>
-                            <textarea id="message" name="message" placeholder="Tell us about your business or community and what you'd like help with. Optional."></textarea>
+                        <div class="form-honeypot" aria-hidden="true">
+                            <label for="contact-check">Leave this field empty</label>
+                            <input type="text" id="contact-check" name="_gotcha" tabindex="-1" autocomplete="off">
                         </div>
 
                         <div class="form-submit">
                             <button type="submit" class="btn btn-primary">Send to DA</button>
                         </div>
-                        <p class="form-disclaimer">This form sends directly to DA via email. We'll respond within one business day.</p>
+                        <p class="form-disclaimer">Your inquiry goes to DA through our existing email form. No account or commitment required.</p>
                     </form>
                     <p class="contact-email">Prefer email? Click to copy our address:<br><span class="contact-email-copy"><button type="button" class="copy-email" aria-label="Copy email address d.academy.operations@gmail.com">d.academy.operations@gmail.com</button><span class="copy-email-tooltip" role="status" aria-live="polite"></span></span></p>
                 </div>
@@ -140,13 +109,15 @@
         </div>
     </section>
 
+    </main>
+
     <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
                     <img src="/images/logo.png" alt="" class="footer-logo">
                     <p class="footer-brand-name">DA Operations</p>
-                    <p class="footer-brand-tagline">Human-led, AI-accelerated<br>support and community operations.</p>
+                    <p class="footer-brand-tagline">Human operated. AI accelerated.<br>Technical solutions and ongoing operations.</p>
                 </div>
                 <nav class="footer-nav" aria-label="Footer navigation">
                     <div class="footer-nav-group">

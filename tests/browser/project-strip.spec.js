@@ -9,7 +9,7 @@ test('project strip scrolls continuously across desktop and mobile', async ({ pa
   await openHome(page)
   const strip = page.locator('.project-strip')
   const track = page.locator('.project-strip-track')
-  await expect(page.locator('.hero + .project-strip + .problem')).toHaveCount(1)
+  await expect(page.locator('.experience + .project-strip + .engagements')).toHaveCount(1)
   await expect(page.locator('.project-logo-group:not([aria-hidden]) > li')).toHaveCount(6)
   await expect(strip.locator('button, .project-strip-heading, img[alt="Apple"], img[alt="Intel"]')).toHaveCount(0)
   await expect(page.locator('.project-logo-group[aria-hidden="true"]')).toHaveCount(1)
@@ -33,7 +33,7 @@ test('project strip scrolls continuously across desktop and mobile', async ({ pa
     const groups = await page.locator('.project-logo-group').evaluateAll(items => items.map(el => el.getBoundingClientRect().width))
     expect(groups[0]).toBeCloseTo(groups[1], 1)
     if (width !== 320) {
-      await page.evaluate(() => window.scrollTo({ top: document.querySelector('.hero').offsetHeight - 520, behavior: 'instant' }))
+      await strip.scrollIntoViewIfNeeded()
       await page.screenshot({ path: `audit/project-strip-${width}.png` })
     }
   }

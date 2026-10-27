@@ -25,6 +25,7 @@ export function initContactForm() {
   form.addEventListener('input', () => trackEvent('form_start'), { once: true })
   const status = document.createElement('p')
   status.className = 'form-disclaimer'
+  status.id = 'contact-status'
   status.setAttribute('role', 'status')
   status.setAttribute('aria-live', 'polite')
   form.append(status)
@@ -32,6 +33,8 @@ export function initContactForm() {
   form.addEventListener('submit', async event => {
     event.preventDefault()
     if (sending || !form.reportValidity()) return
+    // Formspree also recognizes this honeypot on native (no-JavaScript) posts.
+    if (form.elements.namedItem('_gotcha')?.value) return
     sending = true
     const button = form.querySelector('[type="submit"]')
     button.disabled = true
@@ -48,7 +51,7 @@ export function initContactForm() {
         return
       }
       trackEvent('form_success')
-      status.textContent = 'Thanks — your message has been sent to DA. We’ll respond within one business day.'
+      status.textContent = 'Thanks — your message has been sent to DA. We’ll follow up to discuss what you need.'
       form.reset()
     } catch (error) {
       const timedOut = error?.name === 'TimeoutError'

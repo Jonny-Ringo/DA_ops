@@ -184,13 +184,14 @@ function initScrollAnimations() {
 function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            if (this.classList.contains('skip-link')) return;
             const href = this.getAttribute('href');
             if (href === '#') { e.preventDefault(); return; }
             const target = document.getElementById(href.substring(1));
             if (target) {
                 e.preventDefault();
                 const navH = document.querySelector('.nav')?.offsetHeight || 0;
-                window.scrollTo({ top: target.offsetTop - navH - 20, behavior: 'smooth' });
+                window.scrollTo({ top: target.offsetTop - navH - 20, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
             }
         });
     });

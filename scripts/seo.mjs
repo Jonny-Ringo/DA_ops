@@ -4,23 +4,23 @@ export const site = 'https://daops.net/'
 export const pages = {
   'index.html': {
     path: '', name: 'Home', type: 'WebPage',
-    title: 'DA Operations | Customer Support & Community Operations',
-    description: 'DA Operations runs customer support and community operations with human judgment, practical tools, clear communication, and follow-through for your team.',
+    title: 'DA Operations | Technical Fixes, Automation & Support',
+    description: 'Technical fixes, workflow automation, reporting, and managed customer and community operations. Fixed-scope projects starting at $300. Human operated. AI accelerated.',
   },
   'about.html': {
     path: 'about.html', name: 'About', type: 'AboutPage',
-    title: 'About DA Operations | Support & Community Experience',
-    description: 'Meet DA Operations and founder Jonny Ringo. Discover our experience in technical support and community operations for communities of over 100,000 members.',
+    title: 'About DA Operations | Technical & Operational Experience',
+    description: 'Meet DA Operations and founder Jonny Ringo. Technical investigations, developer support, and ecosystem operations for communities exceeding 80,000 members.',
   },
   'how-we-work.html': {
     path: 'how-we-work.html', name: 'How We Work', type: 'WebPage',
-    title: 'How We Work | Customer Support Operations | DA Operations',
-    description: 'See how DA Operations learns your products, builds useful knowledge, investigates support issues, and combines capable people with AI to resolve problems.',
+    title: 'How We Work | Scoped Projects & Ongoing Operations | DA Operations',
+    description: 'From one technical fix to ongoing operations: discover how DA scopes projects, investigates problems, and combines hands-on expertise with AI-assisted workflows.',
   },
   'contact.html': {
     path: 'contact.html', name: 'Contact', type: 'ContactPage',
-    title: 'Contact DA Operations | Talk About Your Support Needs',
-    description: 'Talk to DA Operations about customer support, community operations, website upkeep, and better workflows. Tell us what your team needs and where to start.',
+    title: 'Contact DA Operations | Get a Project Quote or Ongoing Support',
+    description: 'Tell DA Operations what needs fixing. Ask about technical projects starting at $300, workflow automation, reporting, or ongoing support. No account required.',
   },
   'privacy.html': {
     path: 'privacy.html', name: 'Analytics Privacy', type: 'WebPage',
@@ -35,6 +35,13 @@ export const pages = {
 }
 
 const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+const services = [
+  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Fixed-scope technical projects starting at $300, including website repairs, API integrations, internal tools, and business workflow automation. Scope, deliverables, and price agreed before work begins.' },
+  { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, documentation, and ongoing coverage. Paid Support Diagnostic and 7-Day Support Sprint available with a custom quote.' },
+  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Custom business dashboards, support analytics, customer feedback analysis, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
+  { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer support, developer support services, community and ecosystem operations, partnership coordination, and technical operations consulting. Discovery call followed by a custom monthly proposal.' },
+]
 
 export function renderMetadata(page) {
   const url = new URL(page.path, site).href
@@ -56,6 +63,14 @@ export function renderMetadata(page) {
       ...(page.path ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
     },
   ]
+  if (!page.path) {
+    graph[2].mainEntity = services.map(service => ({ '@id': `${site}#${service.id}-service` }))
+    graph.push(...services.map(service => ({
+      '@type': 'Service', '@id': `${site}#${service.id}-service`,
+      name: service.name, serviceType: service.name, description: service.description,
+      url: `${site}#${service.id}`, provider: { '@id': `${site}#organization` },
+    })))
+  }
   if (page.path) graph.push({
     '@type': 'BreadcrumbList', '@id': `${url}#breadcrumb`, itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: site },

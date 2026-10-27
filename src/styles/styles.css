@@ -145,7 +145,7 @@ ul {
 
     --color-text: #e6edf3;
     --color-text-secondary: #8b949e;
-    --color-text-muted: #484f58;
+    --color-text-muted: #8b949e;
 
     --color-border: #30363d;
     --color-border-light: #21262d;
@@ -173,6 +173,27 @@ ul {
 section {
     padding: 5rem 0;
 }
+
+[id] { scroll-margin-top: 5rem; }
+
+a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 1rem;
+    z-index: 1100;
+    padding: 0.75rem 1rem;
+    background: var(--color-primary);
+    color: var(--color-bg);
+    border-radius: var(--radius-sm);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus { transform: translateY(0); }
 
 /* ==========================================
    NAVIGATION
@@ -358,12 +379,11 @@ section {
 
 .hero {
     position: relative;
-    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 7rem 0 5rem;
+    padding: 9rem 0 4.5rem;
     overflow: hidden;
 }
 
@@ -418,11 +438,17 @@ section {
 }
 
 .hero-tagline {
-    margin-top: 3rem;
+    margin-top: 1.75rem;
     font-size: 0.8rem;
     color: var(--color-text-muted);
     letter-spacing: 0.06em;
     text-transform: uppercase;
+}
+
+.hero-offer {
+    margin: -1rem auto 1.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
 /* ==========================================
@@ -545,11 +571,13 @@ section {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
 }
 
 .service-card {
+    display: flex;
+    flex-direction: column;
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -613,6 +641,52 @@ section {
     font-weight: 500;
     font-style: italic;
 }
+
+.service-examples {
+    padding-left: 1.1rem;
+    list-style: disc;
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-examples li { margin-bottom: 0.5rem; }
+.service-examples li::marker { color: var(--color-primary); }
+
+.service-next {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.service-offer { font-size: 0.9375rem; margin-bottom: 1.25rem; }
+
+.start-grid, .engagement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem;
+    align-items: start;
+}
+
+.start-grid .section-sub + .section-sub,
+.content-section .section-sub + .section-sub { margin-top: 1.25rem; }
+
+.starting-offer {
+    padding: 2rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.starting-offer h3 { font-size: 1.25rem; }
+.starting-offer p { margin: 1rem 0 1.5rem; color: var(--color-text-secondary); }
+.starting-offer .starting-price { color: var(--color-primary); font-weight: 600; }
+.engagement-grid { align-items: stretch; gap: 1.5rem; }
+.text-link { display: inline-block; color: var(--color-primary); text-decoration: underline; text-underline-offset: 4px; }
+.experience .text-link { margin-top: 1.5rem; }
+.project-context { margin-top: 3rem; color: var(--color-text-secondary); font-size: 0.875rem; }
+.experience { padding-bottom: 1.5rem; }
+.final-cta .section-sub { margin: 0 auto 2.5rem; }
 
 /* ==========================================
    HUMAN + AI SECTION
@@ -749,9 +823,10 @@ section {
 
 .process-steps {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
     margin-bottom: 3rem;
+    list-style: none;
 }
 
 .process-step {
@@ -1094,7 +1169,12 @@ section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
+    margin-bottom: 1.25rem;
 }
+
+.form-intro { margin-bottom: 1.25rem; color: var(--color-text-secondary); font-size: 0.875rem; }
+.form-honeypot { display: none; }
+.btn:disabled { opacity: 0.7; cursor: wait; }
 
 .form-group {
     display: flex;
@@ -1106,6 +1186,8 @@ section {
 .form-group:last-of-type {
     margin-bottom: 0;
 }
+
+.form-row > .form-group { margin-bottom: 0; }
 
 .form-group label {
     font-size: 0.875rem;
@@ -1296,12 +1378,8 @@ section {
    ========================================== */
 
 @media (max-width: 1024px) {
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-
     .process-steps {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .footer-content {
@@ -1322,7 +1400,8 @@ section {
     .problem-grid,
     .human-ai-grid,
     .metrics-grid,
-    .contact-grid {
+    .contact-grid,
+    .start-grid {
         grid-template-columns: 1fr;
         gap: 2.5rem;
     }
@@ -1330,6 +1409,8 @@ section {
     .scope-grid {
         grid-template-columns: 1fr;
     }
+
+    .contact-grid .contact-form { grid-row: 1; }
 }
 
 /* ==========================================
@@ -1384,6 +1465,13 @@ section {
         grid-template-columns: 1fr;
     }
 
+    .engagement-grid { grid-template-columns: 1fr; }
+    .hero { padding: 7rem 0 3.5rem; }
+    .service-card { padding: 1.75rem; }
+    .mobile-menu-btn { min-width: 44px; min-height: 44px; align-items: center; }
+    .nav-links a { display: block; }
+    .nav-links { top: 72px; }
+
     /* Process */
     .process-steps {
         grid-template-columns: 1fr;
@@ -1436,6 +1524,7 @@ section {
    ========================================== */
 
 @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;

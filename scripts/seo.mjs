@@ -4,8 +4,8 @@ export const site = 'https://daops.net/'
 export const pages = {
   'index.html': {
     path: '', name: 'Home', type: 'WebPage',
-    title: 'DA Operations | Technical Fixes, Automation & Support',
-    description: 'Technical fixes, workflow automation, reporting, and managed customer and community operations. Fixed-scope projects starting at $300. Human operated. AI accelerated.',
+    title: 'DA Operations | Technical Assistance, Analytics & Automation',
+    description: 'Technical assistance, data collection, custom dashboards, and workflow automation, alongside managed customer support and community operations. Human operated. AI accelerated.',
   },
   'about.html': {
     path: 'about.html', name: 'About', type: 'AboutPage',
@@ -20,7 +20,7 @@ export const pages = {
   'contact.html': {
     path: 'contact.html', name: 'Contact', type: 'ContactPage',
     title: 'Contact DA Operations | Get a Project Quote or Ongoing Support',
-    description: 'Tell DA Operations what needs fixing. Ask about technical projects starting at $300, workflow automation, reporting, or ongoing support. No account required.',
+    description: 'Tell DA Operations what you need. Free initial assessment, small defined tasks from $149, and custom quotes for dashboards, larger implementations, and ongoing support.',
   },
   'privacy.html': {
     path: 'privacy.html', name: 'Analytics Privacy', type: 'WebPage',
@@ -37,9 +37,9 @@ export const pages = {
 const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const services = [
-  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Fixed-scope technical projects starting at $300, including website repairs, API integrations, internal tools, and business workflow automation. Scope, deliverables, and price agreed before work begins.' },
+  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Technical assistance, troubleshooting, API integrations, data collection, and operational automation. Start with one defined task; larger implementations receive a custom quote.' },
   { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, documentation, and ongoing coverage. Paid Support Diagnostic and 7-Day Support Sprint available with a custom quote.' },
-  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Custom business dashboards, support analytics, customer feedback analysis, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
+  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
   { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer support, developer support services, community and ecosystem operations, partnership coordination, and technical operations consulting. Discovery call followed by a custom monthly proposal.' },
 ]
 

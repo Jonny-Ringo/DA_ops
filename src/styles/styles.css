@@ -402,17 +402,6 @@ a:focus-visible, button:focus-visible {
     margin: 0 auto;
 }
 
-.hero-label {
-    display: inline-block;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    margin-bottom: 1.5rem;
-    opacity: 0.85;
-}
-
 .hero-title {
     font-size: clamp(2.2rem, 5vw, 3.5rem);
     font-weight: 700;
@@ -435,20 +424,6 @@ a:focus-visible, button:focus-visible {
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-.hero-tagline {
-    margin-top: 1.75rem;
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.hero-offer {
-    margin: -1rem auto 1.5rem;
-    color: var(--color-primary);
-    font-weight: 600;
 }
 
 /* ==========================================
@@ -687,6 +662,23 @@ a:focus-visible, button:focus-visible {
 .project-context { margin-top: 3rem; color: var(--color-text-secondary); font-size: 0.875rem; }
 .experience { padding-bottom: 1.5rem; }
 .final-cta .section-sub { margin: 0 auto 2.5rem; }
+
+.project-entry { padding: 3rem 0; }
+.project-entry .starting-offer { padding: 1.5rem; }
+.project-entry .starting-offer p { margin: 0.75rem 0 1rem; }
+.project-screenshot { min-width: 0; }
+.project-screenshot img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+.project-screenshot figcaption {
+    margin-top: 0.875rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+}
 
 /* ==========================================
    HUMAN + AI SECTION

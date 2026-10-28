@@ -7,27 +7,32 @@ Local development
   npm ci
   npm run dev
 
-Local service restructuring (unpublished)
+Service restructuring and homepage update
   Review branch: local/services-restructure
-  Original version: main at 03be67a
+  Original version: 03be67a
+  Local rollback reference: backup/pre-homepage-update
 
-  Nothing in this review has been pushed or deployed. Run npm run dev from
-  this directory and open the printed localhost address to review it.
+  Publishing main triggers the existing GitHub Pages deployment to daops.net.
+  Run npm run dev and open the printed localhost address for local review.
 
-  To return to the original source, stop the local preview, then run:
+  To review the original source locally, stop the preview, then run:
+    git switch backup/pre-homepage-update
+    npm run dev
+
+  To return to the current source:
     git switch main
     npm run dev
 
-  To return to the restructuring:
-    git switch local/services-restructure
-    npm run dev
+  Switching branches only changes the local preview. To roll back production,
+  revert the update commits on main and push the revert through the same
+  GitHub Pages workflow; retain the history rather than force-pushing.
 
   If using npm run preview instead of npm run dev, run npm run build after
   switching branches so dist matches the selected source. Keep any further
   edits committed or stashed before switching branches.
 
   Changes and decisions:
-  - index.html: early $300 entry offer, four service categories with examples
+  - index.html: a compact entry offer, four service categories with examples
     and inquiry links, a four-step process, experience, and flexible engagements.
   - how-we-work.html: retained the existing support principles, moved the
     detailed support and AI sections here, and explained project scoping.
@@ -49,6 +54,35 @@ Local service restructuring (unpublished)
   There is no configured lint command. Form success, failure, validation, and
   spam checks use intercepted requests; live mailbox delivery was not tested.
   Local review screenshots are in the ignored audit directory.
+
+Focused homepage enhancements
+  These changes follow the local restructuring checkpoint at 90e64e1.
+  The layout, navigation, four service categories, and project logos remain.
+  The existing entry section now offers a free initial assessment and small,
+  defined tasks starting at $149. Larger implementations and complex dashboards
+  receive custom quotes. Pricing is consistent on the supporting pages and in
+  search metadata; the hero emphasizes technical and operational capability.
+  Homepage headings stay plain and descriptive. Promotional labels and repeated
+  slogans were removed at the owner's request; keep that wording preference.
+
+  The Eye is featured after the existing project logos. Its screenshot is the
+  owner's supplied images/the-eye.png (680 x 367), used without alteration.
+  It shows the application's Arweave and AO network statistics and transaction
+  analytics. This is a screenshot, not a live data feed or generated mockup.
+  The visible caption explains the dependency on data and integrations.
+
+  Technical claims were checked against the local project at:
+    C:/Users/User/Desktop/AO_Projects_Master/The_Eye/dev
+  package.json and index.html show a JavaScript/Vite frontend with Chart.js.
+  api.js queries AO with aoconnect, Goldsky GraphQL, and reporting APIs.
+  The reporting services use Node/Express and SQLite; the deployment script
+  uploads the built application to Arweave. The public page also loads Chart.js.
+  The showcase describes Arweave hosting and AO queries without suggesting all
+  data is stored on-chain. No changes were made to The Eye's project itself.
+
+  Changed: index.html, src/styles/styles.css, images/the-eye.png,
+  contact.html, about.html, how-we-work.html, scripts/seo.mjs, the existing
+  browser checks in inquiries.spec.js and project-strip.spec.js, and this file.
 
 Production hosting
   Install command: npm ci

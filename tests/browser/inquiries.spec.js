@@ -19,7 +19,7 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
       const localLinks = await page.locator('a[href]').evaluateAll(anchors => anchors.map(a => a.href).filter(href => href.startsWith(location.origin)))
       localLinks.forEach(link => links.add(link))
       if (path === '/') {
-        await expect(page.locator('.hero-offer')).toBeInViewport()
+        await expect(page.locator('.hero-title')).toBeInViewport()
         await expect(page.locator('.hero-cta a')).toBeInViewport()
         for (const link of await page.locator('.services .service-next a').all()) {
           await link.click()
@@ -27,6 +27,16 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
           await expect(page.getByLabel('What do you need help with?')).toBeVisible()
           await page.goBack()
         }
+        const screenshot = page.locator('.project-screenshot img')
+        await screenshot.scrollIntoViewIfNeeded()
+        await expect.poll(() => screenshot.evaluate(img => img.complete && img.naturalWidth === 680 && img.naturalHeight === 367)).toBe(true)
+        const projectLink = page.getByRole('link', { name: 'Explore The Eye' })
+        await expect(projectLink).toHaveAttribute('href', 'https://eye-of-ao.arweave.net')
+        await expect(projectLink).toHaveAttribute('target', '_blank')
+        await expect(projectLink).toHaveAttribute('rel', 'noopener noreferrer')
+        await page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true }).click()
+        await expect(page).toHaveURL(/contact\.html$/)
+        await page.goBack()
       }
       if ([1440, 390].includes(width) && ['/', '/contact.html'].includes(path)) {
         await page.evaluate(() => { document.activeElement?.blur(); window.scrollTo({ top: 0, behavior: 'instant' }) })

@@ -14,7 +14,7 @@ export const chatBubbles = [
         exchanges: [
             { speaker: 'customer', text: 'I spoke to a supervisor who assured me it would be back within 24 hours.' },
             { speaker: 'agent',    text: "I'm sorry you feel you need a supervisor. I assure you I've done everything I can on my end." },
-            { speaker: 'customer', text: "What? No — I already spoke with one. My issue still hasn't been fixed, so I'm back here again." },
+            { speaker: 'customer', text: "What? No - I already spoke with one. My issue still hasn't been fixed, so I'm back here again." },
         ]
     },
 

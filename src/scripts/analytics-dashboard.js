@@ -36,7 +36,7 @@ function render() {
   $('metrics').replaceChildren()
   for (const [label, value] of [['Page views', metrics.views], ['Sessions', metrics.sessions], ['CTA clicks', metrics.ctas], ['Inquiries sent', metrics.inquiries], ['Engaged sessions', metrics.engaged], ['Inquiry rate', `${metrics.conversion}%`]]) {
     const card = node('div', null, 'analytics-metric')
-    card.append(node('span', label), node('strong', loaded ? (typeof value === 'number' ? number(value) : value) : '—'))
+    card.append(node('span', label), node('strong', loaded ? (typeof value === 'number' ? number(value) : value) : '-'))
     $('metrics').append(card)
   }
   const views = events.filter(e => e.type === 'page_view')
@@ -63,12 +63,12 @@ function render() {
   }
   table('campaigns', ['Group', 'Shared on / type', 'Post label', 'Sessions', 'Views', 'Inquiries', 'Rate'], [...campaigns.values()].sort((a, b) => summarize(b).sessions - summarize(a).sessions).map(group => {
     const first = group[0], summary = summarize(group)
-    return [first.campaign, `${first.source} / ${first.medium || 'not set'}`, first.content || '—', summary.sessions, summary.views, summary.inquiries, `${summary.conversion}%`]
+    return [first.campaign, `${first.source} / ${first.medium || 'not set'}`, first.content || '-', summary.sessions, summary.views, summary.inquiries, `${summary.conversion}%`]
   }))
   table('activity', ['Time (UTC)', 'Activity', 'Page', 'Source', 'Campaign', 'Detail', 'Record'], [...events].sort((a, b) => b.time - a.time).slice(0, 100).map(e => {
     const link = node('a', e.tx.slice(0, 8) + '…')
     link.href = `https://arweave.net/${encodeURIComponent(e.tx)}`; link.target = '_blank'; link.rel = 'noopener noreferrer'
-    return [new Date(e.time).toISOString().replace('T', ' ').slice(0, 19), e.type.replaceAll('_', ' '), e.page, e.source, e.campaign || '—', e.detail || '—', link]
+    return [new Date(e.time).toISOString().replace('T', ' ').slice(0, 19), e.type.replaceAll('_', ' '), e.page, e.source, e.campaign || '-', e.detail || '-', link]
   }))
   $('export').disabled = !events.length
   $('more').hidden = !continuation

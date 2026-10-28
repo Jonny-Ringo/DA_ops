@@ -157,7 +157,7 @@ test('dashboard distinguishes service failure from zero traffic', async ({ page 
   await page.route('**/graphql', route => route.fulfill({ status: 503 }))
   await page.goto('/analytics.html')
   await expect(page.locator('#status')).toContainText('Couldn’t load analytics')
-  await expect(page.locator('#metrics strong').first()).toHaveText('—')
+  await expect(page.locator('#metrics strong').first()).toHaveText('-')
   await expect(page.locator('#export')).toBeDisabled()
 })
 

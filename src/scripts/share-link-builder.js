@@ -48,7 +48,7 @@ export function initShareLinkBuilder() {
     try {
       await navigator.clipboard.writeText(link)
       if ($('campaign-url').value !== link) return
-      $('copy').textContent = 'Copied — paste it into your post'
+      $('copy').textContent = 'Copied - paste it into your post'
       clearTimeout(copyTimer)
       copyTimer = setTimeout(() => { $('copy').textContent = 'Copy link' }, 2500)
     } catch {

@@ -55,7 +55,7 @@ export function initContactForm() {
         return
       }
       trackEvent('form_success', selectedService)
-      status.textContent = 'Thanks — your message has been sent to DA. We usually reply by email within one business day.'
+      status.textContent = 'Thanks - your message has been sent to DA. We usually reply by email within one business day.'
       form.reset()
     } catch (error) {
       const timedOut = error?.name === 'TimeoutError'

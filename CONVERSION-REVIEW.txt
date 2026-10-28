@@ -3,7 +3,27 @@ Review date: October 27, 2026 (America/Los_Angeles)
 Baseline: 3ed15dc
 Local rollback reference: backup/pre-conversion-update
 
-Implemented
+Owner copy corrections following release 813a25e
+  - Restored the owner's preferred "Start with one problem" introduction and
+    removed the examples list. The hero and service cards emphasize community
+    and technical support, dashboards, social profiles, and community trends.
+  - Technical Fixes & Automation is last in the service cards, Contact choices,
+    and structured service data. It is quoted after learning the project;
+    the general entry CTA no longer preselects this service.
+  - Kept $149 explicitly limited to small, defined tasks and retained custom
+    quotes for complex dashboards and larger implementations.
+  - Updated The Eye's overview as requested. Its concise technical description
+    now reflects the owner's clarification: frontend hosted on Arweave; backend
+    queries AO and Arweave transaction data, categorizes it, and indexes it.
+  - Changed the homepage process heading to "2. Agree on scope".
+  Changed files: index.html, contact.html, scripts/seo.mjs,
+    tests/browser/inquiries.spec.js, CONVERSION-REVIEW.txt.
+  Validation: Vite build, all 9 unit tests, 8 SEO checks, and 30 browser tests
+    passed. Reviewed the updated desktop and mobile homepage captures; existing
+    browser coverage checks layouts and service links from 320 to 1440 pixels.
+    No additional real inquiry was sent.
+
+Initial conversion update (release 813a25e)
   - Preserved the dark/cyan design, four service categories, existing project
     logos, homepage process, and current URL structure.
   - The $149 entry now leads with paid work and explains the free assessment,
@@ -83,7 +103,7 @@ The Eye: external application dependency, not repaired by this website update
   - Test success, valid zero, invalid payloads, rejected requests, stale cache,
     and partial source failures before deploying that application separately.
 
-Validation
+Initial conversion validation (release 813a25e)
   Passed: Vite build, 9 unit tests, 8 SEO checks, and all 30 browser tests.
   Browser coverage includes service routing, editable/neutral selection, submitted
   service values, validation, confirmed success, failure/retry, duplicate-click
@@ -110,7 +130,7 @@ Controlled delivery test
   the owner's confirmation; provider acceptance alone does not prove receipt.
   Automated regression tests intercept all submissions and send no email.
 
-Performance benchmark
+Initial conversion performance benchmark (release 813a25e)
   Reproducible script: node scripts/measure-site.mjs before|after
   Raw results and captures: audit/conversion-before and audit/conversion-after.
   Chromium 153.0.8010.12, built localhost preview, three cold browser contexts per

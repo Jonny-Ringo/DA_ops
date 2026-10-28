@@ -37,8 +37,8 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(projectLink).toHaveAttribute('target', '_blank')
         await expect(projectLink).toHaveAttribute('rel', 'noopener noreferrer')
         await page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true }).click()
-        await expect(page).toHaveURL(/contact\.html\?service=technical-fixes$/)
-        await expect(page.getByLabel('Service (optional)')).toHaveValue('technical-fixes')
+        await expect(page).toHaveURL(/contact\.html$/)
+        await expect(page.getByLabel('Service (optional)')).toHaveValue('')
         await page.goBack()
       }
       if ([1440, 390].includes(width) && ['/', '/contact.html'].includes(path)) {

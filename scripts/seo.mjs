@@ -37,10 +37,10 @@ export const pages = {
 const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const services = [
-  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Technical assistance, troubleshooting, API integrations, data collection, and operational automation. Start with one defined task; larger implementations receive a custom quote.' },
   { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, and documentation. Start with a defined review or improvement project with agreed deliverables and a custom quote.' },
-  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
-  { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer support, developer support services, community and ecosystem operations, partnership coordination, and technical operations consulting. Discovery call followed by a custom monthly proposal.' },
+  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community trends and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
+  { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer and technical support, social profile management, developer onboarding, community and ecosystem operations, and team coordination. Discovery call followed by a custom monthly proposal.' },
+  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Application troubleshooting, API integrations, internal tools, and operational automation. Scoped and quoted after an initial review of your project and requirements.' },
 ]
 
 export function renderMetadata(page) {

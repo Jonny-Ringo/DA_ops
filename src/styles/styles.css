@@ -467,22 +467,13 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     background: var(--color-bg-surface);
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
-    position: relative;
-    overflow: hidden;
 }
 
 .problem-grid {
-    position: relative;
-    z-index: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: start;
-}
-
-.problem-copy {
-    background: var(--color-bg-surface);
-    box-shadow: 0 0 36px 24px var(--color-bg-surface);
 }
 
 .problem-copy p {
@@ -1575,89 +1566,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 
 /* ==========================================
-   PAIN SECTION - Chat cloud background
+   PROBLEM SECTION CALLOUT
    ========================================== */
-
-
-.chat-cloud {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.chat-cloud::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, var(--color-bg-surface), transparent 3rem, transparent calc(100% - 4rem), var(--color-bg-surface));
-    z-index: 1;
-}
-
-.chat-bubble-bg {
-    position: absolute;
-    opacity: 0.24;
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    z-index: 0;
-    line-height: 1.55;
-}
-
-.bubble-sender {
-    display: block;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    opacity: 0.7;
-    margin-bottom: 0.3rem;
-}
-
-.bubble-sender.customer {
-    color: var(--color-text-secondary);
-}
-
-.bubble-sender.agent,
-.bubble-sender.follow-up {
-    margin-top: 0.7rem;
-    padding-top: 0.7rem;
-    border-top: 1px solid var(--color-border);
-}
-
-.bubble-sender.agent {
-    color: var(--color-primary);
-}
-
-.bubble-sender.follow-up {
-    color: var(--color-text-secondary);
-}
-
-.chat-bubble-bg p {
-    margin: 0;
-    font-size: 0.775rem;
-    color: var(--color-text-secondary);
-    line-height: 1.55;
-}
-
-.pain-content {
-    position: relative;
-    z-index: 2;
-    max-width: 640px;
-}
-
-.pain-content p {
-    font-size: 1.0625rem;
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-    margin-bottom: 1.25rem;
-}
-
-.pain-content p:last-of-type {
-    margin-bottom: 0;
-}
 
 .pain-differentiator {
     font-size: 1rem;
@@ -1667,12 +1577,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     padding-left: 1rem;
     line-height: 1.65;
     margin-top: 2rem;
-}
-
-@media (max-width: 768px) {
-    .chat-bubble-bg {
-        opacity: 0.12;
-    }
 }
 
 /* ==========================================

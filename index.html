@@ -27,12 +27,14 @@
                 </a>
                 <ul class="nav-links" id="nav-links">
                     <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/#work">Work</a></li>
                     <li><a href="/how-we-work.html">How We Work</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/contact.html">Contact</a></li>
                 </ul>
                 <div class="nav-actions">
-                    <a href="/contact.html" class="nav-cta">Get a Project Quote</a>
+                    <a href="/contact.html" class="nav-cta" aria-label="Get a Project Quote"><span class="quote-long">Get a Project Quote</span><span class="quote-short" aria-hidden="true">Quote</span></a>
                     <button class="mobile-menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
                         <span></span>
                         <span></span>
@@ -50,7 +52,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title" id="hero-headline">Technical assistance,<br>analytics, and operations.</h1>
-                <p class="hero-body">We provide technical assistance, collect and analyze data, build custom dashboards, and automate workflows. From one specific project to ongoing customer support and community operations, DA takes ownership of the work.</p>
+                <p class="hero-body">We help teams resolve technical problems, turn data into useful reports, and keep customer and community operations running.</p>
                 <div class="hero-cta">
                     <a href="/contact.html" class="btn btn-primary">Tell Us What You Need</a>
                 </div>
@@ -63,15 +65,52 @@
         <div class="container start-grid">
             <div>
                 <h2 class="section-heading" id="start-heading">Start with one problem.</h2>
-                <p class="section-sub">You don't need a large budget or a long-term contract to work with DA Operations.</p>
-                <p class="section-sub">Whether you need technical assistance, data collection, a reporting solution, or help improving an operational workflow, we can help.</p>
+                <p class="section-sub">A small, defined task can be a useful place to start. Examples we can scope with you:</p>
+                <ul class="task-examples">
+                    <li><strong>Repair a reporting script.</strong> One existing script and one data source; a corrected script checked against an agreed sample.</li>
+                    <li><strong>Automate a repetitive data task.</strong> One input format and one repeatable output; a reusable script with instructions.</li>
+                    <li><strong>Investigate an application issue.</strong> One reproducible problem; written findings and recommended next steps. A fix is separate unless agreed.</li>
+                </ul>
+                <p class="scope-note">Examples for discussion, not fixed-price packages. Suitability and price depend on the agreed scope.</p>
             </div>
             <div class="starting-offer">
-                <h3>Free initial assessment.</h3>
-                <p class="starting-price">Fixed-scope tasks starting at $149.</p>
-                <p>For small, defined tasks. Complex dashboards and larger implementations receive custom quotes. Scope and price are agreed before work begins.</p>
+                <h3>Small projects starting at $149.</h3>
+                <p>The free initial assessment establishes fit, scope, deliverables, and price. Delivery begins after you agree to the quote.</p>
+                <p>If deeper investigation is needed, we can quote a paid diagnostic with findings as the deliverable. Further implementation is agreed separately.</p>
+                <p>Complex dashboards and larger implementations receive custom quotes. If the work grows, we agree on a revised scope and price before continuing.</p>
                 <p>No long-term commitment required.</p>
-                <a href="/contact.html" class="btn btn-primary">Tell Us What You Need</a>
+                <a href="/contact.html?service=technical-fixes" class="btn btn-primary">Tell Us What You Need</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured project -->
+    <section class="featured-project" id="work" aria-labelledby="eye-heading">
+        <div class="container">
+            <div class="services-header">
+                <h2 class="section-heading" id="eye-heading">The Eye: Arweave &amp; AO analytics</h2>
+            </div>
+            <div class="human-ai-grid">
+                <div class="human-ai-copy">
+                    <p>Activity across two technical ecosystems was spread across different sources. We built The Eye to collect that data and make it easier to explore in one dashboard.</p>
+                    <p>Users can compare network and developer activity, inspect transaction trends, and explore marketplace and gaming statistics without querying each source themselves.</p>
+                    <p class="project-attribution">The Eye was built under our former name, DAO Academy. We now operate as DA Operations.</p>
+                    <details class="project-details">
+                        <summary>Technical details</summary>
+                        <p>The application is hosted on Arweave, queries AO processes, and combines those results with indexing and reporting services. These are technologies used by the ecosystems it monitors.</p>
+                    </details>
+                    <div class="project-actions">
+                        <a href="https://eye-of-ao.arweave.net" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">Explore The Eye <span aria-hidden="true">&rarr;</span></a>
+                        <a href="/contact.html?service=reporting" class="text-link">Discuss a Reporting Project <span aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+                <figure class="project-screenshot">
+                    <a class="screenshot-link" href="/projects/the-eye.png" target="_blank" rel="noopener noreferrer" aria-label="View The Eye screenshot at full size (opens in a new tab)">
+                        <img src="/projects/the-eye.png" alt="The Eye application showing Arweave and AO network statistics, active developer addresses, and a transaction analytics chart." width="680" height="367" loading="lazy" decoding="async">
+                        <span>View full-size screenshot <span aria-hidden="true">&nearr;</span></span>
+                    </a>
+                    <figcaption>A screenshot of the application, not a live feed. Live metrics depend on data availability and functioning integrations; some sources may be unavailable.</figcaption>
+                </figure>
             </div>
         </div>
     </section>
@@ -86,62 +125,54 @@
             <div class="services-grid">
                 <article class="service-card" id="technical-fixes">
                     <h3 class="service-card-title">Technical Fixes &amp; Automation</h3>
-                    <p class="service-card-desc">Hands-on technical assistance, troubleshooting, and automation. We investigate issues, connect systems, and improve operational workflows. Bring us one specific problem; no ongoing contract required.</p>
+                    <p class="service-card-desc">Resolve one technical problem, connect an API, or automate a repetitive workflow.</p>
                     <ul class="service-examples">
-                        <li>Technical assistance and application troubleshooting</li>
-                        <li>API integrations and internal tools</li>
-                        <li>Workflow and business process automation</li>
-                        <li>Data collection, processing scripts, and technical maintenance</li>
-                        <li>AI-assisted workflows</li>
+                        <li>Application troubleshooting and technical assistance</li>
+                        <li>API integrations, internal tools, and data processing</li>
+                        <li>Operational automation and AI-assisted workflows</li>
                     </ul>
                     <div class="service-next">
-                        <p class="service-offer">Start with one defined technical task. Larger implementations receive a custom quote.</p>
-                        <a href="/contact.html" class="btn btn-outline-primary">Get a Project Quote</a>
+                        <p class="service-offer">A scoped project. Small, defined tasks start at $149; your quote depends on the work.</p>
+                        <a href="/contact.html?service=technical-fixes" class="btn btn-outline-primary">Get a Project Quote</a>
                     </div>
                 </article>
                 <article class="service-card" id="customer-support">
                     <h3 class="service-card-title">Customer Support &amp; Operations</h3>
-                    <p class="service-card-desc">Customer support that solves the problem. We investigate issues, resolve them, and improve the workflows behind your customer experience.</p>
+                    <p class="service-card-desc">Improve an existing support process, from a backlog or escalation problem to the documentation your team uses.</p>
                     <ul class="service-examples">
-                        <li>Support backlog cleanup and customer onboarding</li>
-                        <li>Technical troubleshooting and escalation management</li>
+                        <li>Backlog cleanup, customer onboarding, and escalations</li>
                         <li>Help centers, documentation, and knowledge bases</li>
-                        <li>Support workflow design and customer experience reviews</li>
-                        <li>Ongoing coverage across email, live chat, and help desks</li>
+                        <li>Support workflow reviews and improvements</li>
                     </ul>
                     <div class="service-next">
-                        <p class="service-offer">Start with a Paid Support Diagnostic, a 7-Day Support Sprint, or customized ongoing support. Custom quote based on scope.</p>
-                        <a href="/contact.html" class="btn btn-outline-primary">Improve Your Support</a>
+                        <p class="service-offer">A defined support review or improvement project. We agree on the findings or changes to deliver before starting.</p>
+                        <a href="/contact.html?service=customer-support" class="btn btn-outline-primary">Improve Your Support</a>
                     </div>
                 </article>
                 <article class="service-card" id="reporting">
                     <h3 class="service-card-title">Reporting &amp; Intelligence</h3>
-                    <p class="service-card-desc">Data collection, analytics, and custom dashboards built around the decisions you need to make. We turn community activity, ecosystem statistics, and operational signals into useful reporting.</p>
+                    <p class="service-card-desc">Bring data together in a report, dashboard, or monitoring tool that answers a specific operational question.</p>
                     <ul class="service-examples">
-                        <li>Custom dashboards, data collection, and automated reports</li>
-                        <li>Customer feedback analysis and support analytics</li>
-                        <li>Technical performance and infrastructure health monitoring</li>
-                        <li>Operational monitoring and business metrics</li>
-                        <li>Community, developer, and ecosystem statistics</li>
+                        <li>Data collection, custom dashboards, and automated reports</li>
+                        <li>Community, developer, ecosystem, and support analytics</li>
+                        <li>Operational and infrastructure monitoring</li>
                     </ul>
                     <div class="service-next">
-                        <p class="service-offer">Start with one report, dashboard, or monitoring solution, with clearly defined deliverables and pricing.</p>
-                        <a href="/contact.html" class="btn btn-outline-primary">Discuss a Reporting Project</a>
+                        <p class="service-offer">A scoped reporting project, quoted around the data sources, questions, and deliverables.</p>
+                        <a href="/contact.html?service=reporting" class="btn btn-outline-primary">Discuss a Reporting Project</a>
                     </div>
                 </article>
                 <article class="service-card" id="managed-operations">
                     <h3 class="service-card-title">Managed Technical &amp; Community Operations</h3>
-                    <p class="service-card-desc">An experienced partner embedded in your workflows. We work directly with founders, engineering teams, and leadership to keep customer and ecosystem operations moving.</p>
+                    <p class="service-card-desc">Ongoing responsibility for customer support and technical community operations, working with your founders, engineers, and leadership.</p>
                     <ul class="service-examples">
-                        <li>Managed customer support and technical community management</li>
-                        <li>Developer onboarding, developer relations, and ecosystem operations</li>
-                        <li>Partnership and cross-functional coordination</li>
-                        <li>Technical escalations and ongoing troubleshooting</li>
-                        <li>Operational reporting and strategic operational assistance</li>
+                        <li>Customer support across email, live chat, and help desks</li>
+                        <li>Community management, developer onboarding, and relations</li>
+                        <li>Escalations, operational reporting, and team coordination</li>
                     </ul>
                     <div class="service-next">
                         <p class="service-offer">Start with a discovery call, followed by a custom monthly proposal based on your requirements.</p>
-                        <a href="/contact.html" class="btn btn-outline-primary">Discuss Ongoing Support</a>
+                        <a href="/contact.html?service=managed-operations" class="btn btn-outline-primary">Discuss Ongoing Support</a>
                     </div>
                 </article>
             </div>
@@ -172,7 +203,7 @@
                     <p class="step-desc">We review the agreed deliverables with you, explain what changed, and document the next steps or any issues that need further attention.</p>
                 </li>
             </ol>
-            <a href="/how-we-work.html" class="text-link">Read the principles behind our work <span aria-hidden="true">&rarr;</span></a>
+            <a href="/how-we-work.html" class="text-link">See the project process <span aria-hidden="true">&rarr;</span></a>
         </div>
     </section>
 
@@ -200,11 +231,11 @@
                 </ul>
             </div>
         </div>
-        <p class="project-context container">Past and present project experience</p>
+        <p class="project-context container">Past and present project experience. <a href="/about.html#project-experience" class="text-link">Roles and background</a></p>
     </section>
 
     <!-- Past and present project experience -->
-    <section class="project-strip" aria-label="Projects we've worked with">
+    <section class="project-strip" aria-label="Project experience">
         <div class="project-strip-viewport" tabindex="0" role="group" aria-label="Project logos">
             <div class="project-strip-track">
                 <ul class="project-logo-group" role="list">
@@ -215,51 +246,6 @@
                     <li class="project-logo project-logo-forward"><a href="https://x.com/fwdresearch" target="_blank" rel="noopener noreferrer" aria-label="Forward on X (opens in a new tab)"><img src="/logos/forward.png" alt="" width="352" height="352" decoding="async"><span>Forward</span></a></li>
                     <li class="project-logo project-logo-sarcophagus"><a href="https://x.com/sarcophagusio" target="_blank" rel="noopener noreferrer" aria-label="Sarcophagus on X (opens in a new tab)"><img src="/logos/sarcophagus.png" alt="" width="557" height="562" decoding="async"><span>Sarcophagus</span></a></li>
                 </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured project -->
-    <section class="featured-project" aria-labelledby="eye-heading">
-        <div class="container">
-            <div class="services-header">
-                <h2 class="section-heading" id="eye-heading">The Eye: Arweave &amp; AO analytics</h2>
-            </div>
-            <div class="human-ai-grid">
-                <div class="human-ai-copy">
-                    <p>We built The Eye to collect and visualize activity across the Arweave and AO ecosystems. It brings network activity, developer metrics, transaction analytics, marketplace statistics, and gaming data into one accessible interface.</p>
-                    <p>Hosted on Arweave, the application queries AO processes and combines ecosystem data with indexing and reporting services. It uses the technology of the ecosystem it monitors.</p>
-                    <p>For custom requests, we investigate the underlying technology, work directly with the available data, and build a solution around the actual problem.</p>
-                    <a href="https://eye-of-ao.arweave.net" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">Explore The Eye <span aria-hidden="true">&rarr;</span></a>
-                </div>
-                <figure class="project-screenshot">
-                    <img src="/images/the-eye.png" alt="The Eye application showing Arweave and AO network statistics, active developer addresses, and a transaction analytics chart." width="680" height="367" loading="lazy" decoding="async">
-                    <figcaption>Public statistics depend on data availability and functioning integrations.</figcaption>
-                </figure>
-            </div>
-        </div>
-    </section>
-
-    <!-- Engagements -->
-    <section class="engagements" aria-labelledby="engagements-heading">
-        <div class="container">
-            <div class="services-header">
-                <h2 class="section-heading" id="engagements-heading">Project and ongoing support</h2>
-                <p class="section-sub">Choose the arrangement that fits the work you need done.</p>
-            </div>
-            <div class="engagement-grid">
-                <article class="service-card">
-                    <h3 class="service-card-title">Standalone projects</h3>
-                    <p class="service-card-desc">One problem solved, one workflow improved, or one deliverable completed. Small projects are a core part of what we do.</p>
-                    <p class="service-card-desc">Fixed-scope tasks with agreed deliverables and pricing. Complex dashboards and larger implementations receive custom quotes. No long-term commitment required.</p>
-                    <div class="service-next"><a href="/contact.html" class="btn btn-outline-primary">Get a Project Quote</a></div>
-                </article>
-                <article class="service-card">
-                    <h3 class="service-card-title">Ongoing partnerships</h3>
-                    <p class="service-card-desc">Continuing customer support, technical operations, developer relations, community management, or strategic operational assistance.</p>
-                    <p class="service-card-desc">Flexible ongoing engagements shaped around your workflows and priorities. A discovery call helps us prepare a custom monthly proposal.</p>
-                    <div class="service-next"><a href="/contact.html" class="btn btn-outline-primary">Discuss Ongoing Support</a></div>
-                </article>
             </div>
         </div>
     </section>
@@ -289,6 +275,8 @@
                     <div class="footer-nav-group">
                         <h4>Navigation</h4>
                         <a href="/">Home</a>
+                        <a href="/#services">Services</a>
+                        <a href="/#work">Work</a>
                         <a href="/how-we-work.html">How We Work</a>
                         <a href="/about.html">About</a>
                         <a href="/contact.html">Contact</a>

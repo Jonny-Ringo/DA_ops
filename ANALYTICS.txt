@@ -36,7 +36,11 @@ What is measured
 
 The contact form still sends to its existing Formspree endpoint. A success event
 is recorded only for a successful response. Failed submissions preserve inputs.
-Form field values and error messages are never included in analytics.
+Private field values and error messages are never included in analytics.
+The four published service identifiers are allowlisted in service-context.js.
+Service CTAs and form_start/form_submit/form_success reuse their existing event
+types with a detail such as service:reporting. Unknown values produce no service
+detail. Names, email addresses, company details, and messages are never recorded.
 New contact failures distinguish provider_http_<status> (Formspree returned a
 non-success status), delivery_timeout (the browser deadline expired), and
 connection_unconfirmed (the browser could not obtain a response, including
@@ -50,6 +54,13 @@ submissions, and inquiry rate is the percentage of sessions with a successful
 submission. Engaged sessions reached 15 visible seconds on at least one page.
 The contact funnel counts sessions independently at each step; a direct contact
 visitor can submit without having clicked a CTA on another page.
+
+To assess qualified inquiries and paid work, keep a private inquiry register
+outside this public analytics system. Record the selected service, whether the
+request is a fit, whether a quote was sent, and whether a project was agreed.
+Compare aggregate outcomes by service with the existing contact funnel and CSV.
+Do not add names, email addresses, message text, or deal details to public events.
+Form-service acceptance is not proof of inbox receipt or a qualified lead.
 
 Dates use UTC. The available periods are today and the last 7, 30, or 90 days.
 CSV includes all loaded events, not only the latest 100 shown in the table.
@@ -74,7 +85,7 @@ public tags, so these figures are not authoritative or bot-proof.
 Events and the dashboard are public. Never use personal information in campaign
 labels. The builder converts phrases into labels containing letters, numbers,
 underscores and hyphens (up to 64 characters). Incoming analytics URLs still
-require that format. Other query parameters, arbitrary paths, full referrer URLs, form data,
+require that format. Other query parameters, arbitrary paths, full referrer URLs, private form data,
 IP addresses and full user-agent strings are not written by the tracker. Hosting
 and upload services still see ordinary network connection information.
 

@@ -40,7 +40,8 @@ Service restructuring and homepage update
     the community-size statement with the supplied brief (exceeding 80,000).
   - contact.html and src/scripts/contact-form.js: four visible fields, optional
     company/project, required problem description, the existing Formspree
-    endpoint and email-copy control, and a honeypot. No new response-time promise.
+    endpoint and email-copy control, and a honeypot. The conversion update adds
+    the owner-confirmed usual reply expectation of one business day by email.
   - src/styles/styles.css and src/scripts/main.js: kept the dark/teal brand,
     added responsive grids, improved muted-text contrast and focus visibility,
     and added skip-to-content navigation. The homepage needs no reveal animation.
@@ -50,9 +51,10 @@ Service restructuring and homepage update
     CTA, link, and responsive-layout coverage at 320, 390, 768, and 1440 pixels.
 
   Verification: npm test, npm run build, npm run test:seo, and npm run test:browser.
-  Passed: 9 unit tests, 8 SEO checks, the Vite build, and 24 browser tests.
+  Checks cover unit behavior, SEO metadata, the Vite build, and browser flows.
   There is no configured lint command. Form success, failure, validation, and
-  spam checks use intercepted requests; live mailbox delivery was not tested.
+  spam checks use intercepted requests. See CONVERSION-REVIEW.txt for the single
+  controlled live delivery test and its verification status.
   Local review screenshots are in the ignored audit directory.
 
 Focused homepage enhancements
@@ -65,8 +67,9 @@ Focused homepage enhancements
   Homepage headings stay plain and descriptive. Promotional labels and repeated
   slogans were removed at the owner's request; keep that wording preference.
 
-  The Eye is featured after the existing project logos. Its screenshot is the
-  owner's supplied images/the-eye.png (680 x 367), used without alteration.
+  The Eye is featured below the entry offer. Its screenshot is the owner's
+  supplied image (680 x 367), used without alteration. It is now stored at
+  public/projects/the-eye.png so the full-size link also works without JavaScript.
   It shows the application's Arweave and AO network statistics and transaction
   analytics. This is a screenshot, not a live data feed or generated mockup.
   The visible caption explains the dependency on data and integrations.
@@ -80,9 +83,16 @@ Focused homepage enhancements
   The showcase describes Arweave hosting and AO queries without suggesting all
   data is stored on-chain. No changes were made to The Eye's project itself.
 
-  Changed: index.html, src/styles/styles.css, images/the-eye.png,
+  Changed: index.html, src/styles/styles.css, public/projects/the-eye.png,
   contact.html, about.html, how-we-work.html, scripts/seo.mjs, the existing
   browser checks in inquiries.spec.js and project-strip.spec.js, and this file.
+
+Conversion improvements
+  See CONVERSION-REVIEW.txt for the implemented changes, verified business
+  details, The Eye dependency findings, measurements, and remaining checks.
+  Before/after captures and raw measurements are kept in the ignored audit folder.
+  To reproduce the local benchmark, build and run the preview on port 4173, then:
+    node scripts/measure-site.mjs after
 
 Production hosting
   Install command: npm ci

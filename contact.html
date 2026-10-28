@@ -26,12 +26,14 @@
                 </a>
                 <ul class="nav-links" id="nav-links">
                     <li><a href="/">Home</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/#work">Work</a></li>
                     <li><a href="/how-we-work.html">How We Work</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/contact.html" class="active">Contact</a></li>
                 </ul>
                 <div class="nav-actions">
-                    <a href="/contact.html" class="nav-cta">Get a Project Quote</a>
+                    <a href="/contact.html" class="nav-cta" aria-label="Get a Project Quote"><span class="quote-long">Get a Project Quote</span><span class="quote-short" aria-hidden="true">Quote</span></a>
                     <button class="mobile-menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
                         <span></span><span></span><span></span>
                     </button>
@@ -53,19 +55,16 @@
 
     <section class="contact-intro" id="talk">
         <div class="container">
-            <div class="contact-grid fade-up">
+            <div class="contact-grid">
 
                 <div class="contact-sidebar">
-                    <h3>Start with what you need.</h3>
-                    <p>Free initial assessment. Small, defined tasks start at $149. Complex dashboards and larger implementations receive custom quotes. We agree on scope, deliverables, and price before work begins. No long-term commitment required.</p>
-                    <p>Need an ongoing partner? We also provide managed customer support, technical and community operations, and reporting. Tell us what you need; no formal brief is required.</p>
+                    <h2>Scoping the work</h2>
+                    <p>The free initial assessment establishes fit, scope, deliverables, and price. Delivery begins after you agree to the quote.</p>
+                    <p>When deeper investigation is needed, we can quote a paid diagnostic with written findings as the deliverable. Further implementation is agreed separately.</p>
+                    <p>Complex dashboards and larger implementations receive custom quotes. If the work grows, we agree on a revised scope and price before continuing.</p>
 
-                    <h3 style="margin-top: 2rem;">What happens next?</h3>
-                    <p>We'll review your message and reach out to understand your priorities. Together, we'll agree on a useful starting point and a project quote, or arrange a discovery call for a custom monthly proposal.</p>
-
-                    <div class="notice" style="margin-top: 2rem;">
-                        <strong>Protecting personal information:</strong> A general description is enough for this first conversation. Please leave other people's names, email addresses, account numbers, and identifying details out of your message. If we need conversation samples later, we'll arrange a secure sharing process with you first.
-                    </div>
+                    <h2 style="margin-top: 2rem;">Ongoing operations</h2>
+                    <p>For continuing customer support, community management, and technical operations, a discovery conversation helps us prepare a custom monthly proposal.</p>
                 </div>
 
                 <div class="contact-form">
@@ -73,6 +72,7 @@
                         action="https://formspree.io/f/xbgldgal"
                         method="POST"
                     >
+                        <p class="form-offer"><strong>Small projects starting at $149.</strong> A free initial assessment helps define the work and quote. No long-term commitment required.</p>
                         <p class="form-intro">Fields marked * are required.</p>
                         <div class="form-row">
                             <div class="form-group">
@@ -89,8 +89,23 @@
                             <input type="text" id="company" name="company" autocomplete="organization" placeholder="Business, community, or project name">
                         </div>
                         <div class="form-group">
+                            <label for="service">Service (optional)</label>
+                            <select id="service" name="service">
+                                <option value="">Not sure / no preference</option>
+                                <option value="technical-fixes">Technical fixes &amp; automation</option>
+                                <option value="customer-support">Customer support improvements</option>
+                                <option value="reporting">Data, dashboards &amp; reporting</option>
+                                <option value="managed-operations">Ongoing technical &amp; community operations</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="message">What do you need help with? <span aria-hidden="true">*</span></label>
-                            <textarea id="message" name="message" required rows="5" placeholder="Describe the problem or the work you need done."></textarea>
+                            <textarea id="message" name="message" required rows="5" aria-describedby="message-guidance" placeholder="Describe the problem or the work you need done."></textarea>
+                            <p id="message-guidance" class="field-help">A general description is enough. Leave out other people's identifying details.</p>
+                            <details class="inquiry-details">
+                                <summary>What to leave out</summary>
+                                <p>Please omit other people's names, email addresses, account numbers, passwords, and private conversations. If examples are needed, we'll discuss how to share them.</p>
+                            </details>
                         </div>
                         <div class="form-honeypot" aria-hidden="true">
                             <label for="contact-check">Leave this field empty</label>
@@ -98,11 +113,12 @@
                         </div>
 
                         <div class="form-submit">
+                            <p class="reply-expectation">We usually reply by email within one business day to clarify the work and next steps.</p>
                             <button type="submit" class="btn btn-primary">Send to DA</button>
                         </div>
-                        <p class="form-disclaimer">Your inquiry goes to DA through our existing email form. No account or commitment required.</p>
+                        <p class="form-disclaimer">Your message goes directly to DA Operations. No account or commitment required. <a href="/privacy.html#inquiries">How inquiry information is handled</a>.</p>
                     </form>
-                    <p class="contact-email">Prefer email? Click to copy our address:<br><span class="contact-email-copy"><button type="button" class="copy-email" aria-label="Copy email address d.academy.operations@gmail.com">d.academy.operations@gmail.com</button><span class="copy-email-tooltip" role="status" aria-live="polite"></span></span></p>
+                    <p class="contact-email">Prefer email?<br><a href="mailto:d.academy.operations@gmail.com">d.academy.operations@gmail.com</a><span class="contact-email-copy"><button type="button" class="copy-email" data-email="d.academy.operations@gmail.com" aria-label="Copy email address d.academy.operations@gmail.com">Copy address</button><span class="copy-email-tooltip" role="status" aria-live="polite"></span></span></p>
                 </div>
 
             </div>
@@ -123,6 +139,8 @@
                     <div class="footer-nav-group">
                         <h4>Navigation</h4>
                         <a href="/">Home</a>
+                        <a href="/#services">Services</a>
+                        <a href="/#work">Work</a>
                         <a href="/how-we-work.html">How We Work</a>
                         <a href="/about.html">About</a>
                         <a href="/contact.html">Contact</a>

@@ -33,8 +33,8 @@ test('visits, campaigns, CTA clicks and contact success survive navigation witho
   await page.route('https://formspree.io/**', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }))
   await page.goto('/?utm_source=linkedin&utm_medium=social&utm_campaign=launch&email=private')
   await expect.poll(() => events.filter(e => e.type === 'page_view').length).toBe(1)
-  await page.locator('.hero-cta a').click()
-  await expect(page).toHaveURL(/contact\.html$/)
+  await page.locator('.featured-project').getByRole('link', { name: 'Discuss a Reporting Project' }).click()
+  await expect(page).toHaveURL(/contact\.html\?service=reporting$/)
   await page.locator('#name').fill('Private Person')
   await page.locator('#company').fill('Private Company')
   await page.locator('#email').fill('private@example.com')
@@ -44,6 +44,11 @@ test('visits, campaigns, CTA clicks and contact success survive navigation witho
   await expect.poll(() => events.filter(e => e.type === 'form_success').length).toBe(1)
   expect(events.filter(e => e.type === 'session_start')).toHaveLength(1)
   expect(events.some(e => e.type === 'cta_click')).toBe(true)
+  for (const type of ['cta_click', 'form_start', 'form_submit', 'form_success']) {
+    // Navigation may retry the same signed event; count logical events by ID.
+    expect(new Set(events.filter(e => e.type === type).map(e => e.id)).size).toBe(1)
+    expect(events.find(e => e.type === type).detail).toBe('service:reporting')
+  }
   expect(new Set(events.map(e => e.session)).size).toBe(1)
   expect(events.every(e => e.campaign === 'launch')).toBe(true)
   expect(JSON.stringify(events)).not.toMatch(/Private|private@|Never put|email=/)

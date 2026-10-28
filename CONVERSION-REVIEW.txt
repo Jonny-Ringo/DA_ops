@@ -1,0 +1,136 @@
+DA Operations conversion update
+Review date: October 27, 2026 (America/Los_Angeles)
+Baseline: 3ed15dc
+Local rollback reference: backup/pre-conversion-update
+
+Implemented
+  - Preserved the dark/cyan design, four service categories, existing project
+    logos, homepage process, and current URL structure.
+  - The $149 entry now leads with paid work and explains the free assessment,
+    paid investigations, separate implementation, and changes to agreed scope.
+    Three example tasks describe outputs and boundaries. They are illustrative
+    scoping examples, not approved $149 packages or fixed turnaround promises.
+  - Moved The Eye directly below the entry offer. Copy explains the problem,
+    DA's role, and what visitors can do with the result. Technical detail is
+    secondary. Added a reporting inquiry and keyboard-accessible full-size image
+    link. The supplied screenshot is unchanged and works independently of live APIs.
+  - Removed the duplicated engagement cards and shortened overlapping service
+    copy. Replaced undefined diagnostic/sprint product names with scoped reviews.
+  - Added Services and Work anchors to existing navigation. Mobile retains the
+    brand name, a compact quote action, 44px controls, and Escape-to-close behavior.
+  - Service CTAs pass one of four fixed identifiers to an editable optional
+    Contact selection. Direct and unknown values default to no preference.
+    The selected service is included in Formspree submissions. Name, Email,
+    and Message remain the only required fields; Company remains optional.
+  - Contact shows pricing context and the usual reply expectation beside the
+    form, keeps drafts on failure, and confirms success only after Formspree
+    accepts the submission. Added a mailto link alongside clipboard copying.
+  - Shortened initial privacy guidance and linked a factual inquiry-handling
+    section. No unverified retention period or deletion promise was added.
+  - Put assessment, agreement, delivery, review, and documentation first on
+    How We Work. Retained the longer support philosophy as secondary content.
+  - Moved the founder profile earlier and added project-role context on About.
+  - Updated the existing social-preview renderer and alt text. Critical inquiry
+    content no longer depends on reveal-animation initialization.
+  - Reused existing analytics events, with only allowlisted service categories
+    in event detail. No private form text is added to analytics. ANALYTICS.txt
+    describes a separate private process for qualification and paid-project tracking.
+
+Verified business details
+  - Owner confirmed: DA Operations is the new name for DAO Academy.
+  - Owner approved: replies usually arrive by email within one business day.
+    This is phrased as an expectation, not a guaranteed service level.
+  - Owner confirmed community and operational work with the displayed projects.
+    The supplied 2026 resume supports the founder profile, Forward Research role,
+    listed ecosystems, The Eye, Intel, and KellyConnect/Apple iTunes experience.
+    The public founder site also lists The Eye and technical/community operations.
+  - Owner confirmed that the existing Formspree form routes to the displayed
+    d.academy.operations@gmail.com inbox. No new mailbox identity was invented.
+
+The Eye: external application dependency, not repaired by this website update
+  Destination: https://eye-of-ao.arweave.net/#networkStats
+  Checked on October 27, 2026 at approximately 18:15 Pacific.
+  The application returned HTTP 200 and showed 640 active developer addresses,
+  while Total AO Messages remained an unexplained "--".
+
+  Browser requests to https://arweave-search.goldsky.com/graphql failed because
+  the CORS preflight was redirected. A separate OPTIONS request confirmed HTTP
+  307 to https://arweave.net/graphql without Access-Control-Allow-Origin.
+  This reproduces a concrete request-configuration/upstream compatibility issue
+  in the tested environment; it is not evidence that all sources are down.
+  A separate AO dry-run request also returned HTTP 403. That is an additional
+  failure, not the demonstrated cause of the Goldsky-backed all-time count.
+
+  The deployed main-6VhG5QIs.js bundle confirms that the all-time count still
+  calls Goldsky, logs fetch failure without updating the visible state, and
+  coerces an absent count to zero. The AO Messages and Total TX series return
+  count: 0 on failed requests. Those fallbacks can misrepresent missing data.
+
+  The Eye source is a separate repository, already containing substantial
+  uncommitted data-service and GraphQL changes. It was inspected read-only;
+  its files, services, deployment, and data were not altered. Its current local
+  files are not assumed to match the deployed bundle.
+
+  Follow-up required in The Eye repository:
+  - Verify a supported source and correct aggregate semantics for each metric.
+    Do not substitute an endpoint without verifying its count/pagination behavior.
+  - Give each independent metric explicit loading, unavailable, stale, and
+    successful states. A valid zero must require a successful, valid response.
+  - Preserve last successful data on source failure, with its actual recorded
+    update time. If no success timestamp exists, do not invent freshness.
+  - Represent missing chart observations as gaps/unavailable values, not zeros.
+    Retain independent healthy series and useful partial data.
+  - Test success, valid zero, invalid payloads, rejected requests, stale cache,
+    and partial source failures before deploying that application separately.
+
+Validation
+  Passed: Vite build, 9 unit tests, 8 SEO checks, and all 30 browser tests.
+  Browser coverage includes service routing, editable/neutral selection, submitted
+  service values, validation, confirmed success, failure/retry, duplicate-click
+  protection, honeypot, privacy controls, and service-attributed analytics events.
+  Transport retries reuse an event ID; the tests count logical events by ID.
+  Clipboard success was tested in Chromium's secure localhost context; denial
+  feedback and the mailto fallback were also checked.
+
+  Rendered Home, Contact, About, and How We Work at 360, 390, 430, 768, 1024,
+  and 1363 pixels. Existing responsive tests additionally cover 320 and 1440.
+  Checked horizontal overflow, header overlap, main-heading order, focus,
+  Escape, cross-page anchors, image enlargement, reduced motion, blocked scripts,
+  delayed initialization, and form input at a shortened mobile viewport.
+  Form controls use 16px text. No physical iPhone keyboard test was available;
+  viewport emulation does not certify native device keyboard behavior.
+  Before/after desktop and mobile captures were reviewed. The decorative support
+  conversations remain hidden from assistive technology.
+
+Controlled delivery test
+  Exactly one real form submission used clearly labeled synthetic details.
+  Identifier: DA-VALIDATION-20261028012346
+  Formspree returned HTTP 200 and the confirmed-success message displayed.
+  The recipient is the owner-confirmed inbox above. Inbox receipt is awaiting
+  the owner's confirmation; provider acceptance alone does not prove receipt.
+  Automated regression tests intercept all submissions and send no email.
+
+Performance benchmark
+  Reproducible script: node scripts/measure-site.mjs before|after
+  Raw results and captures: audit/conversion-before and audit/conversion-after.
+  Chromium 153.0.8010.12, built localhost preview, three cold browser contexts per
+  profile. External requests (including fonts) blocked. Desktop: 1363 x 936,
+  unthrottled. Mobile: 390 x 844, 4x CPU slowdown, 150ms network latency,
+  200,000 bytes/sec download and 93,750 bytes/sec upload.
+  Final comparison: desktop median FCP/LCP 56ms before and 60ms after;
+  mobile 640ms before and 660ms after. CLS was 0 in all six runs per version.
+  These are local lab observations, not field Core Web Vitals or an INP result.
+  No conversion uplift or production loading guarantee is inferred.
+  The Eye's top moved from 3,695px to 1,047px on desktop and from 6,874px to
+  1,611px on mobile in this measured layout.
+
+Changed files
+  index.html, contact.html, about.html, how-we-work.html, privacy.html
+  src/styles/styles.css
+  src/scripts/main.js, contact-form.js, analytics.js, service-context.js
+  scripts/seo.mjs, generate-social-image.mjs, measure-site.mjs
+  public/brand/social-preview.png
+  images/the-eye.png -> public/projects/the-eye.png (unchanged bytes)
+  tests/browser/inquiries.spec.js, project-strip.spec.js, analytics.spec.js,
+  conversion.spec.js
+  README.txt, ANALYTICS.txt, CONVERSION-REVIEW.txt

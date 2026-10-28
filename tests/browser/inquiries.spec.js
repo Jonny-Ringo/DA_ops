@@ -10,7 +10,7 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   const links = new Set()
-  for (const width of [1440, 768, 390, 320]) {
+  for (const width of [1440, 1024, 768, 430, 390, 360, 320]) {
     await page.setViewportSize({ width, height: 900 })
     for (const path of ['/', '/contact.html', '/how-we-work.html', '/about.html']) {
       await page.goto(path)
@@ -22,8 +22,10 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(page.locator('.hero-title')).toBeInViewport()
         await expect(page.locator('.hero-cta a')).toBeInViewport()
         for (const link of await page.locator('.services .service-next a').all()) {
+          const service = new URL(await link.getAttribute('href'), page.url()).searchParams.get('service')
           await link.click()
-          await expect(page).toHaveURL(/contact\.html$/)
+          await expect(page).toHaveURL(/contact\.html\?service=/)
+          await expect(page.getByLabel('Service (optional)')).toHaveValue(service)
           await expect(page.getByLabel('What do you need help with?')).toBeVisible()
           await page.goBack()
         }
@@ -35,7 +37,8 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(projectLink).toHaveAttribute('target', '_blank')
         await expect(projectLink).toHaveAttribute('rel', 'noopener noreferrer')
         await page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true }).click()
-        await expect(page).toHaveURL(/contact\.html$/)
+        await expect(page).toHaveURL(/contact\.html\?service=technical-fixes$/)
+        await expect(page.getByLabel('Service (optional)')).toHaveValue('technical-fixes')
         await page.goBack()
       }
       if ([1440, 390].includes(width) && ['/', '/contact.html'].includes(path)) {
@@ -78,7 +81,7 @@ test('a project inquiry needs only name, email, and the problem; optional compan
     return route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' })
   })
   await page.goto('/contact.html')
-  await expect(page.locator('form input:visible, form textarea:visible, form select:visible')).toHaveCount(4)
+  await expect(page.locator('form input:visible, form textarea:visible, form select:visible')).toHaveCount(5)
   await page.getByRole('button', { name: 'Send to DA' }).click()
   expect(submissions).toHaveLength(0)
   await page.getByLabel('Name', { exact: false }).fill('Test Person')

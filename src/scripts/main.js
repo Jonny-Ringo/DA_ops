@@ -10,6 +10,7 @@ import { initProjectStrip } from './project-strip.js'
 function renderChatCloud() {
     const cloud = document.querySelector('.chat-cloud')
     if (!cloud) return
+    cloud.setAttribute('aria-hidden', 'true')
 
     chatBubbles.forEach(bubble => {
         const div = document.createElement('div')
@@ -102,9 +103,12 @@ function renderChatCloud() {
 function updateNavActiveState() {
     const currentPath = window.location.pathname;
     document.querySelectorAll('.nav-links a').forEach(link => {
-        const linkPath = new URL(link.href).pathname;
-        const isActive = currentPath === linkPath || (currentPath === '/' && linkPath === '/');
+        const target = new URL(link.href);
+        const samePage = currentPath === target.pathname || (currentPath === '/index.html' && target.pathname === '/');
+        const isActive = samePage && (target.hash ? target.hash === location.hash : !location.hash);
         link.classList.toggle('active', isActive);
+        if (isActive) link.setAttribute('aria-current', target.hash ? 'location' : 'page');
+        else link.removeAttribute('aria-current');
     });
 }
 
@@ -117,6 +121,13 @@ function initMobileMenu() {
     const links = document.querySelector('.nav-links');
     if (!btn || !links) return;
 
+    const close = (restoreFocus = false) => {
+        links.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        if (restoreFocus) btn.focus();
+    };
+
     btn.addEventListener('click', () => {
         const isOpen = links.classList.toggle('open');
         btn.classList.toggle('open', isOpen);
@@ -126,20 +137,23 @@ function initMobileMenu() {
     // Close on nav link click
     links.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
-            links.classList.remove('open');
-            btn.classList.remove('open');
-            btn.setAttribute('aria-expanded', 'false');
+            close();
         });
     });
 
     // Close on outside click
     document.addEventListener('click', e => {
         if (!e.target.closest('.nav-content')) {
-            links.classList.remove('open');
-            btn.classList.remove('open');
-            btn.setAttribute('aria-expanded', 'false');
+            close();
         }
     });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && links.classList.contains('open')) close(true);
+    });
+    document.addEventListener('focusin', event => {
+        if (!event.target.closest('.nav-content')) close();
+    });
+    window.matchMedia('(max-width: 1024px)').addEventListener('change', () => close());
 }
 
 // ==========================================
@@ -182,16 +196,20 @@ function initScrollAnimations() {
 // ==========================================
 
 function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             if (this.classList.contains('skip-link')) return;
-            const href = this.getAttribute('href');
-            if (href === '#') { e.preventDefault(); return; }
-            const target = document.getElementById(href.substring(1));
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            const url = new URL(this.href);
+            if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash) return;
+            const target = document.getElementById(url.hash.slice(1));
             if (target) {
                 e.preventDefault();
-                const navH = document.querySelector('.nav')?.offsetHeight || 0;
-                window.scrollTo({ top: target.offsetTop - navH - 20, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+                history.pushState(null, '', url.hash);
+                target.setAttribute('tabindex', '-1');
+                target.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+                target.focus({ preventScroll: true });
+                updateNavActiveState();
             }
         });
     });
@@ -220,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initProjectStrip();
     renderChatCloud();
     updateNavActiveState();
+    window.addEventListener('hashchange', updateNavActiveState);
     initMobileMenu();
     handleNavScroll();
     initScrollAnimations();

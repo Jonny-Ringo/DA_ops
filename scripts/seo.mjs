@@ -38,7 +38,7 @@ const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').rep
 
 const services = [
   { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Technical assistance, troubleshooting, API integrations, data collection, and operational automation. Start with one defined task; larger implementations receive a custom quote.' },
-  { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, documentation, and ongoing coverage. Paid Support Diagnostic and 7-Day Support Sprint available with a custom quote.' },
+  { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, and documentation. Start with a defined review or improvement project with agreed deliverables and a custom quote.' },
   { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
   { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer support, developer support services, community and ecosystem operations, partnership coordination, and technical operations consulting. Discovery call followed by a custom monthly proposal.' },
 ]
@@ -46,7 +46,7 @@ const services = [
 export function renderMetadata(page) {
   const url = new URL(page.path, site).href
   const image = new URL('brand/social-preview.png', site).href
-  const imageAlt = 'DA Operations. Support that actually solves the problem. Customer support and community operations. daops.net.'
+  const imageAlt = 'DA Operations. Technical assistance, analytics and automation. Scoped projects and ongoing operations. daops.net.'
   const graph = [
     {
       '@type': 'Organization', '@id': `${site}#organization`, name: 'DA Operations', url: site,

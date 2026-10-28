@@ -1,5 +1,6 @@
 import { EVENTS, KEYS, UPLOAD_URL, attribution, eventTags, pageName } from './analytics-core.js'
 import { generateWallet, signEvent, toBase64, fromBase64 } from './analytics-signing.js'
+import { serviceDetail } from './service-context.js'
 
 const read = (storage, key, fallback) => { try { return JSON.parse(storage.getItem(key)) ?? fallback } catch { return fallback } }
 const write = (storage, key, value) => { try { storage.setItem(key, JSON.stringify(value)) } catch { /* In-memory tracking still works. */ } }
@@ -112,7 +113,7 @@ export function initAnalytics() {
     if (link.hasAttribute('download')) trackEvent('file_download', 'resource')
     else if (target.origin !== location.origin) {
       if (['https:', 'http:', 'mailto:', 'tel:'].includes(target.protocol)) trackEvent('outbound_click', target.protocol === 'mailto:' ? 'email' : target.protocol === 'tel:' ? 'phone' : 'external')
-    } else if (link.matches('.btn, .nav-cta')) trackEvent('cta_click', pageName(target.pathname) || 'section')
+    } else if (link.matches('.btn, .nav-cta, .project-actions .text-link')) trackEvent('cta_click', serviceDetail(target.searchParams.get('service')) || pageName(target.pathname) || 'section')
     else if (pageName(target.pathname)) trackEvent('navigation_click', pageName(target.pathname))
   })
   const depths = new Set()

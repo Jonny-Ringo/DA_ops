@@ -15,7 +15,7 @@
     <section class="analytics-panel">
       <h2>What we collect</h2>
       <p>We measure page visits, navigation and contact-button clicks, scroll milestones, visits with at least 15 seconds of visible page time, and whether a contact form was started, submitted, or successfully received. Events include a random session identifier, time, page name, screen-size category, referring website hostname, and promotion labels from tagged links.</p>
-      <p>We do not include names, email addresses, form contents, IP addresses, full browser identifiers, or complete URLs in analytics events. Form submissions are sent separately to Formspree to deliver your message to DA.</p>
+      <p>We do not include names, email addresses, company details, message text, IP addresses, full browser identifiers, or complete URLs in analytics events. Contact events may include one of four fixed service categories, so we can understand which services lead to inquiries. Form submissions are sent separately to Formspree to deliver your message to DA.</p>
       <h2>Public, permanent storage</h2>
       <p>Analytics events are sent to an Arweave upload service and stored on the public Arweave network. Published events can be read by anyone and cannot be removed. Upload and query services receive ordinary network requests, including connection information; this site does not control their logs.</p>
       <h2>Browser storage</h2>
@@ -23,6 +23,12 @@
       <h2>Your choice</h2>
       <p>We honor Do Not Track and Global Privacy Control signals. You can also stop future analytics collection in this browser below. This clears pending events in this tab; it cannot retract events already sent. Preferences are specific to the browser and site address you use.</p>
       <button class="btn btn-secondary" data-analytics-preference>Turn off analytics in this browser</button>
+    </section>
+    <section class="analytics-panel" id="inquiries">
+      <h2>Inquiry information</h2>
+      <p>The contact form sends your name, email address, message, and any company or service selection you provide to Formspree for delivery to DA Operations. DA uses that information to review and respond to your inquiry.</p>
+      <p>Your message and contact details are not included in the site's public analytics. Please leave other people's identifying details out of the initial inquiry.</p>
+      <p>Formspree handles the form submission under its <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">privacy policy</a>. For questions about information you have sent to DA, email <a href="mailto:d.academy.operations@gmail.com">d.academy.operations@gmail.com</a>.</p>
     </section>
   </main>
   <script type="module" src="/src/scripts/main.js"></script>

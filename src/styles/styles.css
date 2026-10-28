@@ -672,8 +672,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .human-ai-copy .project-attribution { font-size: 0.875rem; line-height: 1.65; }
 .project-context .text-link { margin-top: 0; }
 .project-actions { display: flex; gap: 1rem 1.5rem; align-items: center; flex-wrap: wrap; }
-.screenshot-link { display: block; border-radius: var(--radius-lg); }
-.screenshot-link > span { display: inline-block; margin-top: 0.75rem; color: var(--color-primary); font-size: 0.875rem; text-decoration: underline; text-underline-offset: 3px; }
 .project-screenshot { min-width: 0; }
 .project-screenshot img {
     width: 100%;

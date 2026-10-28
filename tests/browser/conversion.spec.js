@@ -93,22 +93,6 @@ test('navigation anchors respect the header, active state, Escape, and keyboard 
   await expect(serviceLink).toHaveAttribute('aria-current', 'location')
 })
 
-test('the screenshot opens at its original size from a keyboard on desktop and mobile', async ({ page }) => {
-  for (const width of [1440, 390]) {
-    await page.setViewportSize({ width, height: 844 })
-    await page.goto('/')
-    const link = page.getByRole('link', { name: 'View The Eye screenshot at full size' })
-    await link.focus()
-    const opened = page.waitForEvent('popup')
-    await page.keyboard.press('Enter')
-    const popup = await opened
-    await popup.waitForLoadState()
-    await expect.poll(() => popup.locator('img').evaluate(img => img.naturalWidth)).toBe(680)
-    expect(new URL(popup.url()).pathname).toMatch(/the-eye.*\.png$/)
-    await popup.close()
-  }
-})
-
 test('critical form content stays visible when initialization is delayed and fits a shortened mobile viewport', async ({ page }) => {
   let releaseScripts
   const scriptsReady = new Promise(resolve => { releaseScripts = resolve })

@@ -14,7 +14,10 @@ sessions with that event. CTA clicks include booking_click and cta_click.
 Historical form events remain readable/exportable; historical successful form
 submissions appear separately under Contact activity. Email clicks are separate.
 
-The four service IDs in service-context.js are allowlisted. Service links carry
+The current service IDs are customer-support (Technical & Community Support),
+reporting, executive-operations, and technical-fixes. The former managed-operations
+ID remains accepted for historical links and events; new executive inquiries use
+their own ID. All service IDs are allowlisted in service-context.js. Links carry
 a static data-service attribute, recorded as service:reporting, for example.
 Other Calendly links use the detail calendly. Queries are not passed to Calendly.
 Booking information and emails never enter public analytics. Keep qualified

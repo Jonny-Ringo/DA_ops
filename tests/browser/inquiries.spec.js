@@ -23,7 +23,7 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(page.locator('.hero-cta a')).toBeInViewport()
         for (const link of await page.locator('.services .service-next a').all()) {
           await expect(link).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
-          await expect(link).toHaveAttribute('data-service', /^(customer-support|reporting|managed-operations|technical-fixes)$/)
+          await expect(link).toHaveAttribute('data-service', /^(customer-support|reporting|executive-operations|technical-fixes)$/)
         }
         const screenshot = page.locator('.project-screenshot img')
         await screenshot.scrollIntoViewIfNeeded()

@@ -5,7 +5,7 @@ export const pages = {
   'index.html': {
     path: '', name: 'Home', type: 'WebPage',
     title: 'DA Operations | Technical Assistance, Analytics & Automation',
-    description: 'Technical assistance, data collection, custom dashboards, and workflow automation, alongside managed customer support and community operations. Human operated. AI accelerated.',
+    description: 'Technical and community support, custom dashboards, executive operations, and ecosystem partnerships. Scoped projects and ongoing operational support.',
   },
   'about.html': {
     path: 'about.html', name: 'About', type: 'AboutPage',
@@ -37,9 +37,9 @@ export const pages = {
 const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 const services = [
-  { id: 'customer-support', name: 'Customer Support & Operations', description: 'Technical customer support, backlog cleanup, onboarding, support workflow improvements, and documentation. Start with a defined review or improvement project with agreed deliverables and a custom quote.' },
+  { id: 'customer-support', name: 'Technical & Community Support', description: 'Customer and technical support, community and social profile management, customer and developer onboarding, backlog cleanup, escalations, support reporting, team coordination, documentation, and workflow improvements. Support setup improvements or ongoing delivery.' },
   { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community trends and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
-  { id: 'managed-operations', name: 'Managed Technical & Community Operations', description: 'Managed customer and technical support, social profile management, developer onboarding, community and ecosystem operations, and team coordination. Discovery call followed by a custom monthly proposal.' },
+  { id: 'executive-operations', name: 'Executive Operations & Partnerships', description: 'Work with founders and leadership on team management, planning, partner outreach, and ongoing ecosystem coordination. Event coordination includes hackathons and booths at conferences such as ETHDenver, with support for individual initiatives or ongoing operations.' },
   { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Application troubleshooting, API integrations, internal tools, and operational automation. Scoped and quoted after an initial review of your project and requirements.' },
 ]
 

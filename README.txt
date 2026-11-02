@@ -22,6 +22,13 @@ Calendly and analytics update
   Recent weeks load first. Slow cache downloads cannot hold up raw history past
   a 750 ms head start, and completed scans cancel redundant cache reads.
 
+Service consolidation
+  Technical & Community Support combines support improvements and ongoing delivery.
+  Executive Operations & Partnerships covers team management, partner outreach,
+  ecosystem coordination, hackathons, and conference booths. Reporting remains
+  separate, and Technical Fixes & Automation stays last. Existing support anchors
+  still resolve; executive inquiries have a distinct analytics service ID.
+
 Historical implementation notes (superseded where described above)
 Service restructuring and homepage update
   Review branch: local/services-restructure

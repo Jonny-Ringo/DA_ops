@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { DataItem } from 'arbundles'
-import { dateRange, eventTags } from '../../src/scripts/analytics-core.js'
-import { CACHE_APP, CACHE_VERSION, LOCAL_KEY, DAY, pack, windowsFor } from '../../src/scripts/cache-format.js'
+import { APP_NAME, SITE_ID, VERSION, dateRange, eventTags } from '../../src/scripts/analytics-core.js'
+import { CACHE_APP, CACHE_VERSION, LOCAL_KEY, DAY, pack, windowsFor, digest, cacheTags } from '../../src/scripts/cache-format.js'
 
 const now = Date.now()
 const week = windowsFor(dateRange(30, now), now).filter(w => w.closed).at(-1)
@@ -27,7 +27,7 @@ test('cached history renders immediately and chart focus survives background sta
   })
   await page.goto('/analytics.html')
   await expect(page.locator('#status')).toContainText('1 events loaded')
-  await expect.poll(() => pending.length).toBe(2)
+  await expect.poll(() => pending.length).toBeGreaterThanOrEqual(2)
   const first = page.locator('.analytics-day').first()
   await first.focus()
   await expect(page.locator('#chart-tooltip')).toContainText(': 0 page views')
@@ -59,7 +59,7 @@ test('changing period cancels old queries and cannot restore stale counts', asyn
     return route.request().url().startsWith(process.env.PLAYWRIGHT_BASE_URL) ? route.continue() : route.abort()
   })
   await page.goto('/analytics.html')
-  await expect.poll(() => pending.length).toBe(2)
+  await expect.poll(() => pending.length).toBeGreaterThanOrEqual(2)
   hold = false
   await page.locator('#period').selectOption('1')
   await expect(page.locator('#status')).toContainText('Checked against indexed records')
@@ -67,6 +67,48 @@ test('changing period cancels old queries and cannot restore stale counts', asyn
   for (const route of pending) await route.fulfill(responseFor(route.request())).catch(() => {})
   await expect(page.locator('#metrics strong').first()).toHaveText('0')
   await expect(page.locator('.analytics-day')).toHaveCount(1)
+})
+
+test('stalled shared-cache downloads cannot delay fresh history or replace it later', async ({ page }) => {
+  const manifestId = 'M'.repeat(43), partId = 'P'.repeat(43)
+  const rows = pack([record]), hash = await digest(rows)
+  const late = { ...record, id: crypto.randomUUID(), tx: 'b'.repeat(43) }
+  let release, partRequested = false, uploads = 0
+  const stalled = new Promise(resolve => { release = resolve })
+  await page.route('**/*', async route => {
+    const url = route.request().url()
+    if (url.startsWith(process.env.PLAYWRIGHT_BASE_URL)) return route.continue()
+    if (url === 'https://up.arweave.net/tx') uploads++
+    if (url === `https://arweave.net/${manifestId}`) return route.fulfill({ json: {
+      version: CACHE_VERSION, source: APP_NAME, site: SITE_ID, eventVersion: VERSION,
+      start: week.start, end: week.end, createdAt: now - 1000, hash, count: 1,
+      parts: [{ id: partId, hash }],
+    } })
+    if (url === `https://arweave.net/${partId}`) {
+      partRequested = true
+      await stalled
+      return route.fulfill({ json: rows }).catch(() => {})
+    }
+    if (url.endsWith('/graphql')) {
+      const tags = Object.fromEntries(route.request().postDataJSON().variables.tags.map(t => [t.name, t.values]))
+      const edges = tags['App-Name'][0] === CACHE_APP
+        ? [{ cursor: 'cached', node: { id: manifestId, tags: cacheTags(week, 'manifest', hash) } }]
+        : tags.Timestamp.includes(week.end)
+          ? [record, late].map(e => ({ cursor: e.tx, node: { id: e.tx, tags: eventTags(e) } }))
+          : []
+      return route.fulfill({ json: { data: { transactions: { pageInfo: { hasNextPage: false }, edges } } } })
+    }
+    return route.abort()
+  })
+  try {
+    await page.goto('/analytics.html')
+    await expect(page.locator('#status')).toContainText('Checked against indexed records', { timeout: 4000 })
+    expect(partRequested).toBe(true)
+    await expect(page.locator('#metrics strong').first()).toHaveText('2')
+    release()
+    await expect(page.locator('#metrics strong').first()).toHaveText('2')
+    expect(uploads).toBe(0)
+  } finally { release() }
 })
 
 for (const mode of ['allowed', 'optout', 'dnt', 'gpc', 'storage-denied', 'http']) {

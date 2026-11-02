@@ -19,6 +19,8 @@ Calendly and analytics update
   they measure opening Calendly, not confirmed appointments.
   Analytics now loads validated local/public weekly caches, rechecks raw history,
   and provides chart tooltips and daily totals. See ANALYTICS.txt for the protocol.
+  Recent weeks load first. Slow cache downloads cannot hold up raw history past
+  a 750 ms head start, and completed scans cancel redundant cache reads.
 
 Historical implementation notes (superseded where described above)
 Service restructuring and homepage update

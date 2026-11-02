@@ -48,8 +48,20 @@ cause undercounting. Delivery remains best effort.
 
 Progressive cache loading
 Validated local history appears immediately. Public snapshot discovery and the
-unfinished current week's raw scan run together. Missing closed weeks are then
-indexed, and cached weeks are rechecked two at a time to catch late indexing.
+unfinished current week's raw scan run together. Completed weeks are requested
+newest first, with up to three public downloads at once. Public discovery and
+downloads get up to 750 ms to render first. If they finish sooner, raw history
+starts immediately; otherwise it starts alongside them without waiting for
+gateway timeouts or the current week's scan.
+
+Missing weeks are scanned first, then cached weeks, newest first within each
+group and two history queries at a time. Each week renders independently and
+every selected week is checked once to catch late indexing. Complete raw scans
+cancel that week's pending cache reads; late snapshots cannot overwrite verified
+results. If raw scans fail or are partial, cache downloads remain available as
+a fallback within their timeout. A late snapshot merges with partial results for
+display, while only its complete snapshot is saved locally. The 750 ms head start
+does not promise the full dashboard loads within that time.
 Refresh and period changes cancel earlier loads. Status-only updates preserve
 chart focus. Every bar exposes its UTC date and count on hover, focus or tap,
 including zero days. Escape dismisses it. Daily totals are also in a table.
@@ -101,10 +113,13 @@ Cross-browser races may create duplicate snapshots, without duplicate counts.
 
 Bounds and trust
 Queries use https://arweave.net/graphql: at most 50 pages of 100 raw records per
-scan and five discovery pages. Snapshots cap at 5,000 events and 20 parts. Payloads
+week and five discovery pages. Snapshots cap at 5,000 events and 20 parts. Payloads
 cap at 90 KiB and signed items at 100 KiB. Readers bound streamed bytes and reject
 corrupt snapshots, falling back to raw records. Initial discovery has a five-second
-deadline, candidates eight seconds, individual requests twenty seconds.
+deadline. Each week's initial candidates share an eight-second download budget;
+neither blocks raw history beyond the 750 ms head start. Individual requests have
+a twenty-second timeout. Once all closed weeks are verified, redundant discovery
+is canceled.
 
 Shared uploads use only https://up.arweave.net/tx with a temporary non-extractable
 RSA-PSS key. Receipt IDs must match the signed item and must not report a nonzero

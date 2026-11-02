@@ -3,7 +3,7 @@ export const SITE_ID = 'dao-academy'
 export const VERSION = '1'
 export const UPLOAD_URL = 'https://up.arweave.net/tx'
 export const QUERY_URLS = ['https://arweave.net/graphql', 'https://arweave-search.goldsky.com/graphql']
-export const EVENTS = ['session_start', 'page_view', 'cta_click', 'navigation_click', 'outbound_click', 'file_download', 'scroll_depth', 'engaged_visit', 'form_start', 'form_submit', 'form_success', 'form_error']
+export const EVENTS = ['session_start', 'page_view', 'cta_click', 'booking_click', 'navigation_click', 'outbound_click', 'file_download', 'scroll_depth', 'engaged_visit', 'form_start', 'form_submit', 'form_success', 'form_error']
 export const PAGES = ['/', '/about', '/how-we-work', '/contact']
 export const KEYS = { session: 'da.analytics.session.v1', queue: 'da.analytics.queue.v1', optout: 'da.analytics.optout', wallet: 'da.analytics.wallet.v1' }
 
@@ -47,23 +47,26 @@ export function eventTags(event, environment = 'production') {
 }
 
 export function dateRange(days, now = new Date()) {
+  now = new Date(now)
   const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
   return Array.from({ length: days }, (_, i) => new Date(end.getTime() - (days - 1 - i) * 86400000).toISOString().slice(0, 10))
 }
 
-export function parseEvent(node) {
+export function parseEvent(node, dates, now = Date.now()) {
+  if (!/^[\w-]{43}$/.test(node?.id || '') || !Array.isArray(node.tags) || node.tags.some(t => !t || typeof t.name !== 'string' || typeof t.value !== 'string')) return null
   const t = Object.fromEntries(node.tags.map(({ name, value }) => [name, value]))
   const time = Number(t['Event-Time'])
-  if (t['App-Name'] !== APP_NAME || t['Site-ID'] !== SITE_ID || t.Environment !== 'production' || t['Schema-Version'] !== VERSION || !EVENTS.includes(t['Event-Type']) || !PAGES.includes(t['Analytics-Page']) || !/^[\w-]{16,64}$/.test(t['Event-ID'] || '') || !/^[\w-]{16,64}$/.test(t['Session-ID'] || '') || !Number.isFinite(time) || time < 1 || time > Date.now() + 300000 || new Date(time).toISOString().slice(0, 10) !== t.Timestamp) return null
+  if (t['App-Name'] !== APP_NAME || t['Site-ID'] !== SITE_ID || t.Environment !== 'production' || t['Schema-Version'] !== VERSION || !EVENTS.includes(t['Event-Type']) || !PAGES.includes(t['Analytics-Page']) || !/^[\w-]{16,64}$/.test(t['Event-ID'] || '') || !/^[\w-]{16,64}$/.test(t['Session-ID'] || '') || !Number.isSafeInteger(time) || time < 1 || time > now + 60000 || new Date(time).toISOString().slice(0, 10) !== t.Timestamp) return null
+  if (dates && !dates.includes(t.Timestamp)) return null
   const short = value => String(value || '').slice(0, 253)
-  return { id: t['Event-ID'], tx: node.id, type: t['Event-Type'], session: t['Session-ID'], time, page: t['Analytics-Page'], source: short(t['Analytics-Source']), medium: short(t['Analytics-Medium']), campaign: short(t['Analytics-Campaign']), content: short(t['Analytics-Content']), device: short(t['Analytics-Device']), detail: short(t['Analytics-Detail']) }
+  return { id: t['Event-ID'], tx: node.id, date: t.Timestamp, type: t['Event-Type'], session: t['Session-ID'], time, page: t['Analytics-Page'], source: short(t['Analytics-Source']), medium: short(t['Analytics-Medium']), campaign: short(t['Analytics-Campaign']), content: short(t['Analytics-Content']), device: short(t['Analytics-Device']), detail: short(t['Analytics-Detail']) }
 }
 
 export function summarize(events) {
   const views = events.filter(e => e.type === 'page_view')
   const sessions = new Set(events.map(e => e.session)).size
-  const converted = new Set(events.filter(e => e.type === 'form_success').map(e => e.session)).size
-  return { events: events.length, views: views.length, sessions, inquiries: events.filter(e => e.type === 'form_success').length, ctas: events.filter(e => e.type === 'cta_click').length, engaged: new Set(events.filter(e => e.type === 'engaged_visit').map(e => e.session)).size, conversion: sessions ? (100 * converted / sessions).toFixed(1) : '0.0' }
+  const converted = new Set(events.filter(e => e.type === 'booking_click').map(e => e.session)).size
+  return { bookings: events.filter(e => e.type === 'booking_click').length, events: events.length, views: views.length, sessions, inquiries: events.filter(e => e.type === 'form_success').length, ctas: events.filter(e => ['cta_click', 'booking_click'].includes(e.type)).length, engaged: new Set(events.filter(e => e.type === 'engaged_visit').map(e => e.session)).size, conversion: sessions ? (100 * converted / sessions).toFixed(1) : '0.0' }
 }
 
 export function csv(events) {

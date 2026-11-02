@@ -2,11 +2,14 @@ import { resolve } from 'path'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import { seoPlugin } from './scripts/seo.mjs'
+import { availablePort } from './scripts/free-port.mjs'
 
 const deployment = JSON.parse(readFileSync(new URL('./.deployments/latest.json', import.meta.url), 'utf8'))
 
-export default defineConfig({
+export default defineConfig(async ({ command }) => ({
   base: './',
+  server: { port: command === 'serve' ? await availablePort() : undefined, strictPort: false },
+  preview: { port: command === 'serve' ? await availablePort() : undefined, strictPort: false },
   plugins: [seoPlugin()],
   define: { __ARWEAVE_MANIFEST__: JSON.stringify(deployment.manifestId) },
   build: {
@@ -28,4 +31,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

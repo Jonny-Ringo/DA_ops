@@ -9,7 +9,7 @@ let local, tab
 try { local = window.localStorage; tab = window.sessionStorage } catch { /* Optional storage. */ }
 const privacySignal = () => navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true
 let memoryOptOut = false
-const optedOut = () => memoryOptOut || read(local, KEYS.optout, false) === true || privacySignal()
+export const optedOut = () => memoryOptOut || read(local, KEYS.optout, false) === true || privacySignal()
 // Development requires an explicit test flag and always writes a separate namespace.
 const environment = import.meta.env.DEV || ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) ? 'test' : 'production'
 const enabled = () => !optedOut() && (environment === 'production' || read(tab, 'da.analytics.test', false)) && !!crypto?.subtle
@@ -111,6 +111,7 @@ export function initAnalytics() {
     if (!link) return
     const target = new URL(link.href)
     if (link.hasAttribute('download')) trackEvent('file_download', 'resource')
+    else if (target.origin === 'https://calendly.com' && target.pathname.replace(/\/$/, '') === '/jonkwilliams') trackEvent('booking_click', serviceDetail(link.dataset.service) || 'calendly')
     else if (target.origin !== location.origin) {
       if (['https:', 'http:', 'mailto:', 'tel:'].includes(target.protocol)) trackEvent('outbound_click', target.protocol === 'mailto:' ? 'email' : target.protocol === 'tel:' ? 'phone' : 'external')
     } else if (link.matches('.btn, .nav-cta, .project-actions .text-link')) trackEvent('cta_click', serviceDetail(target.searchParams.get('service')) || pageName(target.pathname) || 'section')

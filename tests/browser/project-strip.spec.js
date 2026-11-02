@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 async function openHome(page) {
-  await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:4173') ? route.continue() : route.abort())
+  await page.route('**/*', route => route.request().url().startsWith(process.env.PLAYWRIGHT_BASE_URL) ? route.continue() : route.abort())
   await page.goto('/')
 }
 

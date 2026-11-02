@@ -19,8 +19,8 @@ export const pages = {
   },
   'contact.html': {
     path: 'contact.html', name: 'Contact', type: 'ContactPage',
-    title: 'Contact DA Operations | Get a Project Quote or Ongoing Support',
-    description: 'Tell DA Operations what you need. Free initial assessment, small defined tasks from $149, and custom quotes for dashboards, larger implementations, and ongoing support.',
+    title: 'Book a Consultation | DA Operations',
+    description: 'Book a free consultation with DA Operations about community support, reporting dashboards, data collection, or ongoing operations.',
   },
   'privacy.html': {
     path: 'privacy.html', name: 'Analytics Privacy', type: 'WebPage',

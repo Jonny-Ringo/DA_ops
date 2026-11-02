@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test('content stays readable when JavaScript cannot load', async ({ page }) => {
   await page.route('**/*', route => {
     const request = route.request()
-    return request.resourceType() === 'script' || !request.url().startsWith('http://127.0.0.1:4173')
+    return request.resourceType() === 'script' || !request.url().startsWith(process.env.PLAYWRIGHT_BASE_URL)
       ? route.abort() : route.continue()
   })
   for (const path of ['/', '/about.html', '/how-we-work.html', '/contact.html']) {
@@ -16,7 +16,7 @@ test('content stays readable when JavaScript cannot load', async ({ page }) => {
 test('built homepage initializes and every section stays readable', async ({ page }) => {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
-  await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:4173') ? route.continue() : route.abort())
+  await page.route('**/*', route => route.request().url().startsWith(process.env.PLAYWRIGHT_BASE_URL) ? route.continue() : route.abort())
   await page.goto('/')
   await expect(page.locator('.project-strip-ready')).toHaveCount(1)
   const blocks = page.locator('main > section')

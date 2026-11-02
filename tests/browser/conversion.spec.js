@@ -1,56 +1,17 @@
 import { test, expect } from '@playwright/test'
 
-const origin = 'http://127.0.0.1:4173'
+const origin = process.env.PLAYWRIGHT_BASE_URL
 test.beforeEach(async ({ page }) => {
   await page.route('**/*', route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
   await page.emulateMedia({ reducedMotion: 'reduce' })
 })
 
-test('service context is editable, unknown values stay neutral, and the showcase routes reporting inquiries', async ({ page }) => {
-  for (const path of ['/contact.html', '/contact.html?service=unknown', '/contact.html?service=private%40example.com']) {
+test('old contact URLs offer a fixed booking destination without forwarding query values', async ({ page }) => {
+  for (const path of ['/contact.html', '/contact.html?service=reporting', '/contact.html?service=private%40example.com']) {
     await page.goto(path)
-    await expect(page.getByLabel('Service (optional)')).toHaveValue('')
+    await expect(page.locator('form')).toHaveCount(0)
+    await expect(page.locator('.booking-link')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
   }
-  await page.goto('/')
-  await page.locator('.featured-project').getByRole('link', { name: 'Discuss a Reporting Project' }).click()
-  await expect(page.getByLabel('Service (optional)')).toHaveValue('reporting')
-  await page.getByLabel('Service (optional)').selectOption('customer-support')
-  await expect(page.getByLabel('Service (optional)')).toHaveValue('customer-support')
-  await page.getByLabel('Service (optional)').selectOption('')
-  await expect(page.getByLabel('Service (optional)')).toHaveValue('')
-})
-
-test('an inquiry preserves its draft and service after failure, prevents duplicate sends, and retries successfully', async ({ page }) => {
-  const submissions = []
-  let completeRequest
-  await page.route('https://formspree.io/f/xbgldgal', async route => {
-    submissions.push(route.request().postData())
-    if (submissions.length === 1) await new Promise(resolve => { completeRequest = resolve })
-    return route.fulfill({ status: submissions.length === 1 ? 503 : 200, contentType: 'application/json', body: '{"ok":true}' })
-  })
-  await page.goto('/contact.html?service=reporting')
-  await page.locator('#name').fill('Website Test')
-  await page.locator('#email').fill('test@example.com')
-  await page.locator('#company').fill('Test Company')
-  await page.locator('#message').fill('A reporting inquiry used only in a mocked test.')
-  await page.getByRole('button', { name: 'Send to DA' }).click()
-  await expect.poll(() => submissions.length).toBe(1)
-  await expect(page.locator('#contact-status')).toContainText('Sending')
-  await expect(page.getByRole('button', { name: 'Send to DA' })).toBeDisabled()
-  await page.locator('form').evaluate(form => { form.requestSubmit(); form.requestSubmit() })
-  expect(submissions).toHaveLength(1)
-  completeRequest()
-  await expect(page.locator('#contact-status')).toContainText('entries are still here')
-  await expect(page.locator('#service')).toHaveValue('reporting')
-  await expect(page.locator('#company')).toHaveValue('Test Company')
-  await expect(page.locator('#message')).toHaveValue('A reporting inquiry used only in a mocked test.')
-  await page.locator('#service').selectOption('managed-operations')
-  await page.getByRole('button', { name: 'Send to DA' }).click()
-  await expect(page.locator('#contact-status')).toContainText('usually reply by email within one business day')
-  expect(submissions).toHaveLength(2)
-  expect(submissions[0]).toMatch(/name="service"\r?\n\r?\nreporting/)
-  expect(submissions[1]).toMatch(/name="service"\r?\n\r?\nmanaged-operations/)
-  await expect(page.locator('#message')).toHaveValue('')
 })
 
 test('email fallback opens an email client and clipboard copying reports success and failure', async ({ page, context }) => {
@@ -93,23 +54,12 @@ test('navigation anchors respect the header, active state, Escape, and keyboard 
   await expect(serviceLink).toHaveAttribute('aria-current', 'location')
 })
 
-test('critical form content stays visible when initialization is delayed and fits a shortened mobile viewport', async ({ page }) => {
-  let releaseScripts
-  const scriptsReady = new Promise(resolve => { releaseScripts = resolve })
-  await page.route('**/assets/*.js', async route => { await scriptsReady; await route.continue() })
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/contact.html?service=reporting', { waitUntil: 'commit' })
-  await expect(page.locator('.contact-grid')).toHaveCSS('opacity', '1')
-  await expect(page.locator('.form-offer')).toBeVisible()
-  releaseScripts()
-  await expect(page.locator('#service')).toHaveValue('reporting')
+test('booking remains usable when scripts are blocked and on a short mobile viewport', async ({ page }) => {
+  await page.route('**/assets/*.js', route => route.abort())
   await page.setViewportSize({ width: 390, height: 410 })
-  for (const [id, value] of [['name', 'Test'], ['email', 'test@example.com'], ['company', 'Example'], ['message', 'Mobile viewport test']]) {
-    const field = page.locator(`#${id}`)
-    await field.fill(value)
-    await expect(field).toBeFocused()
-    await expect(field).toBeInViewport()
-    expect(await field.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16)
-  }
+  await page.goto('/contact.html')
+  await expect(page.locator('.contact-grid')).toHaveCSS('opacity', '1')
+  await page.locator('.booking-link').scrollIntoViewIfNeeded()
+  await expect(page.locator('.booking-link')).toBeInViewport()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 })

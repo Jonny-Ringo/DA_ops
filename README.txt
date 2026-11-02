@@ -1,12 +1,26 @@
 DA Operations website
 
 Static, multi-page website built with Vite. Includes the public analytics
-dashboard, privacy preferences, contact form, and scrolling project logos.
+dashboard, privacy preferences, Calendly booking links, and scrolling project logos.
 
 Local development
   npm ci
   npm run dev
 
+Dev and preview choose an available port at startup. Use the address printed
+by Vite. Browser tests allocate their own port. An explicit --port option still
+works if needed; normal startup is not tied to 5173 or 4173.
+
+Calendly and analytics update
+  Every Contact and consultation CTA opens https://calendly.com/jonkwilliams.
+  Old contact.html links remain usable, with a booking button and email fallback.
+  The Formspree form and submission code have been removed.
+  booking_click events retain allowlisted service context and campaign labels;
+  they measure opening Calendly, not confirmed appointments.
+  Analytics now loads validated local/public weekly caches, rechecks raw history,
+  and provides chart tooltips and daily totals. See ANALYTICS.txt for the protocol.
+
+Historical implementation notes (superseded where described above)
 Service restructuring and homepage update
   Review branch: local/services-restructure
   Original version: 03be67a
@@ -69,10 +83,10 @@ Focused homepage enhancements
 
   The Eye is featured below the entry offer. Its screenshot is the owner's
   supplied image (680 x 367), used without alteration. It is now stored at
-  public/projects/the-eye.png so the full-size link also works without JavaScript.
+  public/projects/the-eye.png. The full-size link was subsequently removed.
   It shows the application's Arweave and AO network statistics and transaction
   analytics. This is a screenshot, not a live data feed or generated mockup.
-  The visible caption explains the dependency on data and integrations.
+  The screenshot disclaimer was subsequently removed.
 
   Technical claims were checked against the local project at:
     C:/Users/User/Desktop/AO_Projects_Master/The_Eye/dev
@@ -91,7 +105,8 @@ Conversion improvements
   See CONVERSION-REVIEW.txt for the implemented changes, verified business
   details, The Eye dependency findings, measurements, and remaining checks.
   Before/after captures and raw measurements are kept in the ignored audit folder.
-  To reproduce the local benchmark, build and run the preview on port 4173, then:
+  To reproduce the local benchmark, build and run the preview, then set
+  $env:SITE_URL to the printed address and run:
     node scripts/measure-site.mjs after
 
 Production hosting
@@ -105,8 +120,8 @@ repository source directly skips Vite's build and breaks the browser scripts.
 The custom domain daops.net is configured in the repository's Pages settings.
 
 Serve the generated files with HTTPS. No application server, database, or
-deployment wallet is needed to build or host the website. The contact form uses
-its existing Formspree endpoint. Analytics uses the existing public Arweave
+deployment wallet is needed to build or host the website. Contact buttons open
+the owner’s Calendly appointment page. Analytics uses the existing public Arweave
 upload and query services; see ANALYTICS.txt for behavior and privacy details.
 
 Checks

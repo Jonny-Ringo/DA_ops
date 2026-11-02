@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url'
 // Repeatable lab comparison, not field Core Web Vitals or an INP measurement.
 const label = process.argv[2]
 if (!['before', 'after'].includes(label)) throw new Error('Use before or after as the report label')
-const origin = 'http://127.0.0.1:4173'
+const origin = process.env.SITE_URL
+if (!origin) throw new Error('Set SITE_URL to the URL printed by npm run preview')
 const directory = new URL(`../audit/conversion-${label}/`, import.meta.url)
 await mkdir(directory, { recursive: true })
 const browser = await chromium.launch()

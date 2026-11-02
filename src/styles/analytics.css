@@ -29,7 +29,7 @@
 .analytics-row strong { flex-shrink: 0; }
 .analytics-empty { color: #a6b0bd; padding: 24px 0; }
 .analytics-timeline { display: flex; height: 190px; align-items: end; gap: 5px; overflow-x: auto; padding-top: 24px; }
-.analytics-day { min-width: 24px; flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: end; gap: 6px; font-size: .65rem; color: #a6b0bd; }
+.analytics-day { background: transparent; border: 0; padding: 3px; min-width: 24px; flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: end; gap: 6px; font-size: .65rem; color: #a6b0bd; }
 .analytics-bar { width: 100%; min-height: 2px; background: #4dd0e1; border-radius: 4px 4px 0 0; }
 .analytics-table-wrap { overflow-x: auto; }
 .analytics-shell table { width: 100%; border-collapse: collapse; font-size: .82rem; text-align: left; }
@@ -49,7 +49,8 @@
 .campaign-result input { width: 100%; }
 .analytics-shell footer { margin-top: 28px; }
 .analytics-shell [hidden] { display: none !important; }
-#more { margin-top: 20px; }
+.analytics-chart-detail { min-height: 36px; padding: 8px 0; color: #4dd0e1; font-size: .85rem; }
+.analytics-panel details summary { cursor: pointer; padding: 8px 0; color: #a6b0bd; }
 @media (max-width: 900px) { .analytics-metrics { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 600px) {
   .analytics-shell { padding: 24px 16px; }

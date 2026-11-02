@@ -1,10 +1,11 @@
 import { KEYS, csv, dateRange, summarize } from './analytics-core.js'
 import { initShareLinkBuilder } from './share-link-builder.js'
-import { fetchAnalytics } from './analytics-query.js'
+import { loadAnalytics } from './cache.js'
+import { canPublishCache } from './cache-privacy.js'
 import { setOptOut } from './analytics.js'
 
 const $ = id => document.getElementById(id)
-let events = [], dates = [], continuation = null, busy = false, loaded = false
+let events = [], dates = [], partial = false, loaded = false, controller, chartKey = null, resultKey = null
 const number = n => n.toLocaleString()
 const node = (tag, text, className) => { const el = document.createElement(tag); if (text != null) el.textContent = text; if (className) el.className = className; return el }
 function table(id, headers, rows) {
@@ -34,36 +35,28 @@ function rows(id, values) {
 function render() {
   const metrics = summarize(events)
   $('metrics').replaceChildren()
-  for (const [label, value] of [['Page views', metrics.views], ['Sessions', metrics.sessions], ['CTA clicks', metrics.ctas], ['Inquiries sent', metrics.inquiries], ['Engaged sessions', metrics.engaged], ['Inquiry rate', `${metrics.conversion}%`]]) {
+  for (const [label, value] of [['Page views', metrics.views], ['Sessions', metrics.sessions], ['CTA clicks', metrics.ctas], ['Appointment clicks', metrics.bookings], ['Engaged sessions', metrics.engaged], ['Appointment click rate', `${metrics.conversion}%`]]) {
     const card = node('div', null, 'analytics-metric')
     card.append(node('span', label), node('strong', loaded ? (typeof value === 'number' ? number(value) : value) : '-'))
     $('metrics').append(card)
   }
   const views = events.filter(e => e.type === 'page_view')
-  const daily = new Map(counts(views, e => new Date(e.time).toISOString().slice(0, 10)))
-  const max = Math.max(1, ...daily.values())
-  $('timeline').replaceChildren()
-  for (const date of dates) {
-    const count = daily.get(date) || 0, day = node('div', null, 'analytics-day'), bar = node('div', null, 'analytics-bar')
-    day.title = `${date}: ${count} page views`; day.setAttribute('aria-label', day.title)
-    bar.style.height = `${count / max * 120}px`
-    day.append(node('span', count), bar, node('span', date.slice(5))); $('timeline').append(day)
-  }
+  renderChart(views)
   rows('pages', counts(views, e => e.page))
   rows('sources', counts(events, e => e.source, true))
   rows('devices', counts(views, e => e.device))
   rows('interactions', counts(events.filter(e => !['page_view', 'session_start'].includes(e.type)), e => e.type.replaceAll('_', ' ')))
   rows('scroll', counts(events.filter(e => e.type === 'scroll_depth'), e => `${e.detail}%`))
-  rows('funnel', [['All sessions', metrics.sessions], ...[['CTA clicked', 'cta_click'], ['Form started', 'form_start'], ['Send attempted', 'form_submit'], ['Inquiry confirmed', 'form_success']].map(([label, type]) => [label, new Set(events.filter(e => e.type === type).map(e => e.session)).size])])
+  rows('funnel', [['All sessions', metrics.sessions], ...[['Appointment page opened', 'booking_click'], ['Email link clicked', 'email_click'], ['Historical form inquiries', 'form_success']].map(([label, type]) => [label, new Set(events.filter(e => type === 'email_click' ? e.type === 'outbound_click' && e.detail === 'email' : e.type === type).map(e => e.session)).size])])
   const campaigns = new Map()
   for (const event of events.filter(e => e.campaign)) {
     const key = JSON.stringify([event.campaign, event.source, event.medium, event.content])
     if (!campaigns.has(key)) campaigns.set(key, [])
     campaigns.get(key).push(event)
   }
-  table('campaigns', ['Group', 'Shared on / type', 'Post label', 'Sessions', 'Views', 'Inquiries', 'Rate'], [...campaigns.values()].sort((a, b) => summarize(b).sessions - summarize(a).sessions).map(group => {
+  table('campaigns', ['Group', 'Shared on / type', 'Post label', 'Sessions', 'Views', 'Appointment clicks', 'Click rate'], [...campaigns.values()].sort((a, b) => summarize(b).sessions - summarize(a).sessions).map(group => {
     const first = group[0], summary = summarize(group)
-    return [first.campaign, `${first.source} / ${first.medium || 'not set'}`, first.content || '-', summary.sessions, summary.views, summary.inquiries, `${summary.conversion}%`]
+    return [first.campaign, `${first.source} / ${first.medium || 'not set'}`, first.content || '-', summary.sessions, summary.views, summary.bookings, `${summary.conversion}%`]
   }))
   table('activity', ['Time (UTC)', 'Activity', 'Page', 'Source', 'Campaign', 'Detail', 'Record'], [...events].sort((a, b) => b.time - a.time).slice(0, 100).map(e => {
     const link = node('a', e.tx.slice(0, 8) + '…')
@@ -71,38 +64,86 @@ function render() {
     return [new Date(e.time).toISOString().replace('T', ' ').slice(0, 19), e.type.replaceAll('_', ' '), e.page, e.source, e.campaign || '-', e.detail || '-', link]
   }))
   $('export').disabled = !events.length
-  $('more').hidden = !continuation
 }
 
-async function load(more = false) {
-  if (busy) return
-  busy = true
-  for (const id of ['refresh', 'period', 'more', 'export']) $(id).disabled = true
+function renderChart(views) {
+  const daily = new Map(counts(views, e => new Date(e.time).toISOString().slice(0, 10)))
+  const values = dates.map(date => [date, daily.get(date) || 0])
+  const key = JSON.stringify(values)
+  if (key === chartKey) return
+  chartKey = key
+  const focusDate = document.activeElement?.dataset.date
+  const scroll = $('timeline').scrollLeft
+  const max = Math.max(1, ...daily.values())
+  $('timeline').replaceChildren()
+  const tooltip = $('chart-tooltip')
+  tooltip.hidden = true
+  for (const [date, count] of values) {
+    const day = node('button', null, 'analytics-day'), bar = node('span', null, 'analytics-bar')
+    day.type = 'button'; day.dataset.date = date
+    const label = date + ': ' + count + ' page views'
+    day.setAttribute('aria-label', label)
+    const show = () => { tooltip.textContent = label; tooltip.hidden = false; day.setAttribute('aria-describedby', 'chart-tooltip') }
+    const hide = () => { tooltip.hidden = true; day.removeAttribute('aria-describedby') }
+    day.addEventListener('pointerenter', show)
+    day.addEventListener('pointerleave', () => { if (document.activeElement !== day) hide() })
+    day.addEventListener('focus', show); day.addEventListener('blur', hide); day.addEventListener('click', show)
+    day.addEventListener('keydown', event => { if (event.key === 'Escape') { hide(); event.preventDefault() } })
+    bar.style.height = count / max * 120 + 'px'
+    day.append(node('span', count), bar, node('span', date.slice(5))); $('timeline').append(day)
+    if (date === focusDate) day.focus({ preventScroll: true })
+  }
+  $('timeline').scrollLeft = scroll
+  table('daily-totals', ['Date (UTC)', 'Page views'], values)
+}
+
+async function load() {
+  controller?.abort()
+  const current = controller = new AbortController()
+  const requestedDates = dateRange(Number($('period').value))
   $('status').className = ''
-  $('status').textContent = 'Loading indexed activity…'
-  const requestedDates = more ? dates : dateRange(Number($('period').value))
+  $('status').textContent = 'Loading activity and checking cached history...'
+  let storage
+  try { storage = localStorage } catch { /* Optional cache. */ }
   try {
-    const result = await fetchAnalytics(requestedDates, n => { $('status').textContent = `Reading indexed activity… ${number(n)} records checked` }, more ? continuation : null)
-    const merged = new Map((more ? events : []).map(e => [e.id, e]))
-    result.events.forEach(e => merged.set(e.id, e))
-    events = [...merged.values()]; dates = requestedDates; continuation = result.continuation; loaded = true
-    render()
-    $('status').textContent = `${number(events.length)} events loaded · Updated ${new Date().toLocaleTimeString()}${continuation ? ' · Partial results: load more below to include remaining records.' : events.length ? '' : ' · No indexed events found. New visits may still be waiting for indexing.'}`
+    await loadAnalytics({
+      dates: requestedDates, signal: current.signal, storage,
+      locks: navigator.locks, canPublish: canPublishCache,
+      onUpdate(snapshot) {
+        if (current !== controller || current.signal.aborted) return
+        partial = snapshot.partial || snapshot.failed || !snapshot.verified
+        if (snapshot.covered > 0 || snapshot.verified) {
+          events = snapshot.events; dates = requestedDates; loaded = true
+          const key = JSON.stringify([dates, [...events].sort((a, b) => a.id.localeCompare(b.id))])
+          if (key !== resultKey) { resultKey = key; render() }
+        }
+        const completed = ['ready', 'done'].includes(snapshot.stage)
+        const parts = [loaded ? number(events.length) + ' events loaded' : 'No traffic totals are available yet.']
+        if (snapshot.covered < snapshot.total) parts.push(snapshot.covered + '/' + snapshot.total + ' days loaded')
+        if (snapshot.cacheUsed && !snapshot.verified) parts.push('Cached results; checking indexed records')
+        if (!completed) parts.push('Loading and checking history...')
+        if (snapshot.partial) parts.push('Partial results: query limit reached')
+        if (snapshot.failed) parts.push('Some queries failed. Available results are still shown; try Refresh data.')
+        if (completed && !snapshot.failed && !snapshot.partial) parts.push('Checked against indexed records')
+        if (!snapshot.covered && loaded) parts.push('Previous results are still shown for their original period')
+        if (snapshot.published) parts.push(snapshot.published + ' shared snapshots saved')
+        if (snapshot.publishFailed) parts.push('Shared cache unavailable; results remain available')
+        $('status').textContent = parts.join(' | ')
+        $('status').className = snapshot.failed || snapshot.partial ? 'error' : ''
+      },
+    })
   } catch {
+    if (current.signal.aborted) return
     $('status').className = 'error'
-    $('status').textContent = `Couldn’t load analytics from the query service. Try Refresh data.${loaded ? ' Previous results are still shown for their original period.' : ' No traffic totals are available yet.'}`
-  } finally {
-    busy = false
-    for (const id of ['refresh', 'period', 'more']) $(id).disabled = false
-    $('export').disabled = !events.length
+    $('status').textContent = 'Could not load analytics. Try Refresh data.' + (loaded ? ' Available results are still shown.' : ' No traffic totals are available yet.')
   }
 }
 $('refresh').addEventListener('click', () => void load())
 $('period').addEventListener('change', () => void load())
-$('more').addEventListener('click', () => void load(true))
+window.addEventListener('pagehide', () => controller?.abort())
 $('export').addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([csv(events)], { type: 'text/csv;charset=utf-8' }))
-  const a = node('a'); a.href = url; a.download = `da-analytics-${dates[0]}-${dates.at(-1)}${continuation ? '-partial' : ''}.csv`; a.click()
+  const a = node('a'); a.href = url; a.download = `da-analytics-${dates[0]}-${dates.at(-1)}${partial ? '-partial' : ''}.csv`; a.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 })
 try { $('exclude').checked = JSON.parse(localStorage.getItem(KEYS.optout)) === true } catch { /* Optional storage. */ }

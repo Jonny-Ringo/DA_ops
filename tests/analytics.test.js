@@ -45,10 +45,10 @@ test('browser ANS-104 item is independently verified by arbundles, with intact t
   const corrupted = Buffer.from(raw); corrupted[corrupted.length - 1] ^= 1
   assert.equal(await new DataItem(corrupted).isValid(), false)
 })
-test('metrics distinguish sessions, inquiries, and successful-session conversion', () => {
+test('metrics distinguish appointment clicks from historical inquiries and booked meetings', () => {
   const a = crypto.randomUUID(), b = crypto.randomUUID()
-  const events = [event({ session: a }), event({ session: a }), event({ session: b }), event({ session: a, type: 'form_success' }), event({ session: a, type: 'form_success' }), event({ session: b, type: 'form_error' })]
-  assert.deepEqual(summarize(events), { events: 6, views: 3, sessions: 2, inquiries: 2, ctas: 0, engaged: 0, conversion: '50.0' })
+  const events = [event({ session: a }), event({ session: a }), event({ session: b }), event({ session: a, type: 'form_success' }), event({ session: a, type: 'form_success' }), event({ session: b, type: 'form_error' }), event({ session: a, type: 'booking_click' }), event({ session: a, type: 'booking_click' })]
+  assert.deepEqual(summarize(events), { bookings: 2, events: 8, views: 3, sessions: 2, inquiries: 2, ctas: 2, engaged: 0, conversion: '50.0' })
 })
 test('invalid and non-production records are rejected; UTC ranges cross month boundaries', () => {
   const original = event()

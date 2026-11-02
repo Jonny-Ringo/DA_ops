@@ -15,7 +15,7 @@ async function setup(page, options = {}) {
   }, options)
   await page.route('**/*', async route => {
     const url = route.request().url()
-    if (url.startsWith('http://127.0.0.1:4173')) return route.continue()
+    if (url.startsWith(process.env.PLAYWRIGHT_BASE_URL)) return route.continue()
     if (url === 'https://up.arweave.net/tx') {
       const item = new DataItem(route.request().postDataBuffer())
       expect(await item.isValid()).toBe(true)
@@ -28,80 +28,30 @@ async function setup(page, options = {}) {
   return { events, errors }
 }
 
-test('visits, campaigns, CTA clicks and contact success survive navigation without form data', async ({ page }) => {
+test('Calendly clicks retain campaign and service context without claiming a booking', async ({ page, context }) => {
   const { events, errors } = await setup(page)
-  await page.route('https://formspree.io/**', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }))
+  await context.route('https://calendly.com/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Appointment page test</h1>' }))
   await page.goto('/?utm_source=linkedin&utm_medium=social&utm_campaign=launch&email=private')
   await expect.poll(() => events.filter(e => e.type === 'page_view').length).toBe(1)
+  const popupPromise = page.waitForEvent('popup')
   await page.locator('.featured-project').getByRole('link', { name: 'Discuss a Reporting Project' }).click()
-  await expect(page).toHaveURL(/contact\.html\?service=reporting$/)
-  await page.locator('#name').fill('Private Person')
-  await page.locator('#company').fill('Private Company')
-  await page.locator('#email').fill('private@example.com')
-  await page.locator('#message').fill('Never put this in analytics')
-  await page.locator('button[type=submit]').click()
-  await expect(page.locator('#contact-status')).toContainText('message has been sent')
-  await expect.poll(() => events.filter(e => e.type === 'form_success').length).toBe(1)
-  expect(events.filter(e => e.type === 'session_start')).toHaveLength(1)
-  expect(events.some(e => e.type === 'cta_click')).toBe(true)
-  for (const type of ['cta_click', 'form_start', 'form_submit', 'form_success']) {
-    // Navigation may retry the same signed event; count logical events by ID.
-    expect(new Set(events.filter(e => e.type === type).map(e => e.id)).size).toBe(1)
-    expect(events.find(e => e.type === type).detail).toBe('service:reporting')
-  }
+  const popup = await popupPromise
+  await expect(popup).toHaveURL('https://calendly.com/jonkwilliams')
+  await expect.poll(() => events.some(e => e.type === 'booking_click')).toBe(true)
+  expect(events.find(e => e.type === 'booking_click').detail).toBe('service:reporting')
+  await popup.close()
+  await page.goto('/about.html')
+  await expect.poll(() => events.some(e => e.page === '/about')).toBe(true)
+  const secondPopup = page.waitForEvent('popup')
+  await page.locator('.nav-cta').click()
+  await (await secondPopup).close()
+  await expect.poll(() => events.filter(e => e.type === 'booking_click').length).toBe(2)
+  expect(events.some(e => e.type.startsWith('form_'))).toBe(false)
   expect(new Set(events.map(e => e.session)).size).toBe(1)
   expect(events.every(e => e.campaign === 'launch')).toBe(true)
-  expect(JSON.stringify(events)).not.toMatch(/Private|private@|Never put|email=/)
+  expect(JSON.stringify(events)).not.toMatch(/private|email=/)
   expect(errors).toEqual([])
 })
-
-test('invalid forms never submit, and failures are not counted as inquiries', async ({ page }) => {
-  const { events } = await setup(page)
-  let requests = 0
-  await page.route('https://formspree.io/**', route => { requests++; return route.fulfill({ status: 503 }) })
-  await page.goto('/contact.html')
-  await page.locator('button[type=submit]').click()
-  expect(requests).toBe(0)
-  await page.locator('#name').fill('Test')
-  await page.locator('#company').fill('Test')
-  await page.locator('#email').fill('test@example.com')
-  await page.locator('#message').fill('Please help with a broken workflow')
-  await page.locator('button[type=submit]').click()
-  await expect(page.locator('#contact-status')).toContainText('could not accept')
-  await expect.poll(() => events.some(e => e.type === 'form_error' && e.detail === 'provider_http_503')).toBe(true)
-  expect(events.some(e => e.type === 'form_success')).toBe(false)
-  await expect(page.locator('#name')).toHaveValue('Test')
-})
-
-for (const mode of ['rate_limit', 'network', 'timeout']) {
-  test(`contact ${mode} failures preserve inputs and record a safe diagnostic`, async ({ page }) => {
-    const { events } = await setup(page)
-    const detail = { rate_limit: 'provider_http_429', network: 'connection_unconfirmed', timeout: 'delivery_timeout' }[mode]
-    if (mode === 'timeout') {
-      await page.addInitScript(() => {
-        const originalFetch = window.fetch
-        window.fetch = (input, options) => String(input).startsWith('https://formspree.io/')
-          ? Promise.reject(new DOMException('Private provider error', 'TimeoutError'))
-          : originalFetch(input, options)
-      })
-    } else {
-      await page.route('https://formspree.io/**', route => mode === 'rate_limit'
-        ? route.fulfill({ status: 429, body: 'Private provider error' }) : route.abort('failed'))
-    }
-    await page.goto('/contact.html')
-    await page.locator('#name').fill('Private Person')
-    await page.locator('#company').fill('Private Company')
-    await page.locator('#email').fill('private@example.com')
-    await page.locator('#message').fill('Private message')
-    await page.locator('button[type=submit]').click()
-    await expect.poll(() => events.some(e => e.type === 'form_error' && e.detail === detail)).toBe(true)
-    await expect(page.locator('#contact-status')).toContainText('entries are still here')
-    await expect(page.locator('#message')).toHaveValue('Private message')
-    await expect(page.locator('button[type=submit]')).toBeEnabled()
-    expect(events.some(e => e.type === 'form_success')).toBe(false)
-    expect(JSON.stringify(events)).not.toMatch(/Private|private@/)
-  })
-}
 
 test('queued signed events retry identically after a failed upload and reload', async ({ page }) => {
   const { events } = await setup(page)
@@ -124,14 +74,14 @@ for (const scenario of [{ optout: true }, { dnt: true }, { testMode: false }, { 
     await page.waitForTimeout(300)
     expect(events).toHaveLength(0)
     expect(errors).toEqual([])
-    await expect(page.locator('button[type=submit]')).toBeEnabled()
+    await expect(page.locator('.booking-link')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
   })
 }
 
 test('dashboard renders indexed traffic safely, builds promotion links and fits mobile', async ({ page }) => {
   const { events, errors } = await setup(page)
   const session = crypto.randomUUID()
-  const records = ['page_view', 'cta_click', 'form_success'].map(type => ({ id: crypto.randomUUID(), session, time: Date.now(), type, page: '/', source: '<img src=x onerror=alert(1)>', campaign: 'launch', medium: 'social', content: '', detail: '', device: 'desktop' }))
+  const records = ['page_view', 'cta_click', 'booking_click'].map(type => ({ id: crypto.randomUUID(), session, time: Date.now(), type, page: '/', source: '<img src=x onerror=alert(1)>', campaign: 'launch', medium: 'social', content: '', detail: '', device: 'desktop' }))
   await page.route('**/graphql', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { transactions: { pageInfo: { hasNextPage: false }, edges: records.map(e => ({ cursor: e.id, node: { id: 'a'.repeat(43), tags: eventTags(e) } })) } } }) }))
   await page.goto('/analytics.html')
   await expect(page.locator('#status')).toContainText('3 events loaded')
@@ -156,7 +106,7 @@ test('dashboard distinguishes service failure from zero traffic', async ({ page 
   await setup(page)
   await page.route('**/graphql', route => route.fulfill({ status: 503 }))
   await page.goto('/analytics.html')
-  await expect(page.locator('#status')).toContainText('Couldn’t load analytics')
+  await expect(page.locator('#status')).toContainText('No traffic totals are available yet.')
   await expect(page.locator('#metrics strong').first()).toHaveText('-')
   await expect(page.locator('#export')).toBeDisabled()
 })

@@ -33,14 +33,24 @@ export async function generateWallet() {
   return crypto.subtle.exportKey('jwk', pair.privateKey)
 }
 
+export async function createSigner() {
+  const pair = await crypto.subtle.generateKey({ name: 'RSA-PSS', modulusLength: 4096, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' }, false, ['sign', 'verify'])
+  const { n } = await crypto.subtle.exportKey('jwk', pair.publicKey)
+  return { key: pair.privateKey, owner: fromBase64(n) }
+}
+
 export async function signEvent(event, tags, jwk) {
-  const owner = fromBase64(jwk.n)
+  const key = await crypto.subtle.importKey('jwk', jwk, { name: 'RSA-PSS', hash: 'SHA-256' }, false, ['sign'])
+  return signDataItem(event, tags, { key, owner: fromBase64(jwk.n) })
+}
+
+export async function signDataItem(event, tags, { key, owner }, maxPayloadBytes = 8192) {
   if (owner.length !== 512) throw new Error('Expected RSA-4096 analytics key')
   const rawTags = concat(avroLong(tags.length), ...tags.flatMap(tag => [tag.name, tag.value].flatMap(value => { const bytes = utf8(value); return [avroLong(bytes.length), bytes] })), new Uint8Array([0]))
   if (rawTags.length > 4096) throw new Error('Analytics tags too large')
   const data = utf8(JSON.stringify(event))
+  if (data.length > Math.min(maxPayloadBytes, 96 * 1024)) throw new Error('Analytics payload too large')
   const message = await deepHash([utf8('dataitem'), utf8('1'), utf8('1'), owner, new Uint8Array(), new Uint8Array(), rawTags, data])
-  const key = await crypto.subtle.importKey('jwk', jwk, { name: 'RSA-PSS', hash: 'SHA-256' }, false, ['sign'])
   const signature = new Uint8Array(await crypto.subtle.sign({ name: 'RSA-PSS', saltLength: 32 }, key, message))
   return concat(new Uint8Array([1, 0]), signature, owner, new Uint8Array([0, 0]), littleEndian(tags.length), littleEndian(rawTags.length), rawTags, data)
 }

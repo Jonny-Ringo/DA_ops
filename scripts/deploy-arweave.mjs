@@ -3,30 +3,26 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { pages as sitePages } from './seo.mjs';
 
 // Uses the uploader dependencies and wallet supplied by the project owner.
 // Only files from this website's dist directory are eligible for publication.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uploader = process.env.DA_UPLOADER_DIR || 'C:/Users/User/Desktop/Agent-Perma-Bin';
-const require = createRequire(path.join(uploader, 'package.json'));
-const { ArweaveSigner, createData } = require('arbundles');
 const publish = process.argv.includes('--publish');
 const service = 'https://up.arweave.net';
-const pages = ['index.html', 'about.html', 'how-we-work.html', 'contact.html', 'analytics.html', 'privacy.html'];
+const pages = Object.keys(sitePages);
+const directories = new Set(['assets', 'brand', 'projects', ...pages.map(page => path.posix.dirname(page)).filter(directory => directory !== '.')]);
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8' };
 const files = new Map();
 
 async function collect(directory, prefix = '') {
   for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
     const relative = prefix + entry.name;
-    if (entry.isDirectory() && ['assets', 'brand'].includes(relative)) {
+    if (entry.isDirectory() && directories.has(relative)) {
       await collect(path.join(directory, entry.name), relative + '/');
-    } else if (entry.isFile() && (pages.includes(relative) || ['robots.txt', 'sitemap.xml', 'brand/logo.png', 'brand/social-preview.png'].includes(relative) || /^assets\/[\w.-]+\.(css|js|png)$/.test(relative))) {
-      let data = await fs.readFile(path.join(directory, entry.name));
-      if (relative.endsWith('.html')) {
-        // Keep navigation and assets inside the manifest when opened by transaction ID.
-        data = Buffer.from(data.toString('utf8').replace(/\b(href|src|content)="\/(?!\/)/g, '$1="./'));
-      }
+    } else if (entry.isFile() && (pages.includes(relative) || ['robots.txt', 'sitemap.xml', 'brand/logo.png', 'brand/social-preview.png', 'projects/the-eye.png'].includes(relative) || /^assets\/[\w.-]+\.(css|js|png)$/.test(relative))) {
+      const data = await fs.readFile(path.join(directory, entry.name));
       if (data.length >= 100 * 1024) throw new Error(`Review oversized upload: ${relative}`);
       files.set(relative, data);
     } else {
@@ -39,8 +35,13 @@ await collect(path.join(root, 'dist'));
 for (const page of pages) {
   if (!files.has(page)) throw new Error(`Missing page: ${page}`);
   const html = files.get(page).toString('utf8');
-  for (const match of html.matchAll(/\b(?:href|src)="\.\/([^"#?]*)/g)) {
-    const target = match[1] || 'index.html';
+  for (const match of html.matchAll(/\b(?:href|src)="([^"#?]*)/g)) {
+    const reference = match[1];
+    if (!reference || /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(reference)) continue;
+    if (reference.startsWith('/')) throw new Error(`Nonportable root-relative reference in ${page}: ${reference}`);
+    let target = path.posix.normalize(path.posix.join(path.posix.dirname(page), reference));
+    if (target === '.' || target === './') target = 'index.html';
+    else if (target.endsWith('/')) target += 'index.html';
     if (!files.has(target)) throw new Error(`Broken local reference in ${page}: ${target}`);
   }
 }
@@ -51,6 +52,8 @@ if (!publish) {
   process.exit(0);
 }
 
+const require = createRequire(path.join(uploader, 'package.json'));
+const { ArweaveSigner, createData } = require('arbundles');
 const wallet = JSON.parse(await fs.readFile(path.join(uploader, 'wallet.json'), 'utf8'));
 const signer = new ArweaveSigner(wallet);
 const receiptDir = path.join(root, '.deployments');
@@ -110,8 +113,8 @@ for (const [name, original] of ordered) {
   receipt.files[name] = { id, bytes: data.length, sha256: createHash('sha256').update(data).digest('hex') };
   await saveReceipt();
 }
-for (const page of pages.filter(page => page !== 'index.html')) {
-  paths[page.replace(/\.html$/, '')] = paths[page];
+for (const page of pages.filter(page => page.endsWith('/index.html'))) {
+  paths[page.slice(0, -'index.html'.length)] = paths[page];
 }
 const manifest = { manifest: 'arweave/paths', version: '0.2.0', index: { path: 'index.html' }, paths };
 const manifestId = await upload(Buffer.from(JSON.stringify(manifest)), 'application/x.arweave-manifest+json', 'manifest');

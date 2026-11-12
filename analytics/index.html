@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0d1117">
-  <link rel="icon" type="image/png" href="/brand/logo.png">
-  <link rel="stylesheet" href="/src/styles/styles.css">
-  <link rel="stylesheet" href="/src/styles/analytics.css">
+  <link rel="icon" type="image/png" href="../brand/logo.png">
+  <link rel="stylesheet" href="../src/styles/styles.css">
+  <link rel="stylesheet" href="../src/styles/analytics.css">
     <!-- SITE_METADATA -->
 </head>
 <body>
   <main class="analytics-shell">
     <header class="analytics-header">
-      <div><a class="analytics-brand" href="./">DA Operations</a><h1>Site activity</h1><p>See how people find DA and what they do next.</p></div>
-      <a href="./">Back to website ↗</a>
+      <div><a class="analytics-brand" href="../">DA Operations</a><h1>Site activity</h1><p>See how people find DA and what they do next.</p></div>
+      <a href="../">Back to website ↗</a>
     </header>
     <div class="analytics-toolbar">
       <label>Period (UTC)<select id="period"><option value="1">Today</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
@@ -37,12 +37,13 @@
       <section class="analytics-panel wide" id="share-link-panel"><h2>Create a link to share</h2><p>Optional: see which posts bring people to DA. Your regular website link already tracks visits. This tool adds labels to a link; it does not post anything or run an ad.</p>
         <ol class="campaign-steps"><li>Choose a page and where you will share it.</li><li>Create and copy the link, then paste it into your post or message.</li><li>Return here after people visit. Check <strong>Traffic sources</strong>, or <strong>Shared link results</strong> if you added a group name. Allow time for new visits to appear.</li></ol>
         <form id="campaign-builder" class="campaign-builder">
-          <label>Page to open<select id="landing"><option value="/">Home</option><option value="/how-we-work.html">How We Work</option><option value="/about.html">About</option><option value="/contact.html">Contact</option></select></label>
+          <label>Page to open<select id="landing"><option value="/">Home</option><option value="/about/">About</option><option value="/contact/">Contact</option><option value="/community-management/">Community Management</option><option value="/discord-community-management-scope/">Discord Community Management Guide</option><option value="/technical-support-escalation/">Technical Escalation Guide</option></select></label>
           <label>Where will you share it?<input id="source" placeholder="e.g. X, Facebook, Discord" list="share-sources" required maxlength="64" aria-describedby="campaign-help"></label>
           <datalist id="share-sources"><option value="X"></option><option value="Facebook"></option><option value="LinkedIn"></option><option value="Discord"></option><option value="Email"></option></datalist>
           <label>Group name (optional)<input id="campaign" placeholder="e.g. October Spooky Vibes" maxlength="64" aria-describedby="campaign-help"></label>
           <p id="campaign-help" class="campaign-help">A group name connects related posts in your results. Spaces are fine: <strong>October Spooky Vibes</strong> becomes <strong>october_spooky_vibes</strong> in the link. Use public labels, not personal information.</p>
           <details class="campaign-options"><summary>More options (optional)</summary><div class="campaign-option-fields">
+            <label>Link destination<select id="destination" aria-describedby="destination-help"><option value="current">Current website (daops.net)</option><option value="snapshot">Permanent Arweave snapshot</option></select></label><p id="destination-help"></p>
             <label>Type of share<select id="medium"><option value="">Automatic</option><option value="social">Social post</option><option value="email">Email</option><option value="paid">Paid ad</option><option value="referral">Another website</option></select></label>
             <label>Post label (optional)<input id="content" placeholder="e.g. Community support post" maxlength="64"><span>A short name to compare posts in the same group.</span></label>
           </div></details>
@@ -51,8 +52,8 @@
         <div class="campaign-result" hidden><label for="campaign-url">Your link to share</label><input id="campaign-url" readonly aria-describedby="campaign-summary"><p id="campaign-summary" role="status"></p><button id="copy" class="btn btn-secondary" type="button">Copy link</button></div>
       </section>
     </div>
-    <footer class="analytics-note">This dashboard and its underlying Arweave events are public. Counts are directional: client-generated events can be blocked or spoofed. No form contents, email addresses, full URLs, or IP addresses are written by this tracker. <a href="./privacy.html">Analytics privacy and preferences</a>.</footer>
+    <footer class="analytics-note">This dashboard and its underlying Arweave events are public. Counts are directional: client-generated events can be blocked or spoofed. No form contents, email addresses, full URLs, or IP addresses are written by this tracker. <a href="../privacy/">Analytics privacy and preferences</a>.</footer>
   </main>
-  <script type="module" src="/src/scripts/analytics-dashboard.js"></script>
+  <script type="module" src="../src/scripts/analytics-dashboard.js"></script>
 </body>
 </html>

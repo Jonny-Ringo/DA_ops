@@ -7,10 +7,10 @@ import { initProjectStrip } from './project-strip.js'
 // ==========================================
 
 function updateNavActiveState() {
-    const currentPath = window.location.pathname;
+    const currentPath = window.location.pathname.replace(/\/index\.html$/, '/');
     document.querySelectorAll('.nav-links a').forEach(link => {
         const target = new URL(link.href);
-        const samePage = currentPath === target.pathname || (currentPath === '/index.html' && target.pathname === '/');
+        const samePage = currentPath === target.pathname;
         const isActive = samePage && (target.hash ? target.hash === location.hash : !location.hash);
         link.classList.toggle('active', isActive);
         if (isActive) link.setAttribute('aria-current', target.hash ? 'location' : 'page');
@@ -59,7 +59,7 @@ function initMobileMenu() {
     document.addEventListener('focusin', event => {
         if (!event.target.closest('.nav-content')) close();
     });
-    window.matchMedia('(max-width: 1024px)').addEventListener('change', () => close());
+    window.matchMedia('(max-width: 1200px)').addEventListener('change', () => close());
 }
 
 // ==========================================

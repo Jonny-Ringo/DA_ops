@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1117">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="../brand/logo.png">
+    <link rel="apple-touch-icon" href="../brand/logo.png">
+    <link rel="stylesheet" href="../src/styles/styles.css">
+    <!-- SITE_METADATA -->
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-content">
+                <a href="../" class="logo" aria-label="DA Operations home">
+                    <img src="../images/logo.png" alt="">
+                    <span>DA Operations</span>
+                </a>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../community-management/">Community Management</a></li>
+                    <li><a href="../#services">All Services</a></li>
+                    <li><a href="../about/">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="https://calendly.com/jonkwilliams/30min" target="_blank" rel="noopener noreferrer" class="nav-cta" aria-label="Book a Consultation"><span class="quote-long">Book a Consultation</span><span class="quote-short" aria-hidden="true">Book</span></a>
+                    <button class="mobile-menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" tabindex="-1">
+<section class="page-hero"><div class="container"><div class="page-hero-content">
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../">Home</a><span aria-hidden="true">/</span><a href="../community-management/">Community Management</a><span aria-hidden="true">/</span><span>Guide</span></nav>
+  <h1 class="section-heading">Let’s Build a Helpful, Efficient Discord</h1>
+  <p class="article-byline">By DA Operations</p>
+  <p>When getting started with your product, one of the first things you need is a place for users, members, or customers to gather and get support. Discord is a popular choice, but putting a server together can quickly become more complicated than expected.</p>
+  <p>Channels, roles, bots, tickets, onboarding, permissions. There are plenty of things to configure, and each decision affects how people experience your community.</p>
+  <p>Let’s talk about where to start, what deserves your attention, and how thoughtful Discord community management can make your server easier to navigate, safer to use, and more helpful for everyone.</p>
+</div></div></section>
+<section class="content-section"><article class="container reading-width article-body">
+  <h2>Start with a purpose: What is this chat for?</h2>
+  <p>Every Discord is a little different. A gaming community, a developer ecosystem, and a product support server might use the same tools, but their members need different things.</p>
+  <p>Before creating channels or adding bots, ask yourself what people are coming here to do.</p>
+  <p>Are they looking for technical support? Meeting other users? Sharing their work? Following announcements? Talking directly with your team?</p>
+  <p>You can support several of these, but the main purpose should be obvious when someone joins. If your customers come looking for help and have to work through fifteen channels to figure out where to ask, the setup is already getting in their way.</p>
+  <p>Start with the paths people actually need. You can expand as the community grows and shows you what is missing.</p>
+
+  <h2>Onboarding, security, and permissions</h2>
+  <p>Permissions are the keys to the kingdom. Onboarding determines how people get through the front door.</p>
+  <p>As your project gains attention, expect spam and scam message attempts. Your setup should make those harder without making legitimate members feel like they are applying for a security clearance.</p>
+  <p>Think about what a new arrival can see and do before completing onboarding. Can they post links, attach files, mention large groups, or access areas intended for staff? What changes once they receive a member role?</p>
+  <p>In the end you need layers of protection: role and channel permissions, an appropriate verification step, message filtering, and human moderation. No single bot or verification tool will catch everything, and passing a check does not mean an account is trustworthy. Be especially careful with team and bot permissions. Give each role the access it needs for its job. Administrator access should be a deliberate exception.</p>
+  <p>Make your support practices clear with server rules as well. Members should know how to identify mods and team, where official help happens like ticket channels or forums, and what your team will never ask them to share. In communities involving wallets or accounts, that includes passwords, private keys, and recovery phrases.</p>
+  <p>Then test the experience from a regular member’s perspective. An administrator’s view can hide permission problems that everyone else will run into immediately.</p>
+
+  <h2>Channel setup and roles</h2>
+  <p>Once your onboarding is in place, the next priority is channels and roles. These overlap with security because roles determine which parts of the server people can access.</p>
+  <p>Channel names should tell people what belongs there. A clever name can add personality, but someone with a broken application should not have to decode it to find support. Each channel should have a short description explaining its purpose. If two channels seem interchangeable, consider whether you need both.</p>
+  <p>Roles deserve the same attention. Separate roles that grant permissions from roles used for interests, notifications, or appearance. Someone choosing an interest should not accidentally receive access to a private area.</p>
+  <p>Watch for permission clashes as the server evolves. A channel with its own permission overrides can behave differently from the category around it. Those exceptions are easy to forget until someone sees something they should not, or cannot reach something they need.</p>
+
+  <h2>Choose bots for a specific job</h2>
+  <p>It is easy to add a bot for every feature that looks useful. Eventually, you can end up with overlapping commands, duplicate welcome messages, conflicting moderation actions, and notifications nobody reads.</p>
+  <p>Before adding a tool, decide what problem it solves and who will maintain it. You may already have a tool covering some of those needs. Check before adding another dependency.</p>
+  <p>Pay attention to the member experience as well. A verification process that regularly fails, or a ticket system that leaves people stuck, becomes another support problem for your team.</p>
+
+  <h2>Community management continues after setup</h2>
+  <p>A server can be well organized on launch day and confusing six months later.</p>
+  <p>Channels accumulate. Staff change. Bots stop working as expected. Temporary permissions remain in place. Old instructions keep circulating after the product has changed.</p>
+  <p>Make time to review the server regularly. Look at unanswered questions, aging tickets, repeated issues, onboarding difficulties, and whether members are finding the right help. A busy support channel could mean healthy engagement, or it could mean the same problem is affecting too many users. This is where useful reporting explains what people are struggling with, who is affected, what has been resolved, and what still needs attention. That gives your team something concrete to act on.</p>
+
+  <h2>That’s Just the Start</h2>
+  <p>These are the basic building blocks of a helpful Discord, but getting them to work together takes care and experience. Permissions affect onboarding, onboarding affects support, and the tools you choose need to fit the people using them.</p>
+  <p>A good community manager understands those connections. They keep an eye on what members need, investigate problems, coordinate with your team, and adjust the setup as your product and community grow. That ongoing attention helps keep small issues from becoming daily frustrations.</p>
+  <p>At DA Operations, we handle both the setup and the day-to-day work, from channels, permissions, and onboarding to <a href="../community-management/">technical support, moderation, and reporting</a>. Whether you’re launching a new Discord or need someone to take responsibility for an existing community, we can help.</p>
+</article></section>
+<section class="content-section alt"><div class="container reading-width"><h2 class="section-heading">Talk through what you need</h2><p>Tell us about your community, the work your team is handling, and where you need help. We can start with a free consultation and work out a useful first step.</p><div class="project-actions"><a href="https://calendly.com/jonkwilliams/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-service="customer-support">Book a Free Consultation</a></div><p class="email-alternative">Prefer email? <a href="mailto:jonny@daops.net">jonny@daops.net</a><br>We usually reply within one business day.</p></div></section>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="../images/logo.png" alt="" class="footer-logo">
+                    <p class="footer-brand-name">DA Operations</p>
+                    <p class="footer-brand-tagline">Human operated. AI accelerated.<br>Technical solutions and ongoing operations.</p>
+                </div>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <div class="footer-nav-group">
+                        <h4>Navigation</h4>
+                        <a href="../">Home</a>
+                        <a href="../community-management/">Community Management</a>
+                        <a href="../#services">All Services</a>
+                        <a href="../about/">About</a>
+                        <a href="https://calendly.com/jonkwilliams/30min" target="_blank" rel="noopener noreferrer">Contact</a>
+                    </div>
+                </nav>
+                <div class="footer-legal">
+                    <p>&copy; 2026 DA Operations.</p>
+                    <p>All rights reserved.</p>
+                    <p><a href="../privacy/">Analytics privacy &amp; preferences</a></p>
+                    <p><a href="../analytics/">Analytics</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../src/scripts/main.js"></script>
+</body>
+</html>

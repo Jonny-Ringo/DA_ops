@@ -1,4 +1,4 @@
-import { siteUrl } from './site-url.js'
+import { siteUrl, snapshotAvailable } from './site-url.js'
 
 // Normalize labels typed by the site owner; incoming analytics URLs still use
 // the strict allowlist in analytics-core.js.
@@ -10,8 +10,19 @@ export function shareLabel(value) {
 export function initShareLinkBuilder() {
   const $ = id => document.getElementById(id)
   const form = $('campaign-builder'), result = document.querySelector('.campaign-result')
+  const destination = $('destination')
+  const updateDestination = () => {
+    const available = snapshotAvailable($('landing').value)
+    destination.querySelector('[value="snapshot"]').disabled = !available
+    if (!available) destination.value = 'current'
+    $('destination-help').textContent = available
+      ? 'Use daops.net for promotion. An Arweave snapshot keeps the content from that published version.'
+      : 'Use daops.net for this page. It is not included in the saved Arweave snapshot.'
+  }
+  updateDestination()
   let copyTimer
   const invalidate = () => {
+    updateDestination()
     clearTimeout(copyTimer)
     result.hidden = true
     $('campaign-url').value = ''
@@ -30,14 +41,14 @@ export function initShareLinkBuilder() {
       if ((id === 'source' || input.value.trim()) && !labels[id]) {
         const options = input.closest('details')
         if (options) options.open = true
-        input.setCustomValidity('Include at least one letter A–Z or number in this label.')
+        input.setCustomValidity('Include at least one letter A-Z or number in this label.')
         input.reportValidity()
         return
       }
     }
     const socialSources = ['x', 'twitter', 'facebook', 'linkedin', 'discord', 'instagram', 'reddit', 'tiktok', 'youtube', 'bluesky', 'threads', 'mastodon', 'telegram', 'whatsapp']
     labels.medium = $('medium').value || (labels.source === 'email' ? 'email' : socialSources.includes(labels.source) ? 'social' : 'referral')
-    const url = siteUrl($('landing').value)
+    const url = siteUrl($('landing').value, window.location.href, destination.value)
     for (const field of ['source', 'medium', 'campaign', 'content']) if (labels[field]) url.searchParams.set(`utm_${field}`, labels[field])
     $('campaign-url').value = url.href
     $('campaign-summary').textContent = `Copy this link into your post or message. Visits will appear under “${labels.source}” in Traffic sources.${labels.campaign ? ` Group: “${labels.campaign}” in Shared link results.` : ''}${labels.content ? ` Post label: “${labels.content}”.` : ''}`

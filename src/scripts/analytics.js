@@ -111,7 +111,7 @@ export function initAnalytics() {
     if (!link) return
     const target = new URL(link.href)
     if (link.hasAttribute('download')) trackEvent('file_download', 'resource')
-    else if (target.origin === 'https://calendly.com' && target.pathname.replace(/\/$/, '') === '/jonkwilliams') trackEvent('booking_click', serviceDetail(link.dataset.service) || 'calendly')
+    else if (target.origin === 'https://calendly.com' && ['/jonkwilliams', '/jonkwilliams/30min'].includes(target.pathname.replace(/\/$/, ''))) trackEvent('booking_click', serviceDetail(link.dataset.service) || 'calendly')
     else if (target.origin !== location.origin) {
       if (['https:', 'http:', 'mailto:', 'tel:'].includes(target.protocol)) trackEvent('outbound_click', target.protocol === 'mailto:' ? 'email' : target.protocol === 'tel:' ? 'phone' : 'external')
     } else if (link.matches('.btn, .nav-cta, .project-actions .text-link')) trackEvent('cta_click', serviceDetail(target.searchParams.get('service')) || pageName(target.pathname) || 'section')

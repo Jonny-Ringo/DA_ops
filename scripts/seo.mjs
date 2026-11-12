@@ -1,34 +1,49 @@
-import { basename } from 'node:path'
+import { relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const root = fileURLToPath(new URL('../', import.meta.url))
 
 export const site = 'https://daops.net/'
 export const pages = {
   'index.html': {
     path: '', name: 'Home', type: 'WebPage',
-    title: 'DA Operations | Technical Assistance, Analytics & Automation',
-    description: 'Technical and community support, custom dashboards, executive operations, and ecosystem partnerships. Scoped projects and ongoing operational support.',
+    title: 'DA Operations | Community Management & Technical Support',
+    description: 'Community management, technical support, and reporting for growing teams and Web3 ecosystems. Custom dashboards, developer onboarding, and ongoing operations.',
   },
-  'about.html': {
-    path: 'about.html', name: 'About', type: 'AboutPage',
+  'about/index.html': {
+    path: 'about/', name: 'About', type: 'AboutPage',
     title: 'About DA Operations | Technical & Operational Experience',
     description: 'Meet DA Operations and founder Jonny Ringo. Technical investigations, developer support, and ecosystem operations for communities exceeding 80,000 members.',
   },
-  'how-we-work.html': {
-    path: 'how-we-work.html', name: 'How We Work', type: 'WebPage',
-    title: 'How We Work | Scoped Projects & Ongoing Operations | DA Operations',
-    description: 'From one technical fix to ongoing operations: discover how DA scopes projects, investigates problems, and combines hands-on expertise with AI-assisted workflows.',
-  },
-  'contact.html': {
-    path: 'contact.html', name: 'Contact', type: 'ContactPage',
+  'contact/index.html': {
+    path: 'contact/', name: 'Contact', type: 'ContactPage',
     title: 'Book a Consultation | DA Operations',
     description: 'Book a free consultation with DA Operations about community support, reporting dashboards, data collection, or ongoing operations.',
   },
-  'privacy.html': {
-    path: 'privacy.html', name: 'Analytics Privacy', type: 'WebPage',
+  'community-management/index.html': {
+    path: 'community-management/', name: 'Community Management', type: 'WebPage', service: true,
+    title: 'Community Management Services | Discord & Web3 | DA Ops',
+    description: 'Technical community management for Discord, Telegram, and Web3 ecosystems. Human-led support, developer onboarding, moderation, and reporting.',
+  },
+  'discord-community-management-scope/index.html': {
+    path: 'discord-community-management-scope/', name: 'Discord Community Management Guide', type: 'WebPage', article: true,
+    title: 'Let’s Build a Helpful, Efficient Discord | DA Operations',
+    description: 'A guide to Discord community management: onboarding, permissions, channels, roles, bots, moderation, and ongoing support and reporting.',
+    heading: 'Let’s Build a Helpful, Efficient Discord',
+  },
+  'technical-support-escalation/index.html': {
+    path: 'technical-support-escalation/', name: 'Technical Support Escalation', type: 'WebPage', article: true,
+    title: 'Escalating Community Support to Engineering | DA Operations',
+    description: 'How technical community support investigates issues, prepares useful engineering handoffs, and follows through, with an illustrative community issue report.',
+    heading: 'How Community Support Should Escalate Issues to Engineering',
+  },
+  'privacy/index.html': {
+    path: 'privacy/', name: 'Analytics Privacy', type: 'WebPage',
     title: 'Analytics Privacy & Preferences | DA Operations',
     description: 'Learn what DA Operations website analytics collects, how public Arweave storage works, and how to manage your browser tracking preferences.',
   },
-  'analytics.html': {
-    path: 'analytics.html', name: 'Site Activity', type: 'WebPage', noindex: true,
+  'analytics/index.html': {
+    path: 'analytics/', name: 'Site Activity', type: 'WebPage', noindex: true,
     title: 'Site Activity & Analytics | DA Operations',
     description: 'View public DA Operations website traffic, engagement, and shared link results. Create tracked links and manage this browser’s analytics preferences.',
   },
@@ -46,21 +61,21 @@ const services = [
 export function renderMetadata(page) {
   const url = new URL(page.path, site).href
   const image = new URL('brand/social-preview.png', site).href
-  const imageAlt = 'DA Operations. Technical assistance, analytics and automation. Scoped projects and ongoing operations. daops.net.'
+  const imageAlt = 'DA Operations. Community management and technical support. Reporting, partnerships and ongoing operations. daops.net.'
   const graph = [
     {
       '@type': 'Organization', '@id': `${site}#organization`, name: 'DA Operations', url: site,
       description: pages['index.html'].description,
       sameAs: ['https://x.com/DA_Ops1'],
       logo: { '@type': 'ImageObject', url: `${site}brand/logo.png`, width: 129, height: 129 },
-      founder: { '@type': 'Person', name: 'Jonny Ringo', url: 'https://jonnyringo.arweave.net' },
+      founder: { '@type': 'Person', name: 'Jon Williams', alternateName: 'Jonny Ringo', url: 'https://jonnyringo.arweave.net' },
     },
     { '@type': 'WebSite', '@id': `${site}#website`, url: site, name: 'DA Operations', inLanguage: 'en-US', publisher: { '@id': `${site}#organization` } },
     {
       '@type': page.type, '@id': `${url}#webpage`, url, name: page.title, description: page.description,
       inLanguage: 'en-US', isPartOf: { '@id': `${site}#website` }, about: { '@id': `${site}#organization` },
       primaryImageOfPage: { '@type': 'ImageObject', url: image, width: 1200, height: 630 },
-      ...(page.path ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
+      ...(page.path && page.breadcrumb !== false ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
     },
   ]
   if (!page.path) {
@@ -71,10 +86,27 @@ export function renderMetadata(page) {
       url: `${site}#${service.id}`, provider: { '@id': `${site}#organization` },
     })))
   }
-  if (page.path) graph.push({
+  if (page.service) {
+    graph[2].mainEntity = { '@id': `${url}#service` }
+    graph.push({
+      '@type': 'Service', '@id': `${url}#service`, name: 'Technical Community Management & Support',
+      serviceType: 'Community management and technical support', url,
+      description: page.description, provider: { '@id': `${site}#organization` },
+    })
+  }
+  if (page.article) {
+    graph[2].mainEntity = { '@id': `${url}#article` }
+    graph.push({
+      '@type': 'Article', '@id': `${url}#article`, headline: page.heading, description: page.description,
+      mainEntityOfPage: { '@id': `${url}#webpage` }, image,
+      author: { '@id': `${site}#organization` }, publisher: { '@id': `${site}#organization` },
+    })
+  }
+  if (page.path && page.breadcrumb !== false) graph.push({
     '@type': 'BreadcrumbList', '@id': `${url}#breadcrumb`, itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: site },
-      { '@type': 'ListItem', position: 2, name: page.name, item: url },
+      ...(page.article ? [{ '@type': 'ListItem', position: 2, name: 'Community Management', item: `${site}community-management/` }] : []),
+      { '@type': 'ListItem', position: page.article ? 3 : 2, name: page.name, item: url },
     ],
   })
   return `
@@ -82,7 +114,7 @@ export function renderMetadata(page) {
     <meta name="description" content="${escape(page.description)}">
     <link rel="canonical" href="${url}">
     <meta name="robots" content="${page.noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="${page.article ? 'article' : 'website'}">
     <meta property="og:site_name" content="DA Operations">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="${escape(page.title)}">
@@ -110,7 +142,7 @@ export function seoPlugin() {
     transformIndexHtml: {
       order: 'pre',
       handler(html, context) {
-        const page = pages[basename(context.filename)]
+        const page = pages[relative(root, context.filename).replace(/\\/g, '/')]
         return page ? html.replace('<!-- SITE_METADATA -->', renderMetadata(page)) : html
       },
     },

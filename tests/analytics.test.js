@@ -13,6 +13,14 @@ test('canonical pages strip manifest IDs, reject arbitrary paths and never inclu
   assert.equal(pageName('/index.html'), '/')
   assert.equal(pageName('/' + 'a'.repeat(43) + '/contact.html'), '/contact')
   assert.equal(pageName('/contact/'), '/contact')
+  assert.equal(pageName('/contact/index.html'), '/contact')
+  assert.equal(pageName('/' + 'a'.repeat(43) + '/contact/'), '/contact')
+  for (const page of ['community-management', 'the-eye', 'discord-community-management-scope', 'technical-support-escalation']) {
+    assert.equal(pageName('/' + page + '.html'), '/' + page)
+    assert.equal(pageName('/' + page + '/'), '/' + page)
+    assert.equal(pageName('/' + page + '/index.html'), '/' + page)
+    assert.equal(parseEvent(transaction(event({ page: '/' + page }))).page, '/' + page)
+  }
   assert.equal(pageName('/private/person@example.com'), null)
   assert.equal(pageName('/analytics.html'), null)
 })
@@ -23,14 +31,21 @@ test('attribution only accepts campaign labels and referrer hostnames', () => {
   assert.equal(attribution('https://arweave.net/', 'https://arweave.net/about').source, 'direct')
 })
 
-test('share URLs keep the current manifest and always use arweave.net', () => {
+test('promotion URLs use the canonical domain and snapshots require an explicit choice', () => {
   const current = 'a'.repeat(43), previous = 'b'.repeat(43)
   assert.equal(arweaveBase(`https://arweave.net/${current}/analytics.html?ignored=1`, previous), `https://arweave.net/${current}/`)
   assert.equal(arweaveBase(`https://sandbox.arweave.net/${current}/analytics`, previous), `https://arweave.net/${current}/`)
   assert.equal(arweaveBase('http://localhost:5173/analytics.html', previous), `https://arweave.net/${previous}/`)
   assert.equal(arweaveBase(`https://unrelated.example/${current}/analytics.html`, previous), `https://arweave.net/${previous}/`)
-  assert.equal(siteUrl('/about.html', `https://sandbox.arweave.net/${current}/analytics.html`).href, `https://arweave.net/${current}/about.html`)
-  assert.equal(siteUrl('/', `https://arweave.net/${current}/analytics.html`).href, `https://arweave.net/${current}/`)
+  assert.equal(siteUrl('/about/', `https://sandbox.arweave.net/${current}/analytics/`).href, 'https://daops.net/about/')
+  assert.equal(siteUrl('/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/`)
+  assert.equal(siteUrl('/community-management/', 'http://localhost:5173').href, 'https://daops.net/community-management/')
+  assert.equal(siteUrl('/about/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/about/`)
+  for (const oldPage of ['/about.html', '/how-we-work.html', '/the-eye.html']) {
+    assert.throws(() => siteUrl(oldPage, 'http://localhost:5173'), /Unknown site page/)
+  }
+  assert.throws(() => siteUrl('/community-management/', 'http://localhost:5173', 'snapshot'), /not in the saved snapshot/)
+  assert.throws(() => siteUrl('/', 'https://daops.net', 'untrusted'), /Unknown link destination/)
   assert.throws(() => arweaveBase('http://localhost:5173/', ''), /No published/)
   assert.throws(() => siteUrl('//unrelated.example/', `https://arweave.net/${current}/`), /Unknown site page/)
 })

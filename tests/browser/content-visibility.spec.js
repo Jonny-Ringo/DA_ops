@@ -6,7 +6,7 @@ test('content stays readable when JavaScript cannot load', async ({ page }) => {
     return request.resourceType() === 'script' || !request.url().startsWith(process.env.PLAYWRIGHT_BASE_URL)
       ? route.abort() : route.continue()
   })
-  for (const path of ['/', '/about.html', '/how-we-work.html', '/contact.html']) {
+  for (const path of ['/', '/about/', '/community-management/', '/contact/']) {
     await page.goto(path)
     const hidden = await page.locator('.fade-up').evaluateAll(elements => elements.filter(el => getComputedStyle(el).opacity === '0').length)
     expect(hidden, path).toBe(0)

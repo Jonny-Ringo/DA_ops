@@ -1,17 +1,22 @@
 import { resolve } from 'path'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
-import { seoPlugin } from './scripts/seo.mjs'
-import { availablePort } from './scripts/free-port.mjs'
+import { pages, seoPlugin } from './scripts/seo.mjs'
 
 const deployment = JSON.parse(readFileSync(new URL('./.deployments/latest.json', import.meta.url), 'utf8'))
 
-export default defineConfig(async ({ command }) => ({
+export default defineConfig({
   base: './',
-  server: { port: command === 'serve' ? await availablePort() : undefined, strictPort: false },
-  preview: { port: command === 'serve' ? await availablePort() : undefined, strictPort: false },
+  appType: 'mpa',
+  // Use one loopback address so localhost's IPv4/IPv6 split cannot hide a busy port.
+  // Let Vite choose the next free port and retain it across config reloads.
+  server: { host: '127.0.0.1', strictPort: false },
+  preview: { host: '127.0.0.1', strictPort: false },
   plugins: [seoPlugin()],
-  define: { __ARWEAVE_MANIFEST__: JSON.stringify(deployment.manifestId) },
+  define: {
+    __ARWEAVE_MANIFEST__: JSON.stringify(deployment.manifestId),
+    __ARWEAVE_PAGES__: JSON.stringify(Object.keys(deployment.files).filter(file => file.endsWith('.html'))),
+  },
   build: {
     rollupOptions: {
       output: {
@@ -21,14 +26,7 @@ export default defineConfig(async ({ command }) => ({
           return `assets/${name}-[hash][extname]`
         },
       },
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        about: resolve(__dirname, 'about.html'),
-        'how-we-work': resolve(__dirname, 'how-we-work.html'),
-        contact: resolve(__dirname, 'contact.html'),
-        analytics: resolve(__dirname, 'analytics.html'),
-        privacy: resolve(__dirname, 'privacy.html'),
-      },
+      input: Object.fromEntries(Object.keys(pages).map(file => [file.replace(/\/?index\.html$/, '') || 'index', resolve(__dirname, file)])),
     },
   },
-}))
+})

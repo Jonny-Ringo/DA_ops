@@ -7,13 +7,36 @@ Local development
   npm ci
   npm run dev
 
-Dev and preview choose an available port at startup. Use the address printed
-by Vite. Browser tests allocate their own port. An explicit --port option still
-works if needed; normal startup is not tied to 5173 or 4173.
+Dev and preview use 127.0.0.1 so they check ports on the same local address
+instead of splitting between localhost's IPv4 and IPv6 addresses. Dev starts
+at 5173 and preview at 4173, automatically trying the next port if one is
+occupied. These are starting points, not locked ports. Use the 127.0.0.1 address
+printed by Vite and leave that server running while editing; dev retains its
+chosen port through normal edits and automatic configuration reloads. After
+stopping and starting a new process, the first available port may differ.
+Browser tests allocate their own temporary port. An explicit --port option
+still works when needed.
+
+Page layout and public URLs
+  The homepage is index.html. Each other page lives in its own directory:
+    about/index.html                         -> /about/
+    community-management/index.html          -> /community-management/
+    contact/index.html                       -> /contact/
+    discord-community-management-scope/index.html -> /discord-community-management-scope/
+    technical-support-escalation/index.html  -> /technical-support-escalation/
+    privacy/index.html                       -> /privacy/
+    analytics/index.html                     -> /analytics/
+  Edit those files directly. scripts/seo.mjs registers their metadata and
+  supplies the build and deployment page list. Links and assets are relative
+  to each page so the built site also works inside an Arweave manifest.
+  Old flat .html pages and redirect stubs have been removed intentionally.
+  Vite uses multi-page mode; missing pages return 404 instead of the homepage.
+  Historical analytics keep their existing page names. New marketing links
+  use clean URLs; an explicitly selected saved snapshot uses its own layout.
 
 Calendly and analytics update
   Every Contact and consultation CTA opens https://calendly.com/jonkwilliams.
-  Old contact.html links remain usable, with a booking button and email fallback.
+  /contact/ provides a booking button and email fallback.
   The Formspree form and submission code have been removed.
   booking_click events retain allowlisted service context and campaign labels;
   they measure opening Calendly, not confirmed appointments.

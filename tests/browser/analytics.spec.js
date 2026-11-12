@@ -4,6 +4,23 @@ import { eventTags } from '../../src/scripts/analytics-core.js'
 import { readFileSync } from 'node:fs'
 const publishedUrl = JSON.parse(readFileSync(new URL('../../.deployments/latest.json', import.meta.url), 'utf8')).url
 
+test('snapshot sharing is explicit and cannot link a new page into an older deployment', async ({ page }) => {
+  await setup(page)
+  await page.goto('/analytics/')
+  await page.locator('#source').fill('LinkedIn')
+  await page.getByText('More options (optional)', { exact: true }).click()
+  await expect(page.locator('#destination')).toHaveValue('current')
+  await page.locator('#destination').selectOption('snapshot')
+  await page.getByRole('button', { name: 'Create link', exact: true }).click()
+  await expect(page.locator('#campaign-url')).toHaveValue(`${publishedUrl}?utm_source=linkedin&utm_medium=social`)
+  await page.locator('#landing').selectOption('/community-management/')
+  await expect(page.locator('.campaign-result')).toBeHidden()
+  await expect(page.locator('#destination')).toHaveValue('current')
+  await expect(page.locator('#destination option[value="snapshot"]')).toHaveJSProperty('disabled', true)
+  await page.getByRole('button', { name: 'Create link', exact: true }).click()
+  await expect(page.locator('#campaign-url')).toHaveValue('https://daops.net/community-management/?utm_source=linkedin&utm_medium=social')
+})
+
 async function setup(page, options = {}) {
   const events = [], errors = []
   page.on('pageerror', error => errors.push(error.message))
@@ -36,11 +53,11 @@ test('Calendly clicks retain campaign and service context without claiming a boo
   const popupPromise = page.waitForEvent('popup')
   await page.locator('.featured-project').getByRole('link', { name: 'Discuss a Reporting Project' }).click()
   const popup = await popupPromise
-  await expect(popup).toHaveURL('https://calendly.com/jonkwilliams')
+  await expect(popup).toHaveURL('https://calendly.com/jonkwilliams/30min')
   await expect.poll(() => events.some(e => e.type === 'booking_click')).toBe(true)
   expect(events.find(e => e.type === 'booking_click').detail).toBe('service:reporting')
   await popup.close()
-  await page.goto('/about.html')
+  await page.goto('/about/')
   await expect.poll(() => events.some(e => e.page === '/about')).toBe(true)
   const secondPopup = page.waitForEvent('popup')
   await page.locator('.nav-cta').click()
@@ -56,6 +73,25 @@ test('Calendly clicks retain campaign and service context without claiming a boo
   expect(events.every(e => e.campaign === 'launch')).toBe(true)
   expect(JSON.stringify(events)).not.toMatch(/private|email=/)
   expect(errors).toEqual([])
+})
+
+test('new service inquiries track booking and email intent without copying message data', async ({ page, context }) => {
+  const { events } = await setup(page)
+  await context.route('https://calendly.com/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Appointment page test</h1>' }))
+  await page.goto('/community-management/?utm_source=discord&utm_campaign=community_support&email=private')
+  await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === '/community-management')).toBe(true)
+  const popup = page.waitForEvent('popup')
+  await page.locator('main [data-service="customer-support"]').first().click()
+  await (await popup).close()
+  await expect.poll(() => events.some(e => e.type === 'booking_click' && e.detail === 'service:customer-support')).toBe(true)
+  await page.locator('main a[href^="mailto:"]').first().evaluate(link => {
+    link.addEventListener('click', e => e.preventDefault())
+    link.click()
+  })
+  await expect.poll(() => events.some(e => e.type === 'outbound_click' && e.detail === 'email')).toBe(true)
+  expect(events.every(e => e.campaign === 'community_support')).toBe(true)
+  expect(events.some(e => e.type.startsWith('form_'))).toBe(false)
+  expect(JSON.stringify(events)).not.toMatch(/private|jonny@daops\.net|@gmail|email=/)
 })
 
 test('queued signed events retry identically after a failed upload and reload', async ({ page }) => {
@@ -75,11 +111,11 @@ test('queued signed events retry identically after a failed upload and reload', 
 for (const scenario of [{ optout: true }, { dnt: true }, { testMode: false }, { deniedStorage: true }]) {
   test(`privacy/local-preview controls are respected: ${JSON.stringify(scenario)}`, async ({ page }) => {
     const { events, errors } = await setup(page, scenario)
-    await page.goto('/contact.html')
+    await page.goto('/contact/')
     await page.waitForTimeout(300)
     expect(events).toHaveLength(0)
     expect(errors).toEqual([])
-    await expect(page.locator('.booking-link')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
+    await expect(page.locator('.booking-link')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
   })
 }
 
@@ -88,14 +124,14 @@ test('dashboard renders indexed traffic safely, builds promotion links and fits 
   const session = crypto.randomUUID()
   const records = ['page_view', 'cta_click', 'booking_click'].map(type => ({ id: crypto.randomUUID(), session, time: Date.now(), type, page: '/', source: '<img src=x onerror=alert(1)>', campaign: 'launch', medium: 'social', content: '', detail: '', device: 'desktop' }))
   await page.route('**/graphql', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { transactions: { pageInfo: { hasNextPage: false }, edges: records.map(e => ({ cursor: e.id, node: { id: 'a'.repeat(43), tags: eventTags(e) } })) } } }) }))
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await expect(page.locator('#status')).toContainText('3 events loaded')
   await expect(page.locator('#metrics')).toContainText('100.0%')
   expect(await page.locator('#sources img').count()).toBe(0)
   await page.locator('#source').fill('linkedin')
   await page.locator('#campaign').fill('october_launch')
   await page.getByRole('button', { name: 'Create link' }).click()
-  await expect(page.locator('#campaign-url')).toHaveValue(`${publishedUrl}?utm_source=linkedin&utm_medium=social&utm_campaign=october_launch`)
+  await expect(page.locator('#campaign-url')).toHaveValue(`https://daops.net/?utm_source=linkedin&utm_medium=social&utm_campaign=october_launch`)
   await page.locator('#exclude').check()
   expect(await page.evaluate(() => localStorage.getItem('da.analytics.optout'))).toBe('true')
   for (const width of [1440, 390, 320]) {
@@ -110,7 +146,7 @@ test('dashboard renders indexed traffic safely, builds promotion links and fits 
 test('dashboard distinguishes service failure from zero traffic', async ({ page }) => {
   await setup(page)
   await page.route('**/graphql', route => route.fulfill({ status: 503 }))
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await expect(page.locator('#status')).toContainText('No traffic totals are available yet.')
   await expect(page.locator('#metrics strong').first()).toHaveText('-')
   await expect(page.locator('#export')).toBeDisabled()
@@ -118,16 +154,16 @@ test('dashboard distinguishes service failure from zero traffic', async ({ page 
 
 test('share links accept the screenshot phrases and preserve every supplied label', async ({ page }) => {
   await setup(page)
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await expect(page.locator('.campaign-options')).not.toHaveAttribute('open')
-  await page.locator('#landing').selectOption('/about.html')
+  await page.locator('#landing').selectOption('/about/')
   await page.locator('#source').fill('X')
   await page.locator('#campaign').fill('October Spooky Vibes')
   await page.getByText('More options (optional)', { exact: true }).click()
   await page.locator('#medium').selectOption('social')
   await page.locator('#content').fill('Does your community need support')
   await page.getByRole('button', { name: 'Create link', exact: true }).click()
-  await expect(page.locator('#campaign-url')).toHaveValue(`${publishedUrl}about.html?utm_source=x&utm_medium=social&utm_campaign=october_spooky_vibes&utm_content=does_your_community_need_support`)
+  await expect(page.locator('#campaign-url')).toHaveValue(`https://daops.net/about/?utm_source=x&utm_medium=social&utm_campaign=october_spooky_vibes&utm_content=does_your_community_need_support`)
   await expect(page.locator('#campaign-summary')).toContainText('october_spooky_vibes')
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
   await page.getByRole('button', { name: 'Copy link', exact: true }).click()
@@ -145,10 +181,10 @@ test('share links accept the screenshot phrases and preserve every supplied labe
 
 test('share links work with only a source and reject unusable labels without stale links', async ({ page }) => {
   await setup(page)
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await page.locator('#source').fill('Email')
   await page.getByRole('button', { name: 'Create link', exact: true }).click()
-  await expect(page.locator('#campaign-url')).toHaveValue(`${publishedUrl}?utm_source=email&utm_medium=email`)
+  await expect(page.locator('#campaign-url')).toHaveValue(`https://daops.net/?utm_source=email&utm_medium=email`)
   await page.locator('#campaign').fill('!!!')
   await page.getByRole('button', { name: 'Create link', exact: true }).click()
   await expect(page.locator('.campaign-result')).toBeHidden()
@@ -160,14 +196,14 @@ test('share links work with only a source and reject unusable labels without sta
 
 test('all content pages track, scroll and engagement record, privacy page does not track', async ({ page }) => {
   const { events, errors } = await setup(page)
-  for (const path of ['/about.html', '/how-we-work.html']) {
+  for (const path of ['/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
     await page.goto(path)
-    await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === path.replace('.html', ''))).toBe(true)
+    await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === path.replace(/\/$/, ''))).toBe(true)
   }
   await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }))
   await expect.poll(() => events.some(e => e.type === 'scroll_depth' && e.detail === '100')).toBe(true)
   await expect.poll(() => events.some(e => e.type === 'engaged_visit'), { timeout: 20000 }).toBe(true)
-  await page.goto('/privacy.html')
+  await page.goto('/privacy/')
   expect(events.some(e => e.page === '/privacy')).toBe(false)
   await page.locator('[data-analytics-preference]').click()
   await expect(page.locator('[data-analytics-preference]')).toHaveText('Analytics off in this browser')

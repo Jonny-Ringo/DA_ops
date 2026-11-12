@@ -54,7 +54,7 @@ try {
   await page.route('**/*', route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
   for (const width of [360, 390, 430, 768, 1024, 1363]) {
     await page.setViewportSize({ width, height: 936 })
-    for (const path of ['/', '/contact.html', '/about.html', '/how-we-work.html']) {
+    for (const path of ['/', '/contact/', '/about/', '/community-management/']) {
       await page.goto(origin + path)
       for (const section of await page.locator('main > section').all()) await section.scrollIntoViewIfNeeded()
       await page.evaluate(() => { document.activeElement?.blur(); window.scrollTo({ top: 0, behavior: 'instant' }) })

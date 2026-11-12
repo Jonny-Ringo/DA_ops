@@ -25,7 +25,7 @@ test('cached history renders immediately and chart focus survives background sta
     if (url === 'https://up.arweave.net/tx') uploads++
     return url.startsWith(process.env.PLAYWRIGHT_BASE_URL) ? route.continue() : route.abort()
   })
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await expect(page.locator('#status')).toContainText('1 events loaded')
   await expect.poll(() => pending.length).toBeGreaterThanOrEqual(2)
   const first = page.locator('.analytics-day').first()
@@ -58,7 +58,7 @@ test('changing period cancels old queries and cannot restore stale counts', asyn
     }
     return route.request().url().startsWith(process.env.PLAYWRIGHT_BASE_URL) ? route.continue() : route.abort()
   })
-  await page.goto('/analytics.html')
+  await page.goto('/analytics/')
   await expect.poll(() => pending.length).toBeGreaterThanOrEqual(2)
   hold = false
   await page.locator('#period').selectOption('1')
@@ -101,7 +101,7 @@ test('stalled shared-cache downloads cannot delay fresh history or replace it la
     return route.abort()
   })
   try {
-    await page.goto('/analytics.html')
+    await page.goto('/analytics/')
     await expect(page.locator('#status')).toContainText('Checked against indexed records', { timeout: 4000 })
     expect(partRequested).toBe(true)
     await expect(page.locator('#metrics strong').first()).toHaveText('2')
@@ -135,7 +135,7 @@ for (const mode of ['allowed', 'optout', 'dnt', 'gpc', 'storage-denied', 'http']
       }
       return route.abort()
     })
-    await page.goto(origin + '/analytics.html')
+    await page.goto(origin + '/analytics/')
     await expect(page.locator('#status')).toContainText('Checked against indexed records')
     if (mode === 'allowed') {
       await expect(page.locator('#status')).toContainText('1 shared snapshots saved')

@@ -4,12 +4,13 @@ export const VERSION = '1'
 export const UPLOAD_URL = 'https://up.arweave.net/tx'
 export const QUERY_URLS = ['https://arweave.net/graphql', 'https://arweave-search.goldsky.com/graphql']
 export const EVENTS = ['session_start', 'page_view', 'cta_click', 'booking_click', 'navigation_click', 'outbound_click', 'file_download', 'scroll_depth', 'engaged_visit', 'form_start', 'form_submit', 'form_success', 'form_error']
-export const PAGES = ['/', '/about', '/how-we-work', '/contact']
+// Retain retired page names so historical traffic remains readable.
+export const PAGES = ['/', '/about', '/how-we-work', '/contact', '/community-management', '/the-eye', '/discord-community-management-scope', '/technical-support-escalation']
 export const KEYS = { session: 'da.analytics.session.v1', queue: 'da.analytics.queue.v1', optout: 'da.analytics.optout', wallet: 'da.analytics.wallet.v1' }
 
 // Canonical page names only: no arbitrary paths, query strings, or fragments.
 export function pageName(path) {
-  const clean = path.replace(/^\/[\w-]{43}(?=\/|$)/, '').replace(/\/$/, '').replace(/\.html$/, '')
+  const clean = path.replace(/^\/[\w-]{43}(?=\/|$)/, '').replace(/\/index\.html$/, '/').replace(/\/$/, '').replace(/\.html$/, '')
   const page = !clean || clean === '/index' ? '/' : clean
   return PAGES.includes(page) ? page : null
 }

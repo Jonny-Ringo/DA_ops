@@ -10,9 +10,9 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   const links = new Set()
-  for (const width of [1440, 1024, 768, 430, 390, 360, 320]) {
+  for (const width of [1440, 1280, 1100, 1024, 768, 430, 390, 360, 320]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const path of ['/', '/contact.html', '/how-we-work.html', '/about.html']) {
+    for (const path of ['/', '/contact/', '/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
       await page.goto(path)
       await expect(page.locator('main h1')).toHaveCount(1)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} at ${width}px`).toBe(true)
@@ -22,7 +22,7 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(page.locator('.hero-title')).toBeInViewport()
         await expect(page.locator('.hero-cta a')).toBeInViewport()
         for (const link of await page.locator('.services .service-next a').all()) {
-          await expect(link).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
+          await expect(link).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
           await expect(link).toHaveAttribute('data-service', /^(customer-support|reporting|executive-operations|technical-fixes)$/)
         }
         const screenshot = page.locator('.project-screenshot img')
@@ -32,9 +32,9 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(projectLink).toHaveAttribute('href', 'https://eye-of-ao.arweave.net')
         await expect(projectLink).toHaveAttribute('target', '_blank')
         await expect(projectLink).toHaveAttribute('rel', 'noopener noreferrer')
-        await expect(page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true })).toHaveAttribute('href', 'https://calendly.com/jonkwilliams')
+        await expect(page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true })).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
       }
-      if ([1440, 390].includes(width) && ['/', '/contact.html'].includes(path)) {
+      if ([1440, 390].includes(width) && ['/', '/contact/'].includes(path)) {
         await page.evaluate(() => { document.activeElement?.blur(); window.scrollTo({ top: 0, behavior: 'instant' }) })
         await page.screenshot({ path: `audit/restructure-${path === '/' ? 'home' : 'contact'}-${width}.png`, fullPage: true })
       }
@@ -62,6 +62,6 @@ test('skip link and mobile navigation are usable from a keyboard', async ({ page
   await page.keyboard.press('Enter')
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
   await page.locator('#nav-links').getByRole('link', { name: 'About', exact: true }).click()
-  await expect(page).toHaveURL(/about\.html$/)
+  await expect(page).toHaveURL(/about\/$/)
   await expect(toggle).toHaveAttribute('aria-expanded', 'false')
 })

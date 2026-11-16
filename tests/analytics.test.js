@@ -15,7 +15,7 @@ test('canonical pages strip manifest IDs, reject arbitrary paths and never inclu
   assert.equal(pageName('/contact/'), '/contact')
   assert.equal(pageName('/contact/index.html'), '/contact')
   assert.equal(pageName('/' + 'a'.repeat(43) + '/contact/'), '/contact')
-  for (const page of ['community-management', 'the-eye', 'discord-community-management-scope', 'technical-support-escalation']) {
+  for (const page of ['contact', 'community-management', 'the-eye', 'discord-community-management-scope', 'technical-support-escalation']) {
     assert.equal(pageName('/' + page + '.html'), '/' + page)
     assert.equal(pageName('/' + page + '/'), '/' + page)
     assert.equal(pageName('/' + page + '/index.html'), '/' + page)
@@ -41,7 +41,7 @@ test('promotion URLs use the canonical domain and snapshots require an explicit 
   assert.equal(siteUrl('/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/`)
   assert.equal(siteUrl('/community-management/', 'http://localhost:5173').href, 'https://daops.net/community-management/')
   assert.equal(siteUrl('/about/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/about/`)
-  for (const oldPage of ['/about.html', '/how-we-work.html', '/the-eye.html']) {
+  for (const oldPage of ['/about.html', '/contact/', '/how-we-work.html', '/the-eye.html']) {
     assert.throws(() => siteUrl(oldPage, 'http://localhost:5173'), /Unknown site page/)
   }
   assert.throws(() => siteUrl('/community-management/', 'http://localhost:5173', 'snapshot'), /not in the saved snapshot/)

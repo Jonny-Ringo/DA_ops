@@ -13,21 +13,16 @@ export const pages = {
   'about/index.html': {
     path: 'about/', name: 'About', type: 'AboutPage',
     title: 'About DA Operations | Technical & Operational Experience',
-    description: 'Meet DA Operations and founder Jonny Ringo. Technical investigations, developer support, and ecosystem operations for communities exceeding 80,000 members.',
-  },
-  'contact/index.html': {
-    path: 'contact/', name: 'Contact', type: 'ContactPage',
-    title: 'Book a Consultation | DA Operations',
-    description: 'Book a free consultation with DA Operations about community support, reporting dashboards, data collection, or ongoing operations.',
+    description: 'Meet Jon Williams, Founder and CEO of DA Operations. Experience in technical support, developer onboarding, and operations for communities exceeding 80,000 members.',
   },
   'community-management/index.html': {
     path: 'community-management/', name: 'Community Management', type: 'WebPage', service: true,
-    title: 'Community Management Services | Discord & Web3 | DA Ops',
+    title: 'Community Management Services | Discord & Web3 | DA Operations',
     description: 'Technical community management for Discord, Telegram, and Web3 ecosystems. Human-led support, developer onboarding, moderation, and reporting.',
   },
   'discord-community-management-scope/index.html': {
     path: 'discord-community-management-scope/', name: 'Discord Community Management Guide', type: 'WebPage', article: true,
-    title: 'Let’s Build a Helpful, Efficient Discord | DA Operations',
+    title: 'Discord Community Management: Setup & Support | DA Ops.',
     description: 'A guide to Discord community management: onboarding, permissions, channels, roles, bots, moderation, and ongoing support and reporting.',
     heading: 'Let’s Build a Helpful, Efficient Discord',
   },
@@ -68,7 +63,7 @@ export function renderMetadata(page) {
       description: pages['index.html'].description,
       sameAs: ['https://x.com/DA_Ops1'],
       logo: { '@type': 'ImageObject', url: `${site}brand/logo.png`, width: 129, height: 129 },
-      founder: { '@type': 'Person', name: 'Jon Williams', alternateName: 'Jonny Ringo', url: 'https://jonnyringo.arweave.net' },
+      founder: { '@type': 'Person', name: 'Jon Williams', jobTitle: 'Founder and CEO', url: 'https://jonnyringo.arweave.net' },
     },
     { '@type': 'WebSite', '@id': `${site}#website`, url: site, name: 'DA Operations', inLanguage: 'en-US', publisher: { '@id': `${site}#organization` } },
     {

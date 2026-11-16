@@ -5,7 +5,7 @@ test.use({ javaScriptEnabled: false })
 test('old HTML routes and retired pages return 404 without redirects', async ({ page }) => {
   const origin = process.env.PLAYWRIGHT_BASE_URL
   await page.route('**/*', route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
-  for (const path of ['/about.html', '/contact.html', '/community-management.html', '/discord-community-management-scope.html', '/technical-support-escalation.html', '/privacy.html', '/analytics.html', '/how-we-work.html', '/the-eye.html', '/how-we-work/', '/the-eye/']) {
+  for (const path of ['/about.html', '/contact.html', '/contact', '/contact/', '/contact/index.html', '/community-management.html', '/discord-community-management-scope.html', '/technical-support-escalation.html', '/privacy.html', '/analytics.html', '/how-we-work.html', '/the-eye.html', '/how-we-work/', '/the-eye/']) {
     const response = await page.request.get(path, { maxRedirects: 0 })
     expect(response.status(), path).toBe(404)
     expect(response.headers().location, path).toBeUndefined()

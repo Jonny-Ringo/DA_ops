@@ -111,11 +111,11 @@ test('queued signed events retry identically after a failed upload and reload', 
 for (const scenario of [{ optout: true }, { dnt: true }, { testMode: false }, { deniedStorage: true }]) {
   test(`privacy/local-preview controls are respected: ${JSON.stringify(scenario)}`, async ({ page }) => {
     const { events, errors } = await setup(page, scenario)
-    await page.goto('/contact/')
+    await page.goto('/community-management/')
     await page.waitForTimeout(300)
     expect(events).toHaveLength(0)
     expect(errors).toEqual([])
-    await expect(page.locator('.booking-link')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
+    await expect(page.locator('.page-hero .project-actions a')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
   })
 }
 

@@ -12,7 +12,7 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
   const links = new Set()
   for (const width of [1440, 1280, 1100, 1024, 768, 430, 390, 360, 320]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const path of ['/', '/contact/', '/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
+    for (const path of ['/', '/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
       await page.goto(path)
       await expect(page.locator('main h1')).toHaveCount(1)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} at ${width}px`).toBe(true)
@@ -34,9 +34,9 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
         await expect(projectLink).toHaveAttribute('rel', 'noopener noreferrer')
         await expect(page.locator('.project-entry').getByRole('link', { name: 'Tell Us What You Need', exact: true })).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
       }
-      if ([1440, 390].includes(width) && ['/', '/contact/'].includes(path)) {
+      if ([1440, 390].includes(width) && path === '/') {
         await page.evaluate(() => { document.activeElement?.blur(); window.scrollTo({ top: 0, behavior: 'instant' }) })
-        await page.screenshot({ path: `audit/restructure-${path === '/' ? 'home' : 'contact'}-${width}.png`, fullPage: true })
+        await page.screenshot({ path: `audit/restructure-home-${width}.png`, fullPage: true })
       }
     }
   }

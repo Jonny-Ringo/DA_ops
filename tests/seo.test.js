@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 
 const root = new URL('../dist/', import.meta.url)
-const files = ['index.html', 'about/index.html', 'contact/index.html', 'community-management/index.html', 'discord-community-management-scope/index.html', 'technical-support-escalation/index.html', 'privacy/index.html', 'analytics/index.html']
+const files = ['index.html', 'about/index.html', 'community-management/index.html', 'discord-community-management-scope/index.html', 'technical-support-escalation/index.html', 'privacy/index.html', 'analytics/index.html']
 const htmls = await Promise.all(files.map(file => readFile(new URL(file, root), 'utf8')))
 const decode = value => value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
 
@@ -68,7 +68,7 @@ test('published preview image is a 1200 by 630 PNG and logo is available', async
 })
 
 test('old HTML routes and redirect stubs are absent and navigation uses clean paths', async () => {
-  for (const file of ['about.html', 'contact.html', 'community-management.html', 'discord-community-management-scope.html', 'technical-support-escalation.html', 'privacy.html', 'analytics.html', 'how-we-work.html', 'the-eye.html']) {
+  for (const file of ['about.html', 'contact.html', 'contact/index.html', 'community-management.html', 'discord-community-management-scope.html', 'technical-support-escalation.html', 'privacy.html', 'analytics.html', 'how-we-work.html', 'the-eye.html']) {
     await assert.rejects(readFile(new URL(file, root)), { code: 'ENOENT' })
   }
   for (const [i, html] of htmls.entries()) {

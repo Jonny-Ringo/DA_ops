@@ -1,5 +1,5 @@
 // Promotion links use the main domain. Permanent Arweave snapshots are optional.
-const routes = ['', 'about/', 'contact/', 'community-management/', 'discord-community-management-scope/', 'technical-support-escalation/', 'analytics/', 'privacy/']
+const routes = ['', 'about/', 'community-management/', 'discord-community-management-scope/', 'technical-support-escalation/', 'analytics/', 'privacy/']
 const publishedPages = typeof __ARWEAVE_PAGES__ !== 'undefined' ? __ARWEAVE_PAGES__ : []
 
 function onManifest(href) {

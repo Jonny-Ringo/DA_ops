@@ -1,5 +1,4 @@
 import { initAnalytics } from './analytics.js'
-import { initContact } from './contact.js'
 import { initProjectStrip } from './project-strip.js'
 
 // ==========================================
@@ -140,7 +139,6 @@ function handleExternalLinks() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initAnalytics();
-    initContact();
     initProjectStrip();
     updateNavActiveState();
     window.addEventListener('hashchange', updateNavActiveState);

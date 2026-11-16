@@ -21,7 +21,6 @@ Page layout and public URLs
   The homepage is index.html. Each other page lives in its own directory:
     about/index.html                         -> /about/
     community-management/index.html          -> /community-management/
-    contact/index.html                       -> /contact/
     discord-community-management-scope/index.html -> /discord-community-management-scope/
     technical-support-escalation/index.html  -> /technical-support-escalation/
     privacy/index.html                       -> /privacy/
@@ -35,8 +34,9 @@ Page layout and public URLs
   use clean URLs; an explicitly selected saved snapshot uses its own layout.
 
 Calendly and analytics update
-  Every Contact and consultation CTA opens https://calendly.com/jonkwilliams.
-  /contact/ provides a booking button and email fallback.
+  Every Contact and consultation CTA opens https://calendly.com/jonkwilliams/30min.
+  The standalone contact page has been removed. Email links remain on the
+  community management page, and historical contact analytics remain readable.
   The Formspree form and submission code have been removed.
   booking_click events retain allowlisted service context and campaign labels;
   they measure opening Calendly, not confirmed appointments.

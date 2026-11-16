@@ -42,6 +42,9 @@ for (const prefix of ['/', `/${'a'.repeat(43)}/`]) {
     await expect(page.locator('#nav-links [aria-current="page"]')).toHaveText('About')
     await page.locator('.logo').click()
     await expect(page).toHaveURL(`${origin}${prefix}`)
+    // Finish mounted asset requests before the test disposes their responses.
+    await page.waitForLoadState('networkidle')
+    await page.unrouteAll({ behavior: 'wait' })
     expect(failures).toEqual([])
     expect(errors).toEqual([])
   })

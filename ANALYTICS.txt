@@ -1,14 +1,15 @@
 DA Operations analytics
 
-Open https://daops.net/analytics.html or the footer's Analytics link. The public
+Open https://daops.net/analytics/ or the footer's Analytics link. The public
 dashboard has no login and does not track its own visits. Privacy-page visits
 are also excluded. Sessions are browser-tab visits with a 30-minute inactivity
 limit, not unique people. Indexing is asynchronous; this is not a live counter.
 
 Calendly and conversions
-All Contact and consultation links open https://calendly.com/jonkwilliams.
-The old contact.html address offers a booking button and email fallback. The
-Formspree form and submission code have been removed. booking_click records
+All Contact and consultation links open https://calendly.com/jonkwilliams/30min.
+The standalone contact page and its promotion-link destination have been removed.
+Historical contact-page visits remain readable. The Formspree form and submission
+code have been removed. booking_click records
 opening Calendly, not a confirmed appointment. Appointment click rate counts
 sessions with that event. CTA clicks include booking_click and cta_click.
 Historical form events remain readable/exportable; historical successful form

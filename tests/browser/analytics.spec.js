@@ -65,7 +65,7 @@ test('Calendly clicks retain campaign and service context without claiming a boo
   await expect.poll(() => events.filter(e => e.type === 'booking_click').length).toBe(2)
   await page.goto('/')
   const supportPopup = page.waitForEvent('popup')
-  await page.locator('.page-hero [data-service="customer-support"]').click()
+  await page.locator('#common-questions').getByRole('link', { name: 'Book a call with Jon' }).click()
   await (await supportPopup).close()
   await expect.poll(() => events.some(e => e.type === 'booking_click' && e.detail === 'service:customer-support')).toBe(true)
   expect(events.some(e => e.type.startsWith('form_'))).toBe(false)

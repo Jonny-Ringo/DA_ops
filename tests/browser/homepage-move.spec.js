@@ -30,11 +30,11 @@ test('combined homepage keeps the requested sections together on desktop and mob
   await expect(page.locator('main h2')).toHaveText([
     'When to bring us in',
     'Support that understands your product',
-    'Relevant experience',
     'The Eye: Arweave & AO analytics',
     'Common questions',
     'Plan your support setup',
     'Talk through what you need',
+    'Relevant experience',
   ])
   await expect(page.locator('#services .scope-block')).toHaveCount(4)
   await expect(page.locator('.relevant-experience .project-strip')).toHaveCount(1)

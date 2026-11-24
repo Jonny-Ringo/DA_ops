@@ -972,6 +972,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     border-bottom: 1px solid var(--color-border);
 }
 
+.relevant-experience {
+    padding-bottom: 0;
+}
+
 .relevant-experience .project-strip {
     margin-top: 2.5rem;
 }

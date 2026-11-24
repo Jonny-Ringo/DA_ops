@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 
 const root = new URL('../dist/', import.meta.url)
-const files = ['index.html', 'about/index.html', 'community-management/index.html', 'discord-community-management-scope/index.html', 'technical-support-escalation/index.html', 'privacy/index.html', 'analytics/index.html']
+const files = ['index.html', 'about/index.html', 'discord-community-management-scope/index.html', 'technical-support-escalation/index.html', 'privacy/index.html', 'analytics/index.html']
 const htmls = await Promise.all(files.map(file => readFile(new URL(file, root), 'utf8')))
 const decode = value => value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
 
@@ -67,7 +67,7 @@ test('published preview image is a 1200 by 630 PNG and logo is available', async
   assert.ok((await readFile(new URL('brand/logo.png', root))).length > 0)
 })
 
-test('old HTML routes and redirect stubs are absent and navigation uses clean paths', async () => {
+test('unrelated retired routes are absent and navigation uses clean paths', async () => {
   for (const file of ['about.html', 'contact.html', 'contact/index.html', 'community-management.html', 'discord-community-management-scope.html', 'technical-support-escalation.html', 'privacy.html', 'analytics.html', 'how-we-work.html', 'the-eye.html']) {
     await assert.rejects(readFile(new URL(file, root)), { code: 'ENOENT' })
   }
@@ -81,10 +81,18 @@ test('old HTML routes and redirect stubs are absent and navigation uses clean pa
   }
 })
 
+test('the old community URL ships an immediate static redirect with a homepage canonical', async () => {
+  const html = await readFile(new URL('community-management/index.html', root), 'utf8')
+  assert.match(html, /<meta http-equiv="refresh" content="0; url=\.\.\/">/)
+  assert.match(html, /<link rel="canonical" href="https:\/\/daops\.net\/">/)
+  assert.doesNotMatch(html, /noindex|src="[^"]+\.js|application\/ld\+json/)
+  assert.doesNotMatch(await readFile(new URL('sitemap.xml', root), 'utf8'), /\/community-management\//)
+})
+
 test('service and guide schema describes visible content without invented reviews', () => {
   const graph = file => JSON.parse(htmls[files.indexOf(file)].match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])['@graph']
-  const service = graph('community-management/index.html').find(node => node['@type'] === 'Service')
-  assert.equal(service.url, 'https://daops.net/community-management/')
+  const service = graph('index.html').find(node => node['@type'] === 'Service')
+  assert.equal(service.url, 'https://daops.net/')
   assert.equal(service.provider['@id'], 'https://daops.net/#organization')
   for (const file of ['discord-community-management-scope/index.html', 'technical-support-escalation/index.html']) {
     const article = graph(file).find(node => node['@type'] === 'Article')
@@ -93,6 +101,7 @@ test('service and guide schema describes visible content without invented review
     assert.equal(article.author['@id'], 'https://daops.net/#organization')
   }
   for (const html of htmls) {
+    assert.doesNotMatch(html, /(?:https:\/\/daops\.net\/|\.\/)community-management\//)
     assert.doesNotMatch(html, /"(?:aggregateRating|review)":/)
     assert.doesNotMatch(html, /\u2014|&mdash;|&#(?:8212|x2014);/i)
   }

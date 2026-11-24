@@ -13,12 +13,12 @@ test('snapshot sharing is explicit and cannot link a new page into an older depl
   await page.locator('#destination').selectOption('snapshot')
   await page.getByRole('button', { name: 'Create link', exact: true }).click()
   await expect(page.locator('#campaign-url')).toHaveValue(`${publishedUrl}?utm_source=linkedin&utm_medium=social`)
-  await page.locator('#landing').selectOption('/community-management/')
+  await page.locator('#landing').selectOption('/discord-community-management-scope/')
   await expect(page.locator('.campaign-result')).toBeHidden()
   await expect(page.locator('#destination')).toHaveValue('current')
   await expect(page.locator('#destination option[value="snapshot"]')).toHaveJSProperty('disabled', true)
   await page.getByRole('button', { name: 'Create link', exact: true }).click()
-  await expect(page.locator('#campaign-url')).toHaveValue('https://daops.net/community-management/?utm_source=linkedin&utm_medium=social')
+  await expect(page.locator('#campaign-url')).toHaveValue('https://daops.net/discord-community-management-scope/?utm_source=linkedin&utm_medium=social')
 })
 
 async function setup(page, options = {}) {
@@ -64,10 +64,10 @@ test('Calendly clicks retain campaign and service context without claiming a boo
   await (await secondPopup).close()
   await expect.poll(() => events.filter(e => e.type === 'booking_click').length).toBe(2)
   await page.goto('/')
-  const executivePopup = page.waitForEvent('popup')
-  await page.locator('#executive-operations .service-next a').click()
-  await (await executivePopup).close()
-  await expect.poll(() => events.some(e => e.type === 'booking_click' && e.detail === 'service:executive-operations')).toBe(true)
+  const supportPopup = page.waitForEvent('popup')
+  await page.locator('#common-questions').getByRole('link', { name: 'Book a call with Jon' }).click()
+  await (await supportPopup).close()
+  await expect.poll(() => events.some(e => e.type === 'booking_click' && e.detail === 'service:customer-support')).toBe(true)
   expect(events.some(e => e.type.startsWith('form_'))).toBe(false)
   expect(new Set(events.map(e => e.session)).size).toBe(1)
   expect(events.every(e => e.campaign === 'launch')).toBe(true)
@@ -75,11 +75,14 @@ test('Calendly clicks retain campaign and service context without claiming a boo
   expect(errors).toEqual([])
 })
 
-test('new service inquiries track booking and email intent without copying message data', async ({ page, context }) => {
+test('redirected campaign inquiries retain attribution and track booking and email intent', async ({ page, context }) => {
   const { events } = await setup(page)
   await context.route('https://calendly.com/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Appointment page test</h1>' }))
   await page.goto('/community-management/?utm_source=discord&utm_campaign=community_support&email=private')
-  await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === '/community-management')).toBe(true)
+  await expect(page).toHaveURL(`${process.env.PLAYWRIGHT_BASE_URL}/?utm_source=discord&utm_campaign=community_support&email=private`)
+  await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === '/')).toBe(true)
+  expect(events.filter(e => e.type === 'page_view')).toHaveLength(1)
+  expect(events.find(e => e.type === 'page_view').source).toBe('discord')
   const popup = page.waitForEvent('popup')
   await page.locator('main [data-service="customer-support"]').first().click()
   await (await popup).close()
@@ -111,7 +114,7 @@ test('queued signed events retry identically after a failed upload and reload', 
 for (const scenario of [{ optout: true }, { dnt: true }, { testMode: false }, { deniedStorage: true }]) {
   test(`privacy/local-preview controls are respected: ${JSON.stringify(scenario)}`, async ({ page }) => {
     const { events, errors } = await setup(page, scenario)
-    await page.goto('/community-management/')
+    await page.goto('/')
     await page.waitForTimeout(300)
     expect(events).toHaveLength(0)
     expect(errors).toEqual([])
@@ -150,6 +153,28 @@ test('dashboard distinguishes service failure from zero traffic', async ({ page 
   await expect(page.locator('#status')).toContainText('No traffic totals are available yet.')
   await expect(page.locator('#metrics strong').first()).toHaveText('-')
   await expect(page.locator('#export')).toBeDisabled()
+})
+
+test('dashboard keeps historical community-page traffic alongside new homepage visits', async ({ page }) => {
+  await setup(page)
+  const records = ['/community-management', '/'].map((path, i) => ({
+    id: crypto.randomUUID(), session: crypto.randomUUID(), time: Date.now() - (1 - i) * 86400000,
+    type: 'page_view', page: path, source: 'email', medium: 'cold_email', campaign: 'community_support', content: '', detail: '', device: 'desktop',
+  }))
+  await page.route('**/graphql', route => route.fulfill({
+    status: 200, contentType: 'application/json',
+    body: JSON.stringify({ data: { transactions: { pageInfo: { hasNextPage: false }, edges: records.map(e => ({ cursor: e.id, node: { id: 'a'.repeat(43), tags: eventTags(e) } })) } } }),
+  }))
+  await page.goto('/analytics/')
+  await expect(page.locator('#status')).toContainText('2 events loaded')
+  await expect(page.locator('#pages')).toContainText('/community-management')
+  await expect(page.locator('#pages .analytics-row')).toHaveCount(2)
+  await expect(page.locator('#pages .analytics-row').filter({ hasText: '/community-management' }).locator('strong')).toHaveText('1')
+  for (const record of records) {
+    const date = new Date(record.time).toISOString().slice(0, 10)
+    await expect(page.locator(`#timeline [data-date="${date}"]`)).toHaveAttribute('aria-label', `${date}: 1 page views`)
+  }
+  await expect(page.locator('#landing option[value="/community-management/"]')).toHaveCount(0)
 })
 
 test('share links accept the screenshot phrases and preserve every supplied label', async ({ page }) => {
@@ -196,9 +221,9 @@ test('share links work with only a source and reject unusable labels without sta
 
 test('all content pages track, scroll and engagement record, privacy page does not track', async ({ page }) => {
   const { events, errors } = await setup(page)
-  for (const path of ['/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
+  for (const path of ['/', '/about/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
     await page.goto(path)
-    await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === path.replace(/\/$/, ''))).toBe(true)
+    await expect.poll(() => events.some(e => e.type === 'page_view' && e.page === (path.replace(/\/$/, '') || '/'))).toBe(true)
   }
   await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }))
   await expect.poll(() => events.some(e => e.type === 'scroll_depth' && e.detail === '100')).toBe(true)

@@ -12,16 +12,16 @@ test('service inquiries, page links, and layouts work across desktop and mobile'
   const links = new Set()
   for (const width of [1440, 1280, 1100, 1024, 768, 430, 390, 360, 320]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const path of ['/', '/about/', '/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
+    for (const path of ['/', '/about/', '/discord-community-management-scope/', '/technical-support-escalation/']) {
       await page.goto(path)
       await expect(page.locator('main h1')).toHaveCount(1)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${path} at ${width}px`).toBe(true)
       const localLinks = await page.locator('a[href]').evaluateAll(anchors => anchors.map(a => a.href).filter(href => href.startsWith(location.origin)))
       localLinks.forEach(link => links.add(link))
       if (path === '/') {
-        await expect(page.locator('.hero-title')).toBeInViewport()
-        await expect(page.locator('.hero-cta a')).toBeInViewport()
-        for (const link of await page.locator('.services .service-next a').all()) {
+        await expect(page.locator('.page-hero h1')).toBeInViewport()
+        await expect(page.locator('.page-hero .project-actions a')).toBeInViewport()
+        for (const link of await page.locator('main a[data-service]').all()) {
           await expect(link).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
           await expect(link).toHaveAttribute('data-service', /^(customer-support|reporting|executive-operations|technical-fixes)$/)
         }

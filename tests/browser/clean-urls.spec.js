@@ -36,7 +36,7 @@ for (const prefix of ['/', `/${'a'.repeat(43)}/`]) {
       const home = page.locator('.logo, .analytics-header a').first()
       await expect(home).toHaveAttribute('href', path ? '../' : './')
     }
-    await page.goto(`${prefix}community-management/`)
+    await page.goto(prefix)
     await page.locator('#nav-links').getByRole('link', { name: 'About', exact: true }).click()
     await expect(page).toHaveURL(`${origin}${prefix}about/`)
     await expect(page.locator('#nav-links [aria-current="page"]')).toHaveText('About')

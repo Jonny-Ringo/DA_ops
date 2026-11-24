@@ -1,67 +1,55 @@
-# Combined homepage: local preview and release requirement
-
-This revision is local on `preview/combined-homepage`. The previous version is
-preserved on `main` at `18caccdfdd989cd76dff027c5bc3552c089dd32f`. No deployment or DNS
-changes are part of this preview. With a clean working tree, compare the saved
-versions using `git switch main` and `git switch preview/combined-homepage`.
-Save any subsequent edits before switching branches.
+# Combined homepage and community-page redirect
 
 The Community Management content now lives at `/`. About and both guides remain
 separate. Navigation, editorial links, sharing links, canonical metadata, service
-schema, guide breadcrumbs, and the sitemap point to the combined homepage.
+schema, guide breadcrumbs, and the sitemap reference the combined homepage.
 
-Analytics retains the existing application/site identifiers and historical page
-keys, including `/community-management`. New visits record `/`; past community
-page events remain in the dashboard. Campaign parameters survive the redirect.
+The previous published version is preserved at
+`18caccdfdd989cd76dff027c5bc3552c089dd32f`. The work is recorded on
+`preview/combined-homepage` and merged into `main` for the release.
 
-## Local redirect
+## Redirect on GitHub Pages
 
-Both `npm run dev` and `npm run preview` return a real HTTP 301 for
-`/community-management`, `/community-management/`, and
-`/community-management/index.html`, with `Location: /` plus the original query
-string. Preview redirects use `Cache-Control: no-store` so undoing this local
-change does not leave a cached redirect in the reviewer's browser. No other
-retired routes have been reintroduced.
+The user approved an immediate HTML redirect instead of an HTTP 301 because the
+current host cannot configure custom server-side redirects. No DNS or hosting
+migration is needed.
 
-## Before publishing
+`community-management/index.html` is built as a standalone redirect. It
+returns HTTP 200 with a zero-second meta refresh pointing to the homepage and a
+canonical of `https://daops.net/`. Google recognizes an immediate meta refresh as
+a permanent redirect signal; it is not an HTTP 301.
 
-**The current GitHub Pages deployment does not run the Vite redirect middleware.**
-Publishing the static build alone would leave the old community URL returning
-404. A production HTTP redirect must be in place for this revision's release.
-An HTML or JavaScript redirect is not a substitute for the requested 301.
+A small inline script uses `location.replace` to retain the complete query string
+(including UTM labels) and fragment without leaving the moved page in browser
+history. Without JavaScript, the meta refresh still takes visitors to the
+homepage, but cannot carry arbitrary query parameters forward. The redirect page
+loads no analytics, so a normal redirected visit records only the destination.
 
-The domain currently resolves directly to GitHub Pages with registrar DNS. One
-option is to keep GitHub Pages as the origin and put Cloudflare in front of the
-domain. That requires a separately approved DNS/proxy setup, preserving all
-existing DNS records (including email) and HTTPS. Nothing here applies that change.
+`/community-management/` and `/community-management/index.html` use this page.
+GitHub Pages normalizes the slashless directory URL before serving it. The old
+`.html` route and other previously retired routes remain retired. The moved URL
+is excluded from the sitemap, remains crawlable, and has no `noindex` directive.
+Local development and preview mirror GitHub's directory-slash normalization;
+the page move itself always uses the built HTML rather than server middleware.
 
-Once Cloudflare is configured, add a Single Redirect with this custom expression:
+## Analytics continuity
 
-```text
-(http.host in {"daops.net" "www.daops.net"} and http.request.uri.path in {"/community-management" "/community-management/" "/community-management/index.html"})
-```
+Existing application/site identifiers and historical page keys, including
+`/community-management`, are retained. New visits record `/`; past community-page
+events remain available in the dashboard. Browser tests check campaign attribution,
+consultation clicks, and historical community-page traffic together with new visits.
 
-- Type: Static
-- Target URL: `https://daops.net/`
-- Status code: **301**
-- Preserve query string: **Enabled** (it defaults to disabled)
+## Release checks
 
-Keep the existing HTTP/HTTPS and www/apex canonical behavior. Scope the new rule
-only to the paths above. An equivalent rule on another approved host or proxy is
-also suitable; no hosting migration has been made in this branch.
+Build and SEO checks verify canonical tags, structured data, sitemap contents,
+and the redirect file. Browser checks exercise the actual static redirect with
+and without JavaScript, query/fragment preservation, back-button behavior,
+mobile layouts, links, and analytics. Verify the same behavior on `daops.net`
+after GitHub Pages deployment completes.
 
-Validate the live response before considering publication complete:
+Existing HTTP-to-HTTPS and www-to-apex redirects remain handled by GitHub Pages.
+A server-side 301 can replace the HTML redirect later if a proxy or different host
+is introduced. It would need query-string preservation enabled.
 
-```text
-GET https://daops.net/community-management/?utm_source=email&utm_medium=cold_email&utm_campaign=community_support
-301 Location: https://daops.net/?utm_source=email&utm_medium=cold_email&utm_campaign=community_support
-```
-
-The destination must return 200, with canonical `https://daops.net/`. Check a
-campaign visit and consultation click in analytics, and confirm that historical
-community-page traffic remains visible. Browser fragments such as `#services`
-are retained by browsers when the redirect destination has no fragment.
-
-References: [Google's redirect guidance](https://developers.google.com/search/docs/crawling-indexing/301-redirects),
-[GitHub Pages static hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages),
-and [Cloudflare redirect settings](https://developers.cloudflare.com/rules/url-forwarding/single-redirects/settings/).
+References: [Google's redirect guidance](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
+and [GitHub Pages static hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).

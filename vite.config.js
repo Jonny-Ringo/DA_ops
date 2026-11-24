@@ -27,7 +27,11 @@ export default defineConfig({
           return `assets/${name}-[hash][extname]`
         },
       },
-      input: Object.fromEntries(Object.keys(pages).map(file => [file.replace(/\/?index\.html$/, '') || 'index', resolve(__dirname, file)])),
+      input: {
+        ...Object.fromEntries(Object.keys(pages).map(file => [file.replace(/\/?index\.html$/, '') || 'index', resolve(__dirname, file)])),
+        // Build the moved URL as a redirect, without adding it to the sitemap/page registry.
+        'community-management': resolve(__dirname, 'community-management/index.html'),
+      },
     },
   },
 })

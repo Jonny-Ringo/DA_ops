@@ -2,25 +2,38 @@ import { test, expect } from '@playwright/test'
 
 test.use({ javaScriptEnabled: false })
 
-test('community URLs return HTTP 301 and preserve the complete campaign query', async ({ page }) => {
+test('the old community page supplies an immediate HTML redirect without JavaScript', async ({ page }) => {
   const origin = process.env.PLAYWRIGHT_BASE_URL
   await page.route('**/*', route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
-  for (const path of ['/community-management', '/community-management/', '/community-management/index.html']) {
-    for (const query of ['', '?utm_source=email&utm_medium=cold_email&utm_campaign=community_support&utm_content=intro', '?utm_campaign=a%20b&tag=one&tag=two&value=a%2Bb%26c']) {
-      for (const method of ['GET', 'HEAD']) {
-        const response = await page.request.fetch(path + query, { method, maxRedirects: 0 })
-        expect(response.status()).toBe(301)
-        expect(response.headers().location).toBe('/' + query)
-        expect(response.headers()['cache-control']).toBe('no-store')
+  for (const path of ['/community-management/', '/community-management/index.html']) {
+    const response = await page.request.get(path, { maxRedirects: 0 })
+    expect(response.status()).toBe(200)
+    const html = await response.text()
+    expect(html).toContain('<meta http-equiv="refresh" content="0; url=../">')
+    expect(html).toContain('<link rel="canonical" href="https://daops.net/">')
+    await page.goto(path)
+    await expect(page).toHaveURL(origin + '/')
+    await expect(page.locator('h1')).toHaveText('Technical Community Management & Support')
+  }
+})
+
+test.describe('browser redirect', () => {
+  test.use({ javaScriptEnabled: true })
+  test('old shared links retain their entire query and fragment without an extra history entry', async ({ page }) => {
+    const origin = process.env.PLAYWRIGHT_BASE_URL
+    await page.route('**/*', route => route.request().url().startsWith(origin) ? route.continue() : route.abort())
+    for (const path of ['/community-management', '/community-management/', '/community-management/index.html']) {
+      for (const query of ['?utm_source=email&utm_medium=cold_email&utm_campaign=community_support&utm_content=intro', '?utm_campaign=a%20b&tag=one&tag=two&value=a%2Bb%26c']) {
+        await page.goto('/about/')
+        await page.goto(path + query + '#services')
+        await expect(page).toHaveURL(origin + '/' + query + '#services')
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://daops.net/')
+        await expect(page.locator('h1')).toHaveText('Technical Community Management & Support')
+        await page.goBack()
+        await expect(page).toHaveURL(origin + '/about/')
       }
     }
-  }
-  const query = '?utm_source=email&utm_medium=cold_email&utm_campaign=community_support'
-  const response = await page.goto('/community-management/' + query + '#services')
-  expect(response.status()).toBe(200)
-  await expect(page).toHaveURL(origin + '/' + query + '#services')
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://daops.net/')
-  await expect(page.locator('h1')).toHaveText('Technical Community Management & Support')
+  })
 })
 
 test('combined homepage keeps the requested sections together on desktop and mobile', async ({ page }) => {

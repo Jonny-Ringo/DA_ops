@@ -67,8 +67,8 @@ test('published preview image is a 1200 by 630 PNG and logo is available', async
   assert.ok((await readFile(new URL('brand/logo.png', root))).length > 0)
 })
 
-test('old HTML routes and redirect stubs are absent and navigation uses clean paths', async () => {
-  for (const file of ['about.html', 'contact.html', 'contact/index.html', 'community-management.html', 'community-management/index.html', 'discord-community-management-scope.html', 'technical-support-escalation.html', 'privacy.html', 'analytics.html', 'how-we-work.html', 'the-eye.html']) {
+test('unrelated retired routes are absent and navigation uses clean paths', async () => {
+  for (const file of ['about.html', 'contact.html', 'contact/index.html', 'community-management.html', 'discord-community-management-scope.html', 'technical-support-escalation.html', 'privacy.html', 'analytics.html', 'how-we-work.html', 'the-eye.html']) {
     await assert.rejects(readFile(new URL(file, root)), { code: 'ENOENT' })
   }
   for (const [i, html] of htmls.entries()) {
@@ -79,6 +79,14 @@ test('old HTML routes and redirect stubs are absent and navigation uses clean pa
       if (target.origin === 'https://daops.net') assert.ok(target.pathname.endsWith('/'), `Expected a clean page URL: ${target.href}`)
     }
   }
+})
+
+test('the old community URL ships an immediate static redirect with a homepage canonical', async () => {
+  const html = await readFile(new URL('community-management/index.html', root), 'utf8')
+  assert.match(html, /<meta http-equiv="refresh" content="0; url=\.\.\/">/)
+  assert.match(html, /<link rel="canonical" href="https:\/\/daops\.net\/">/)
+  assert.doesNotMatch(html, /noindex|src="[^"]+\.js|application\/ld\+json/)
+  assert.doesNotMatch(await readFile(new URL('sitemap.xml', root), 'utf8'), /\/community-management\//)
 })
 
 test('service and guide schema describes visible content without invented reviews', () => {

@@ -33,7 +33,7 @@ test('combined homepage keeps the requested sections together on desktop and mob
     'The Eye: Arweave & AO analytics',
     'Common questions',
     'Plan your support setup',
-    'Relevant experience',
+    'Experience That Counts',
   ])
   await expect(page.locator('#services .scope-block')).toHaveCount(4)
   await expect(page.locator('.relevant-experience .project-strip')).toHaveCount(1)

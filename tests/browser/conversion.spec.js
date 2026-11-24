@@ -6,8 +6,8 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
 })
 
-test('community page offers a fixed booking destination without forwarding query values', async ({ page }) => {
-  for (const path of ['/community-management/', '/community-management/?service=reporting', '/community-management/?service=private%40example.com']) {
+test('homepage offers a fixed booking destination without forwarding query values', async ({ page }) => {
+  for (const path of ['/', '/?service=reporting', '/?service=private%40example.com']) {
     await page.goto(path)
     await expect(page.locator('form')).toHaveCount(0)
     await expect(page.locator('.page-hero .project-actions a')).toHaveAttribute('href', 'https://calendly.com/jonkwilliams/30min')
@@ -27,23 +27,23 @@ test('navigation anchors respect the header, active state, Escape, and keyboard 
     await expect(toggle).toBeFocused()
     await expect(toggle).toHaveAttribute('aria-expanded', 'false')
     await toggle.click()
-    await page.locator('#nav-links').getByRole('link', { name: 'Community Management', exact: true }).click()
-    await expect(page).toHaveURL(/\/community-management\/$/)
+    await page.locator('#nav-links').getByRole('link', { name: 'Home', exact: true }).click()
+    await expect(page).toHaveURL(`${origin}/`)
     await expect(toggle).toHaveAttribute('aria-expanded', 'false')
     await expect(page.locator('#nav-links [aria-current]')).toHaveCount(1)
-    await expect(page.locator('#nav-links [aria-current]')).toHaveText('Community Management')
+    await expect(page.locator('#nav-links [aria-current]')).toHaveText('Home')
     await expect(page.locator('#nav-links [aria-current]')).toHaveAttribute('aria-current', 'page')
     await toggle.click()
-    await page.locator('#nav-links').getByRole('link', { name: 'All Services', exact: true }).click()
+    await page.locator('#nav-links').getByRole('link', { name: 'Services', exact: true }).click()
     await expect(page).toHaveURL(/\/#services$/)
     await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    await expect(page.locator('#nav-links [aria-current]')).toHaveText('All Services')
+    await expect(page.locator('#nav-links [aria-current]')).toHaveText('Services')
     await expect.poll(() => page.locator('#services').evaluate(el => el.getBoundingClientRect().top >= document.querySelector('.nav').getBoundingClientRect().bottom)).toBe(true)
   }
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  await expect(page.locator('#nav-links a')).toHaveText(['Home', 'Community Management', 'All Services', 'About'])
-  const serviceLink = page.locator('#nav-links').getByRole('link', { name: 'All Services', exact: true })
+  await expect(page.locator('#nav-links a')).toHaveText(['Home', 'Services', 'About'])
+  const serviceLink = page.locator('#nav-links').getByRole('link', { name: 'Services', exact: true })
   await serviceLink.focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('#services')).toBeFocused()
@@ -53,7 +53,7 @@ test('navigation anchors respect the header, active state, Escape, and keyboard 
 test('booking remains usable when scripts are blocked and on a short mobile viewport', async ({ page }) => {
   await page.route('**/assets/*.js', route => route.abort())
   await page.setViewportSize({ width: 390, height: 410 })
-  await page.goto('/community-management/')
+  await page.goto('/')
   await expect(page.locator('.page-hero')).toHaveCSS('opacity', '1')
   await page.locator('.page-hero .project-actions a').scrollIntoViewIfNeeded()
   await expect(page.locator('.page-hero .project-actions a')).toBeInViewport()

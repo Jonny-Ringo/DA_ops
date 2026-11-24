@@ -39,12 +39,12 @@ test('promotion URLs use the canonical domain and snapshots require an explicit 
   assert.equal(arweaveBase(`https://unrelated.example/${current}/analytics.html`, previous), `https://arweave.net/${previous}/`)
   assert.equal(siteUrl('/about/', `https://sandbox.arweave.net/${current}/analytics/`).href, 'https://daops.net/about/')
   assert.equal(siteUrl('/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/`)
-  assert.equal(siteUrl('/community-management/', 'http://localhost:5173').href, 'https://daops.net/community-management/')
+  assert.equal(siteUrl('/', 'http://localhost:5173').href, 'https://daops.net/')
   assert.equal(siteUrl('/about/', `https://arweave.net/${current}/analytics/`, 'snapshot').href, `https://arweave.net/${current}/about/`)
-  for (const oldPage of ['/about.html', '/contact/', '/how-we-work.html', '/the-eye.html']) {
+  for (const oldPage of ['/about.html', '/contact/', '/community-management/', '/how-we-work.html', '/the-eye.html']) {
     assert.throws(() => siteUrl(oldPage, 'http://localhost:5173'), /Unknown site page/)
   }
-  assert.throws(() => siteUrl('/community-management/', 'http://localhost:5173', 'snapshot'), /not in the saved snapshot/)
+  assert.throws(() => siteUrl('/discord-community-management-scope/', 'http://localhost:5173', 'snapshot'), /not in the saved snapshot/)
   assert.throws(() => siteUrl('/', 'https://daops.net', 'untrusted'), /Unknown link destination/)
   assert.throws(() => arweaveBase('http://localhost:5173/', ''), /No published/)
   assert.throws(() => siteUrl('//unrelated.example/', `https://arweave.net/${current}/`), /Unknown site page/)

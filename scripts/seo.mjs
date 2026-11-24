@@ -6,19 +6,14 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 export const site = 'https://daops.net/'
 export const pages = {
   'index.html': {
-    path: '', name: 'Home', type: 'WebPage',
-    title: 'DA Operations | Community Management & Technical Support',
+    path: '', name: 'Home', type: 'WebPage', service: true,
+    title: 'Community Management & Technical Support | DA Operations',
     description: 'Community management, technical support, and reporting for growing teams and Web3 ecosystems. Custom dashboards, developer onboarding, and ongoing operations.',
   },
   'about/index.html': {
     path: 'about/', name: 'About', type: 'AboutPage',
     title: 'About DA Operations | Technical & Operational Experience',
     description: 'Meet Jon Williams, Founder and CEO of DA Operations. Experience in technical support, developer onboarding, and operations for communities exceeding 80,000 members.',
-  },
-  'community-management/index.html': {
-    path: 'community-management/', name: 'Community Management', type: 'WebPage', service: true,
-    title: 'Community Management Services | Discord & Web3 | DA Operations',
-    description: 'Technical community management for Discord, Telegram, and Web3 ecosystems. Human-led support, developer onboarding, moderation, and reporting.',
   },
   'discord-community-management-scope/index.html': {
     path: 'discord-community-management-scope/', name: 'Discord Community Management Guide', type: 'WebPage', article: true,
@@ -46,13 +41,6 @@ export const pages = {
 
 const escape = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-const services = [
-  { id: 'customer-support', name: 'Technical & Community Support', description: 'Customer and technical support, community and social profile management, customer and developer onboarding, backlog cleanup, escalations, support reporting, team coordination, documentation, and workflow improvements. Support setup improvements or ongoing delivery.' },
-  { id: 'reporting', name: 'Reporting & Intelligence', description: 'Data collection, custom dashboards, community trends and ecosystem statistics, support analytics, reporting automation, and infrastructure monitoring with clearly defined deliverables and pricing.' },
-  { id: 'executive-operations', name: 'Executive Operations & Partnerships', description: 'Work with founders and leadership on team management, planning, partner outreach, and ongoing ecosystem coordination. Event coordination includes hackathons and booths at conferences such as ETHDenver, with support for individual initiatives or ongoing operations.' },
-  { id: 'technical-fixes', name: 'Technical Fixes & Automation', description: 'Application troubleshooting, API integrations, internal tools, and operational automation. Scoped and quoted after an initial review of your project and requirements.' },
-]
-
 export function renderMetadata(page) {
   const url = new URL(page.path, site).href
   const image = new URL('brand/social-preview.png', site).href
@@ -73,14 +61,6 @@ export function renderMetadata(page) {
       ...(page.path && page.breadcrumb !== false ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
     },
   ]
-  if (!page.path) {
-    graph[2].mainEntity = services.map(service => ({ '@id': `${site}#${service.id}-service` }))
-    graph.push(...services.map(service => ({
-      '@type': 'Service', '@id': `${site}#${service.id}-service`,
-      name: service.name, serviceType: service.name, description: service.description,
-      url: `${site}#${service.id}`, provider: { '@id': `${site}#organization` },
-    })))
-  }
   if (page.service) {
     graph[2].mainEntity = { '@id': `${url}#service` }
     graph.push({
@@ -100,8 +80,7 @@ export function renderMetadata(page) {
   if (page.path && page.breadcrumb !== false) graph.push({
     '@type': 'BreadcrumbList', '@id': `${url}#breadcrumb`, itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: site },
-      ...(page.article ? [{ '@type': 'ListItem', position: 2, name: 'Community Management', item: `${site}community-management/` }] : []),
-      { '@type': 'ListItem', position: page.article ? 3 : 2, name: page.name, item: url },
+      { '@type': 'ListItem', position: 2, name: page.name, item: url },
     ],
   })
   return `

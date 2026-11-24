@@ -35,7 +35,7 @@ test('every content page is crawlable with working local links and fragment targ
       if (!visited.has(url.pathname)) pending.push(url.pathname)
     }
   }
-  for (const path of ['/community-management/', '/discord-community-management-scope/', '/technical-support-escalation/']) expect(visited.has(path), `${path} must be reachable from home`).toBe(true)
+  for (const path of ['/about/', '/discord-community-management-scope/', '/technical-support-escalation/']) expect(visited.has(path), `${path} must be reachable from home`).toBe(true)
   for (const target of targets) {
     const url = new URL(target, origin)
     if (!url.hash) continue
